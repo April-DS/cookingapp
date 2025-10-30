@@ -1,0 +1,429 @@
+{
+  "recipes": [
+    {
+      "id": "tomato-soup",
+      "dish_name": "Tomato Soup",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 30,
+        "total_time": 45
+      },
+      "nutrition": {
+        "kcal": 400,
+        "protein_g": 8,
+        "highlights": "Good source of Vitamin A and Vitamin C from the vegetables. Contains healthy fats from olive oil and richness from cooking cream. High in fiber if using wholemeal bread."
+      },
+      "ingredients": "1. Tomatoes 1 kg\n2. Capsicum 1\n3. Onion 1\n4. Garlic 4 cloves\n5. Olive oil\n6. Cooking cream 200ml\n7. Italian herbs\n8. Grated cheese\n9. Bread for serving",
+      "instructions": "1. Dice onion and capsicum. Mince garlic.\n2. Heat olive oil in large pot.\n3. Sauté onion and capsicum 5 min until soft.\n4. Add garlic, cook 1 min.\n5. Roughly chop tomatoes, add to pot.\n6. Add herbs, season with salt and pepper.\n7. Simmer 20 min until tomatoes broken down.\n8. Use immersion blender or transfer to blender. Blend until smooth.\n9. Return to pot, stir in cooking cream.\n10. Heat through 2-3 min.\n11. Serve topped with grated cheese and bread.",
+      "image": "Image of a bowl of creamy red tomato soup topped with grated cheese, served with a slice of crusty bread on the side."
+    },
+    {
+      "id": "chickpeas-eggplant",
+      "dish_name": "Chickpeas Eggplant",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 30,
+        "total_time": 55
+      },
+      "nutrition": {
+        "kcal": 375,
+        "protein_g": 17,
+        "highlights": "Excellent source of plant-based protein and fiber (from chickpeas). Rich in vitamins and antioxidants from tomatoes and eggplant. Naturally vegan."
+      },
+      "ingredients": "1. Chickpeas 480g (2 cans)\n2. Tinned cherry tomatoes 400g\n3. Sundried tomatoes 1/2 cup chopped\n4. Eggplant 1 big, diced\n5. Garlic 4 cloves minced\n6. Olive oil\n7. Italian herbs\n8. Salt and pepper",
+      "instructions": "1. Dice eggplant into 2cm cubes. Sprinkle with salt, let sit 10 min.\n2. Pat eggplant dry with paper towel.\n3. Heat olive oil in large pan or pot.\n4. Cook eggplant 8-10 min until golden and soft. Remove, set aside.\n5. Add more oil if needed. Add garlic, cook 1 min.\n6. Add sundried tomatoes, cook 2 min.\n7. Add tinned cherry tomatoes, chickpeas (drained and rinsed).\n8. Add Italian herbs, season with salt and pepper.\n9. Simmer 10 min.\n10. Add cooked eggplant back to pot. Stir gently.\n11. Cook 5 min more.\n12. Serve with rice, couscous, or crusty bread.",
+      "image": "Image of a hearty, rustic eggplant and chickpea stew in a tomato sauce, garnished with fresh herbs, served in a terracotta bowl."
+    },
+    {
+      "id": "salmon-beans",
+      "dish_name": "Salmon Beans",
+      "cooking_time": {
+        "prep_time": 10,
+        "cook_time": 20,
+        "total_time": 30
+      },
+      "nutrition": {
+        "kcal": 550,
+        "protein_g": 35,
+        "highlights": "High in **Protein** and **Omega-3 fatty acids** (from salmon). Good source of fiber (from beans) and iron (from spinach). Light coconut cream reduces saturated fat compared to traditional cream."
+      },
+      "ingredients": "1. Salmon 2-3 fillets\n2. Sundried tomatoes 1/2 cup chopped\n3. Garlic 4 cloves minced\n4. Spinach 2 cups\n5. Light coconut cream 240g\n6. Beans 1 tin (cannellini or butter beans)\n7. Olive oil\n8. Italian herbs\n9. Salt and pepper",
+      "instructions": "1. Season salmon with salt, pepper, Italian herbs.\n2. Heat olive oil in large pan.\n3. Cook salmon 4-5 min per side until cooked through. Remove, set aside.\n4. In same pan add garlic, cook 1 min.\n5. Add sundried tomatoes, cook 2 min.\n6. Add coconut cream, bring to simmer.\n7. Add beans (drained and rinsed), stir.\n8. Add spinach, cook until wilted.\n9. Break salmon into chunks, add back to pan.\n10. Heat through 2-3 min.\n11. Season with salt and pepper.\n12. Serve with rice or bread.",
+      "image": "Image of salmon fillets broken into chunks and mixed into a creamy light coconut sauce with cannellini beans and wilted spinach, served in a skillet."
+    },
+    {
+      "id": "one-pot-rice",
+      "dish_name": "One Pot Rice",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 25,
+        "total_time": 40
+      },
+      "nutrition": {
+        "kcal": 500,
+        "protein_g": 12,
+        "highlights": "High in Carbohydrates for energy. Contains fiber from beans and spinach. Offers Vitamin K and minerals from the various vegetables and healthy fats from coconut milk and olives."
+      },
+      "ingredients": "1. Rice 1.5 cups\n2. Butter beans 1 tin\n3. Sliced olives 1/2 cup\n4. Cherry tomatoes 250g halved\n5. Sundried tomatoes 1/2 cup chopped\n6. Spinach 2 cups\n7. Artichoke hearts 1 tin, quartered\n8. Lemon juice 2 tbsp\n9. Garlic 4 cloves minced\n10. Coconut milk 400ml\n11. Feta cheese crumbles\n12. Olive oil\n13. Vegetable broth 1 cup\n14. Italian herbs",
+      "instructions": "1. Heat olive oil in large pot with lid.\n2. Add garlic, cook 1 min.\n3. Add rice, stir 2 min to coat.\n4. Add sundried tomatoes, cherry tomatoes, olives, artichokes.\n5. Add coconut milk, vegetable broth, Italian herbs.\n6. Bring to boil, reduce heat to low.\n7. Cover, simmer 15-18 min until rice almost cooked.\n8. Add butter beans (drained and rinsed), spinach on top.\n9. Cover, cook 5 min more until spinach wilted and rice tender.\n10. Stir in lemon juice.\n11. Season with salt and pepper.\n12. Top with feta crumbles before serving.",
+      "image": "Image of a colorful one-pot rice dish with visible cherry tomatoes, olives, artichoke hearts, spinach, and feta crumbles on top."
+    },
+    {
+      "id": "tuna-salad",
+      "dish_name": "Tuna Salad",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 10,
+        "total_time": 25
+      },
+      "nutrition": {
+        "kcal": 350,
+        "protein_g": 25,
+        "highlights": "Excellent source of **Protein** and **Omega-3 fatty acids** (from tuna). Provides essential vitamins and minerals from eggs, corn, and cucumbers. Using Greek yogurt instead of sour cream will increase the protein and decrease the fat content."
+      },
+      "ingredients": "1. Salad leaves mix\n2. Eggs 4\n3. Tuna 1 tin, drained\n4. Corn 1 tin, drained\n5. Cucumbers 2, diced\n6. Sour cream or Greek yogurt 3 tbsp\n7. Mustard 1 tbsp\n8. Salt and pepper\n9. Lemon juice (optional)",
+      "instructions": "1. Boil eggs 10 min for hard-boiled. Cool in ice water.\n2. Peel eggs, chop into quarters.\n3. Wash and arrange salad leaves on plates or large bowl.\n4. Dice cucumbers.\n5. Arrange eggs, tuna (broken into chunks), corn, cucumbers on salad.\n6. In small bowl mix sour cream or yogurt with mustard.\n7. Add lemon juice if desired. Season with salt and pepper.\n8. Drizzle dressing over salad or serve on the side.\n9. Toss just before eating.",
+      "image": "Image of a vibrant tuna salad in a large bowl, showing mixed salad leaves, quartered hard-boiled eggs, chunks of tuna, corn kernels, and diced cucumbers, drizzled with a creamy dressing."
+    },
+    {
+      "id": "sushi-sandwich",
+      "dish_name": "Sushi Sandwich",
+      "cooking_time": {
+        "prep_time": 30,
+        "cook_time": 20,
+        "total_time": 80
+      },
+      "nutrition": {
+        "kcal": 475,
+        "protein_g": 20,
+        "highlights": "Good source of Carbohydrates for energy. Provides **protein** (from tuna and cream cheese) and healthy fats (from avocado). Contains iodine from nori."
+      },
+      "ingredients": "1. Avocado 2\n2. Rice 370g (about 1.5 cups uncooked)\n3. Tuna 1 can, drained\n4. Soft cheese (cream cheese) 360g\n5. Cucumber 1, julienned\n6. Nori sheets 4",
+      "instructions": "1. Cook rice according to package. Let cool to room temperature.\n2. Mix tuna with some cream cheese (about 50g) in bowl.\n3. Slice avocado thinly.\n4. Julienne cucumber into matchstick strips.\n5. Lay out plastic wrap on flat surface.\n6. Place 1 nori sheet on plastic wrap.\n7. Spread thin layer of cream cheese on nori.\n8. Spread layer of rice on top (about 1cm thick).\n9. Place another piece of plastic wrap on top.\n10. Flip entire thing so nori is on top, rice on bottom.\n11. Remove top plastic wrap.\n12. On the nori side, arrange line of tuna mixture, avocado, cucumber.\n13. Using plastic wrap, roll tightly like sushi.\n14. Wrap in plastic, refrigerate 30 min to set.\n15. Slice with sharp knife into 2cm pieces.\n16. Repeat with remaining ingredients.",
+      "image": "Image of a sliced sushi sandwich (pressed sushi) with visible layers of rice, nori, tuna mixture, avocado, and cucumber."
+    },
+    {
+      "id": "mushroom-soup",
+      "dish_name": "Mushroom Soup",
+      "cooking_time": {
+        "prep_time": 20,
+        "cook_time": 40,
+        "total_time": 60
+      },
+      "nutrition": {
+        "kcal": 350,
+        "protein_g": 6,
+        "highlights": "Low in calories and fat (if using less oil/butter). Good source of potassium and B vitamins from mushrooms and potatoes. Provides a comforting and creamy texture."
+      },
+      "ingredients": "1. Mushrooms 500g sliced\n2. Potatoes 8 medium, diced\n3. Cooking cream 200ml\n4. Cheese spread 2-3 tbsp\n5. Mushroom broth 1.5L (or vegetable broth)\n6. Onion 1, diced\n7. Garlic 3 cloves minced\n8. Olive oil or butter\n9. Salt and pepper\n10. Fresh herbs (thyme or parsley)",
+      "instructions": "1. Dice onion and potatoes. Slice mushrooms. Mince garlic.\n2. Heat oil or butter in large pot.\n3. Sauté onion 5 min until soft.\n4. Add mushrooms, cook 8-10 min until browned and liquid released.\n5. Add garlic, cook 1 min.\n6. Add diced potatoes, stir.\n7. Add broth, bring to boil.\n8. Reduce heat, simmer 20 min until potatoes tender.\n9. Use immersion blender to partially blend (leave some chunks) or blend half and return to pot.\n10. Stir in cooking cream and cheese spread.\n11. Heat through 5 min, stirring until cheese melted.\n12. Season with salt and pepper.\n13. Garnish with fresh herbs.",
+      "image": "Image of a rustic bowl of creamy mushroom soup with fresh herbs, showing some visible mushroom and potato chunks."
+    },
+    {
+      "id": "pasta-vegs",
+      "dish_name": "Pasta Vegs",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 20,
+        "total_time": 35
+      },
+      "nutrition": {
+        "kcal": 550,
+        "protein_g": 18,
+        "highlights": "Provides carbohydrates for energy. Contains **protein** (from vegan chicken and feta) and a range of vitamins and minerals from the vegetable mix. Quick and easy one-pan meal."
+      },
+      "ingredients": "1. Pasta 400g\n2. Frozen vegetable mix 500g\n3. Feta cheese crumbled\n4. Vegan chicken filet 200g, sliced\n5. Olive oil\n6. Garlic 3 cloves minced\n7. Italian herbs\n8. Salt and pepper",
+      "instructions": "1. Cook pasta according to package. Reserve 1 cup pasta water. Drain.\n2. Heat olive oil in large pan.\n3. Cook vegan chicken slices 5-7 min until golden. Remove, set aside.\n4. Add more oil if needed. Add garlic, cook 1 min.\n5. Add frozen vegetables, cook 8-10 min until tender.\n6. Add Italian herbs, season with salt and pepper.\n7. Add cooked pasta and chicken back to pan.\n8. Toss to combine. Add pasta water if needed.\n9. Top with crumbled feta.\n10. Serve immediately.",
+      "image": "Image of a one-pan pasta dish with mixed vegetables, vegan chicken slices, and crumbled feta cheese."
+    },
+    {
+      "id": "mash-potatoes-lentils",
+      "dish_name": "Mash Potatoes Lentils Mix",
+      "cooking_time": {
+        "prep_time": 20,
+        "cook_time": 35,
+        "total_time": 55
+      },
+      "nutrition": {
+        "kcal": 600,
+        "protein_g": 15,
+        "highlights": "High in fiber and **plant-based protein** (from lentils). Excellent source of carbohydrates for energy (from potatoes). Rich in vitamins A and C from carrots and tomatoes, and potassium from potatoes."
+      },
+      "ingredients": "1. Cherry tomatoes 250g halved\n2. Potatoes 6 large\n3. Milk 1/2 cup\n4. Lentils 1 can\n5. Italian herbs\n6. Tomato passata 400g\n7. Vegetable broth 1 cup\n8. Celery 2 stalks, diced\n9. Carrot 1, diced\n10. Basil pesto 2 tbsp\n11. Parmesan cheese\n12. Butter 2 tbsp\n13. Olive oil\n14. Onion 1, diced\n15. Garlic 3 cloves minced",
+      "instructions": "1. Peel and cube potatoes. Boil in salted water 15-20 min until tender.\n2. Meanwhile, heat olive oil in large pan.\n3. Sauté onion, carrot, celery 5-7 min until soft.\n4. Add garlic, cook 1 min.\n5. Add cherry tomatoes, cook 5 min until starting to break down.\n6. Add passata, vegetable broth, Italian herbs.\n7. Add lentils (drained and rinsed).\n8. Simmer 15 min. Season with salt and pepper.\n9. Drain potatoes. Mash with butter and milk until smooth.\n10. Season mash with salt and pepper.\n11. Stir basil pesto into lentil mixture.\n12. Serve lentil mixture over or alongside mashed potatoes.\n13. Top with grated parmesan.",
+      "image": "Image of creamy mashed potatoes topped with a rich, rustic lentil and vegetable tomato stew, garnished with Parmesan cheese."
+    },
+    {
+      "id": "loaded-eggplants",
+      "dish_name": "Loaded Eggplants",
+      "cooking_time": {
+        "prep_time": 20,
+        "cook_time": 45,
+        "total_time": 65
+      },
+      "nutrition": {
+        "kcal": 550,
+        "protein_g": 20,
+        "highlights": "Provides a good balance of carbohydrates (rice) and fiber (eggplant). Contains **protein** (cheese) and various vitamins from vegetables. A hearty and satisfying baked dish."
+      },
+      "ingredients": "1. Eggplants 2 big\n2. Mozzarella 200g, torn or shredded\n3. Rice 1 cup uncooked\n4. Capsicum 1, diced\n5. Cheese (cheddar or mixed) 100g grated\n6. Tomatoes 2 large, diced\n7. Garlic 3 cloves minced\n8. Olive oil\n9. Italian herbs\n10. Salt and pepper",
+      "instructions": "1. Preheat oven 200°C.\n2. Cook rice according to package. Set aside.\n3. Cut eggplants in half lengthwise.\n4. Score flesh in crosshatch pattern. Brush with olive oil, season with salt.\n5. Place cut-side down on baking tray. Bake 25 min until soft.\n6. Meanwhile, heat olive oil in pan.\n7. Sauté capsicum 5 min until soft.\n8. Add garlic, cook 1 min.\n9. Add diced tomatoes, Italian herbs. Cook 5 min.\n10. Add cooked rice, stir. Season with salt and pepper.\n11. Remove eggplants from oven. Flip cut-side up.\n12. Scoop out some flesh, leaving 1cm border. Chop scooped flesh.\n13. Mix chopped eggplant flesh with rice mixture.\n14. Fill eggplant halves with rice mixture.\n15. Top with mozzarella and grated cheese.\n16. Bake 15-20 min until cheese melted and golden.",
+      "image": "Image of large eggplant halves baked and stuffed with a savory rice, tomato, and capsicum mixture, topped with golden, melted cheese."
+    },
+    {
+      "id": "baked-potato-barramundi",
+      "dish_name": "Baked Potato with Salad and Barramundi",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 50,
+        "total_time": 65
+      },
+      "nutrition": {
+        "kcal": 500,
+        "protein_g": 35,
+        "highlights": "High in **protein** (from barramundi). Good source of carbohydrates (potatoes) for energy, and vitamins and fiber from the fresh salad vegetables. Barramundi is also a good source of **Omega-3 fatty acids**."
+      },
+      "ingredients": "1. Small potatoes 8-10\n2. Cucumber 1, diced\n3. Tomatoes 2, diced\n4. Capsicum 1, diced\n5. Sour cream 1/2 cup\n6. Barramundi fillets 2-3\n7. Olive oil\n8. Lemon 1\n9. Fresh dill or parsley\n10. Salt and pepper",
+      "instructions": "1. Preheat oven 200°C.\n2. Wash potatoes, prick with fork.\n3. Toss with olive oil and salt. Place on baking tray.\n4. Bake 45-50 min until tender.\n5. Meanwhile, dice cucumber, tomatoes, capsicum.\n6. Mix vegetables in bowl. Season with salt, pepper, lemon juice, olive oil.\n7. Season barramundi with salt, pepper, lemon juice.\n8. Heat olive oil in pan.\n9. Cook barramundi 4-5 min per side until cooked through.\n10. Split baked potatoes. Fluff with fork.\n11. Serve barramundi with baked potatoes and vegetable salad.\n12. Dollop sour cream on potatoes.\n13. Garnish with fresh herbs.",
+      "image": "Image of a split baked potato with a dollop of sour cream, served alongside a pan-seared barramundi fillet and a fresh vegetable salad."
+    },
+    {
+      "id": "risotto-mushroom",
+      "dish_name": "Risotto Mushroom",
+      "cooking_time": {
+        "prep_time": 20,
+        "cook_time": 45,
+        "total_time": 65
+      },
+      "nutrition": {
+        "kcal": 600,
+        "protein_g": 15,
+        "highlights": "Rich and creamy carbohydrate source. Provides fiber and B vitamins from mushrooms. Contains calcium and **protein** from Parmesan cheese."
+      },
+      "ingredients": "1. Arborio rice 1.5 cups\n2. Mushrooms 400g, sliced\n3. Celery 2 stalks, diced\n4. Sundried tomatoes 1/2 cup chopped\n5. Cooking cream 200ml\n6. Vegetable broth 1.5L warm\n7. Onion 1, diced\n8. Garlic 3 cloves minced\n9. Parmesan cheese\n10. Butter 2 tbsp\n11. Olive oil\n12. White wine 1/2 cup (optional)\n13. Salt and pepper",
+      "instructions": "1. Keep broth warm in pot on low heat.\n2. Heat olive oil and butter in large pan.\n3. Sauté mushrooms 8-10 min until browned. Remove, set aside.\n4. Add more oil if needed. Sauté onion and celery 5 min until soft.\n5. Add garlic, cook 1 min.\n6. Add rice, stir 2 min until slightly toasted.\n7. Add wine if using, stir until absorbed.\n8. Add sundried tomatoes.\n9. Add broth 1 ladle at a time, stirring frequently. Wait until absorbed before adding more.\n10. Continue 20-25 min until rice creamy and al dente.\n11. Stir in cooked mushrooms and cooking cream.\n12. Add parmesan, stir until melted.\n13. Season with salt and pepper.\n14. Serve immediately with extra parmesan.",
+      "image": "Image of a creamy mushroom risotto in a wide bowl, garnished with Parmesan cheese and fresh herbs."
+    },
+    {
+      "id": "pumpkin-soup",
+      "dish_name": "Pumpkin Soup",
+      "cooking_time": {
+        "prep_time": 20,
+        "cook_time": 45,
+        "total_time": 65
+      },
+      "nutrition": {
+        "kcal": 300,
+        "protein_g": 5,
+        "highlights": "High in Vitamin A (from butternut squash and carrots) and Vitamin C (from tomatoes). Good source of fiber. Naturally creamy and comforting, with healthy fats from olive oil and optional nuts/seeds."
+      },
+      "ingredients": "1. Large tomatoes 3\n2. Carrots 3, chopped\n3. Onion 1, diced\n4. Garlic 4 cloves\n5. Butternut squash 1 medium (about 1kg), peeled and cubed\n6. Vegetable broth 1.5L\n7. Olive oil\n8. Cooking cream or coconut milk 200ml\n9. Nuts and seeds for topping (pumpkin seeds, sunflower seeds)\n10. Salt and pepper\n11. Cumin 1 tsp (optional)",
+      "instructions": "1. Dice onion, chop carrots, cube squash, mince garlic, chop tomatoes.\n2. Heat olive oil in large pot.\n3. Sauté onion 5 min until soft.\n4. Add garlic, cook 1 min.\n5. Add carrots and squash, stir 3 min.\n6. Add tomatoes, cook 5 min.\n7. Add vegetable broth, bring to boil.\n8. Reduce heat, simmer 25-30 min until squash and carrots very soft.\n9. Use immersion blender or transfer to blender. Blend until smooth.\n10. Return to pot, stir in cream or coconut milk.\n11. Heat through 3-5 min.\n12. Season with salt, pepper, and cumin if using.\n13. Toast nuts and seeds in dry pan 2-3 min.\n14. Serve soup topped with toasted nuts and seeds.",
+      "image": "Image of a creamy orange pumpkin soup in a bowl, topped with toasted nuts and seeds."
+    },
+    {
+      "id": "buckwheat-tuna",
+      "dish_name": "Buckwheat Tuna",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 15,
+        "total_time": 30
+      },
+      "nutrition": {
+        "kcal": 400,
+        "protein_g": 25,
+        "highlights": "Excellent source of **protein** (tuna) and complex carbohydrates/fiber (buckwheat). Packed with vitamins and minerals from fresh vegetables. Buckwheat is naturally gluten-free."
+      },
+      "ingredients": "1. Buckwheat 1 cup\n2. Tuna 1 can, drained\n3. Mixed salad leaves\n4. Cucumber 1, diced\n5. Cherry tomatoes 1 cup, halved\n6. Capsicum 1, diced\n7. Sour cream 3 tbsp\n8. Lemon juice 2 tbsp\n9. Olive oil\n10. Salt and pepper\n11. Fresh dill or parsley (optional)",
+      "instructions": "1. Cook buckwheat according to package (usually 15-20 min). Drain, let cool.\n2. Dice cucumber, capsicum. Halve cherry tomatoes.\n3. In large bowl, combine cooked buckwheat, tuna (broken into chunks), cucumber, tomatoes, capsicum.\n4. In small bowl, mix sour cream with lemon juice, olive oil, salt, pepper.\n5. Arrange salad leaves on plates.\n6. Top with buckwheat-tuna mixture.\n7. Drizzle with sour cream dressing.\n8. Garnish with fresh herbs if using.\n9. Toss before eating.",
+      "image": "Image of a fresh salad with cooked buckwheat, tuna, and various diced vegetables, drizzled with a creamy sour cream dressing."
+    },
+    {
+      "id": "pineapple_stew",
+      "dish_name": "Hello Fresh Pineapple Stew",
+      "cooking_time": {
+        "prep_time": 20,
+        "cook_time": 35,
+        "total_time": 55
+      },
+      "nutrition": {
+        "kcal": 500,
+        "protein_g": 18,
+        "highlights": "Good source of **plant-based protein** and fiber (lentils, spinach). Rich in Vitamin C (pineapple, spinach) and Vitamin A (carrots). Offers complex carbohydrates from rice for sustained energy. Flavorful and naturally vegan."
+      },
+      "ingredients": "1. Rice 1.5 cups\n2. Coconut milk 400ml\n3. Pineapple 1 tin, chunks\n4. Spinach 2 cups\n5. Carrots 2, diced\n6. Sweet corn 1 can, drained\n7. Lentils 1 can, drained\n8. Tomato paste 2 tbsp\n9. Fresh mint handful, chopped\n10. Garlic 4 cloves minced\n11. Onion 1, diced\n12. Olive oil\n13. Vegetable broth 1 cup\n14. Curry powder 1 tsp (optional)\n15. Salt and pepper",
+      "instructions": "1. Cook rice according to package. Set aside.\n2. Heat olive oil in large pot.\n3. Sauté onion and carrots 5-7 min until softening.\n4. Add garlic, cook 1 min.\n5. Add tomato paste, stir 1 min.\n6. Add curry powder if using, stir.\n7. Add coconut milk, vegetable broth, bring to simmer.\n8. Add lentils, corn, pineapple with juice.\n9. Simmer 15 min until carrots tender and flavors combined.\n10. Add spinach, cook until wilted.\n11. Season with salt and pepper.\n12. Stir in chopped mint.\n13. Serve over rice.\n14. Garnish with extra mint.",
+      "image": "Image of a yellow curry stew with pineapple chunks, lentils, and corn, served over a bed of white rice."
+    },
+    {
+      "id": "white-bean-kale",
+      "dish_name": "White Bean & Kale Soup",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 30,
+        "total_time": 45
+      },
+      "nutrition": {
+        "kcal": 350,
+        "protein_g": 18,
+        "highlights": "High in **fiber** and **plant-based protein** (from cannellini beans). Excellent source of Vitamin A and Vitamin K (from kale/spinach). Low-fat and hearty."
+      },
+      "ingredients": "1. Cannellini beans 2 cans\n2. Kale or spinach\n3. Carrots 2\n4. Celery 2 stalks\n5. Onion 1\n6. Garlic 4 cloves\n7. Tomato paste 2 tbsp\n8. Vegetable broth 1L\n9. Parmesan cheese\n10. Olive oil\n11. Italian herbs\n12. Crusty bread",
+      "instructions": "1. Dice onion, carrots, celery. Mince garlic.\n2. Heat olive oil in large pot. Sauté onion, carrots, celery for 5 min.\n3. Add garlic, cook 1 min.\n4. Add tomato paste, stir for 1 min.\n5. Add broth, beans (drained and rinsed), Italian herbs.\n6. Simmer 20 min until vegetables tender.\n7. Add chopped kale, cook 5 min until wilted.\n8. Season with salt and pepper.\n9. Serve with grated parmesan and bread.",
+      "image": "Image of a rustic bowl of white bean and kale soup, garnished with a sprinkle of grated Parmesan and a side of crusty bread."
+    },
+    {
+      "id": "shakshuka",
+      "dish_name": "Shakshuka",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 25,
+        "total_time": 40
+      },
+      "nutrition": {
+        "kcal": 400,
+        "protein_g": 20,
+        "highlights": "High in **protein** (from eggs and feta). Excellent source of Vitamin C and antioxidants (tomatoes and capsicum). Spices like cumin and paprika add flavor and potential health benefits."
+      },
+      "ingredients": "1. Tomatoes canned 800g or fresh 6 large\n2. Red capsicum 1\n3. Onion 1\n4. Garlic 4 cloves\n5. Eggs 6\n6. Feta cheese crumbles\n7. Cumin 1 tsp\n8. Paprika 1 tsp\n9. Chili flakes pinch\n10. Fresh parsley\n11. Olive oil\n12. Bread for serving",
+      "instructions": "1. Dice onion and capsicum. Mince garlic.\n2. Heat olive oil in large skillet with lid.\n3. Sauté onion and capsicum 5 min until soft.\n4. Add garlic, cumin, paprika, chili flakes. Cook 1 min.\n5. Add tomatoes, break up if whole. Simmer 10-15 min until thickened.\n6. Season with salt and pepper.\n7. Make 6 wells in sauce. Crack egg into each well.\n8. Cover and cook 5-8 min until eggs set to your liking.\n9. Top with feta and parsley.\n10. Serve with bread for dipping.",
+      "image": "Image of a bubbling red Shakshuka sauce with six perfectly poached eggs nestled in wells, topped with crumbled feta cheese and fresh parsley."
+    },
+    {
+      "id": "greek-stuffed-capsicums",
+      "dish_name": "Greek-Style Stuffed Capsicums",
+      "cooking_time": {
+        "prep_time": 25,
+        "cook_time": 45,
+        "total_time": 70
+      },
+      "nutrition": {
+        "kcal": 500,
+        "protein_g": 20,
+        "highlights": "Balanced meal with carbohydrates (rice), **plant-based protein** and fiber (chickpeas, spinach), and a range of vitamins and healthy fats (olives, feta)."
+      },
+      "ingredients": "1. Large capsicums 4\n2. Rice 1 cup uncooked\n3. Chickpeas 1 can\n4. Sundried tomatoes 1/2 cup chopped\n5. Spinach 2 cups\n6. Feta cheese 150g crumbled\n7. Cherry tomatoes 1 cup halved\n8. Olives 1/2 cup sliced\n9. Garlic 3 cloves minced\n10. Italian herbs\n11. Olive oil\n12. Tomato passata 1 cup",
+      "instructions": "1. Preheat oven 180°C.\n2. Cook rice according to package. Set aside.\n3. Cut tops off capsicums, remove seeds.\n4. Heat olive oil in pan. Sauté garlic 1 min.\n5. Add spinach, cook until wilted.\n6. In bowl mix cooked rice, chickpeas (drained), sundried tomatoes, spinach-garlic, half the feta, cherry tomatoes, olives, herbs.\n7. Season with salt and pepper.\n8. Stuff capsicums with mixture.\n9. Pour passata in baking dish. Place capsicums in dish.\n10. Top with remaining feta.\n11. Cover with foil. Bake 35 min.\n12. Remove foil. Bake 10 min more until capsicums tender.",
+      "image": "Image of four brightly colored stuffed capsicums baked in a tomato sauce, topped with melted feta, sitting in a baking dish."
+    },
+    {
+      "id": "mediterranean-baked-fish",
+      "dish_name": "Mediterranean Baked Fish with Vegetables",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 30,
+        "total_time": 45
+      },
+      "nutrition": {
+        "kcal": 450,
+        "protein_g": 35,
+        "highlights": "High in lean **protein** (fish) and healthy Omega-3 fats. Packed with antioxidants and fiber from the vegetables. Very low-carb meal before adding a grain base."
+      },
+      "ingredients": "1. White fish fillets 4 (barramundi, cod, or salmon)\n2. Cherry tomatoes 2 cups\n3. Zucchini 2 sliced\n4. Red onion 1 sliced\n5. Kalamata olives 1/2 cup\n6. Capers 2 tbsp\n7. Lemon 1 sliced\n8. Garlic 4 cloves sliced\n9. Olive oil\n10. Oregano\n11. Couscous or quinoa for serving",
+      "instructions": "1. Preheat oven 200°C.\n2. In baking dish arrange zucchini, tomatoes, onion, olives, capers, garlic.\n3. Drizzle with olive oil, sprinkle oregano, salt, pepper. Toss to coat.\n4. Bake 15 min.\n5. Remove from oven. Place fish fillets on top of vegetables.\n6. Top fish with lemon slices, drizzle olive oil, season with salt, pepper, oregano.\n7. Bake 12-15 min until fish cooked through.\n8. Meanwhile cook couscous or quinoa according to package.\n9. Serve fish and vegetables over couscous.",
+      "image": "Image of baked white fish fillets topped with lemon slices, surrounded by roasted Mediterranean vegetables like cherry tomatoes, zucchini, red onion, and olives, served over a bed of fluffy couscous."
+    },
+    {
+      "id": "tuscan-white-bean",
+      "dish_name": "Tuscan White Bean Pasta",
+      "cooking_time": {
+        "prep_time": 10,
+        "cook_time": 25,
+        "total_time": 35
+      },
+      "nutrition": {
+        "kcal": 550,
+        "protein_g": 18,
+        "highlights": "Excellent source of complex carbohydrates and fiber (especially if using whole wheat pasta and beans). Contains **plant-based protein** (beans) and various vitamins from the vegetables."
+      },
+      "ingredients": "1. Pasta 400g (whole wheat preferred)\n2. Cannellini beans 1 can\n3. Spinach or kale large handful\n4. Sundried tomatoes 1/2 cup chopped\n5. Cherry tomatoes 1 cup halved\n6. Garlic 6 cloves minced\n7. Vegetable broth 1 cup\n8. Parmesan cheese\n9. Olive oil\n10. Italian herbs\n11. Red pepper flakes",
+      "instructions": "1. Cook pasta according to package. Reserve 1 cup pasta water. Drain.\n2. Heat olive oil in large pan.\n3. Add garlic, cook 1 min until fragrant.\n4. Add sundried tomatoes, cherry tomatoes, cook 3 min.\n5. Add beans (drained and rinsed), vegetable broth, Italian herbs, red pepper flakes.\n6. Simmer 5 min.\n7. Add spinach, cook until wilted.\n8. Add cooked pasta, toss to combine.\n9. Add pasta water if needed for sauce consistency.\n10. Season with salt and pepper.\n11. Serve with grated parmesan.",
+      "image": "Image of a creamy Tuscan white bean pasta dish in a large skillet, mixed with sundried tomatoes, spinach, and cherry tomatoes, topped with grated Parmesan."
+    },
+    {
+      "id": "baked-sweet-potato",
+      "dish_name": "Baked Sweet Potato with Mediterranean Toppings",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 55,
+        "total_time": 70
+      },
+      "nutrition": {
+        "kcal": 400,
+        "protein_g": 11,
+        "highlights": "Excellent source of Vitamin A and **fiber** (sweet potatoes, chickpeas). Provides **plant-based protein** (chickpeas) and probiotics (Greek yogurt). Naturally gluten-free."
+      },
+      "ingredients": "1. Sweet potatoes 4 large\n2. Chickpeas 1 can\n3. Cucumber 1 diced\n4. Cherry tomatoes 1 cup diced\n5. Red onion 1/2 small diced\n6. Feta cheese crumbles\n7. Greek yogurt\n8. Fresh parsley or mint\n9. Lemon 1\n10. Cumin 1 tsp\n11. Paprika 1 tsp\n12. Olive oil",
+      "instructions": "1. Preheat oven 200°C.\n2. Pierce sweet potatoes with fork. Place on baking tray.\n3. Bake 45-60 min until tender.\n4. Meanwhile drain and rinse chickpeas. Pat dry.\n5. Toss chickpeas with olive oil, cumin, paprika, salt, pepper.\n6. Spread on baking tray. Roast last 20 min of potato cooking time until crispy.\n7. Dice cucumber, tomatoes, onion. Mix in bowl.\n8. Add lemon juice, olive oil, salt, pepper, fresh herbs.\n9. Split baked sweet potatoes. Fluff insides with fork.\n10. Top with roasted chickpeas, cucumber-tomato salad, feta, dollop of yogurt.\n11. Garnish with herbs.",
+      "image": "Image of a split baked sweet potato overflowing with Mediterranean toppings: crispy spiced chickpeas, diced cucumber and tomato salad, crumbled feta, and a dollop of white Greek yogurt, garnished with fresh mint."
+    },
+    {
+      "id": "creamy-tomato-basil",
+      "dish_name": "Creamy Tomato Basil Risotto with Peas",
+      "cooking_time": {
+        "prep_time": 20,
+        "cook_time": 45,
+        "total_time": 65
+      },
+      "nutrition": {
+        "kcal": 600,
+        "protein_g": 13,
+        "highlights": "High in carbohydrates for energy. Contains Vitamin C and antioxidants (tomatoes, basil) and fiber and **protein** (peas). Creamy and comforting texture."
+      },
+      "ingredients": "1. Arborio rice 1.5 cups\n2. Cherry tomatoes 2 cups\n3. Frozen peas 1 cup\n4. Vegetable broth 1.5L warm\n5. Onion 1 diced\n6. Garlic 4 cloves minced\n7. White wine 1/2 cup (optional) or extra broth\n8. Light cooking cream 100ml or mascarpone 2 tbsp\n9. Fresh basil large bunch\n10. Parmesan cheese\n11. Olive oil\n12. Butter 2 tbsp",
+      "instructions": "1. Preheat oven 200°C.\n2. Toss cherry tomatoes with olive oil, salt, pepper on baking tray.\n3. Roast 20 min until blistered. Set aside.\n4. Keep broth warm in pot on low heat.\n5. Heat olive oil and butter in large pan.\n6. Sauté onion 5 min until soft.\n7. Add garlic, cook 1 min.\n8. Add rice, stir 2 min until slightly toasted.\n9. Add wine if using, stir until absorbed.\n10. Add broth 1 ladle at a time, stirring frequently. Wait until absorbed before adding more.\n11. Continue 20-25 min until rice creamy and al dente.\n12. Stir in roasted tomatoes, peas, cream, chopped basil, parmesan.\n13. Season with salt and pepper.\n14. Serve immediately with extra parmesan and basil.",
+      "image": "Image of a creamy pink risotto studded with bright green peas, visible roasted cherry tomatoes, and large pieces of fresh basil, served in a wide bowl and topped with grated Parmesan."
+    },
+    {
+      "id": "creamy-tuscan-salmon",
+      "dish_name": "Creamy Tuscan Salmon Pasta",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 25,
+        "total_time": 40
+      },
+      "nutrition": {
+        "kcal": 675,
+        "protein_g": 45,
+        "highlights": "High in **protein** (salmon) and **Omega-3 fatty acids**. Contains Vitamin K and iron (spinach). A rich, balanced meal with carbohydrates and healthy fats."
+      },
+      "ingredients": "1. Pasta 400g (penne or fettuccine)\n2. Salmon fillets 3 medium\n3. Spinach 2 cups\n4. Sundried tomatoes 1/2 cup chopped\n5. Cherry tomatoes 1 cup halved\n6. Garlic 6 cloves minced\n7. Light cooking cream 200ml\n8. Parmesan cheese\n9. Italian herbs (basil, oregano)\n10. Olive oil\n11. Lemon 1",
+      "instructions": "1. Cook pasta according to package. Reserve 1 cup pasta water. Drain.\n2. Season salmon with salt, pepper, Italian herbs.\n3. Heat olive oil in large pan.\n4. Cook salmon 4-5 min per side until cooked through. Remove, set aside.\n5. In same pan add more oil if needed. Add garlic, cook 1 min.\n6. Add sundried tomatoes, cherry tomatoes, cook 3 min.\n7. Add cream, bring to simmer.\n8. Add spinach, cook until wilted.\n9. Break salmon into chunks, add to sauce.\n10. Add cooked pasta, toss to combine.\n11. Add pasta water if needed for consistency.\n12. Stir in parmesan, lemon juice.\n13. Season with salt and pepper.\n14. Garnish with fresh basil and extra parmesan.",
+      "image": "Image of salmon fillets broken into chunks and mixed into a creamy Tuscan sauce with pasta, sun-dried tomatoes, cherry tomatoes, and wilted spinach, garnished with fresh basil."
+    },
+    {
+      "id": "baked-feta-pasta",
+      "dish_name": "Baked Feta Pasta with Olives",
+      "cooking_time": {
+        "prep_time": 10,
+        "cook_time": 35,
+        "total_time": 45
+      },
+      "nutrition": {
+        "kcal": 600,
+        "protein_g": 18,
+        "highlights": "High in carbohydrates (pasta) and **healthy monounsaturated fats** (olive oil, olives). Provides calcium (feta) and antioxidants (tomatoes). This viral dish is simple and flavourful."
+      },
+      "ingredients": "1. Pasta 400g any shape\n2. Feta cheese block 200g\n3. Cherry tomatoes 500g\n4. Kalamata olives 1 cup sliced\n5. Garlic 6-8 cloves whole\n6. Olive oil\n7. Fresh basil\n8. Red pepper flakes\n9. Spinach 2 cups (optional)",
+      "instructions": "1. Preheat oven 200°C.\n2. Place feta block in center of baking dish.\n3. Arrange cherry tomatoes and garlic cloves around feta.\n4. Add olives around dish.\n5. Drizzle everything generously with olive oil.\n6. Sprinkle with salt, pepper, red pepper flakes.\n7. Bake 30-35 min until tomatoes burst and feta soft.\n8. Meanwhile cook pasta according to package. Reserve 1 cup pasta water. Drain.\n9. Remove dish from oven.\n10. Add spinach if using, let wilt from heat.\n11. Mash feta and tomatoes together with fork.\n12. Add cooked pasta, toss to coat.\n13. Add pasta water if needed for creamier sauce.\n14. Tear fresh basil on top.\n15. Serve immediately with extra olive oil if desired.",
+      "image": "Image of a baking dish with a block of feta cheese surrounded by cherry tomatoes, whole garlic cloves, and Kalamata olives, all roasted until golden, ready to be mixed with cooked pasta."
+    },
+    {
+      "id": "mediterranean-tuna-white",
+      "dish_name": "Mediterranean Tuna & White Bean Bake",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 25,
+        "total_time": 40
+      },
+      "nutrition": {
+        "kcal": 450,
+        "protein_g": 25,
+        "highlights": "Excellent source of **protein** (tuna) and **fiber** (beans). Provides Omega-3s (tuna) and healthy fats (olives, olive oil). A quick, nutritious, and hearty one-pan meal."
+      },
+      "ingredients": "1. Cannellini beans 2 cans\n2. Tuna 2 cans\n3. Cherry tomatoes 400g halved\n4. Red capsicum 1 diced\n5. Red onion 1 diced\n6. Garlic 4 cloves minced\n7. Olives 1/2 cup sliced (optional)\n8. Mozzarella or feta cheese 150g\n9. Fresh parsley\n10. Fresh basil\n11. Olive oil\n12. Italian herbs\n13. Rice or crusty bread for serving",
+      "instructions": "1. Preheat oven 180°C.\n2. Heat olive oil in oven-safe skillet or pan.\n3. Sauté onion and capsicum 5 min until soft.\n4. Add garlic, cook 1 min.\n5. Add beans (drained and rinsed), tomatoes, drained tuna (broken into chunks), olives, Italian herbs.\n6. Stir gently to combine.\n7. Season with salt and pepper.\n8. Simmer 5 min.\n9. Top with cheese (torn mozzarella or crumbled feta).\n10. Transfer to oven.\n11. Bake 15-20 min until cheese melted and golden.\n12. Garnish with fresh parsley and basil.\n13. Serve with rice or crusty bread.",
+      "image": "Image of a rustic Mediterranean bake in a skillet or casserole dish, showing tuna chunks, white beans, halved cherry tomatoes, and olives, topped with melted, golden mozzarella or feta cheese."
+    }
+  ]
+}
