@@ -40,7 +40,7 @@ class AppTheme {
         elevation: 0,
         centerTitle: true,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: darkBgSecondary,
         elevation: 2,
         shape: RoundedRectangleBorder(

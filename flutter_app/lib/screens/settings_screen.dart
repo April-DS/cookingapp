@@ -18,6 +18,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final ImportService _importService = ImportService();
   final TextEditingController _jsonController = TextEditingController();
 
+  @override
+  void dispose() {
+    _jsonController.dispose();
+    super.dispose();
+  }
+
+  // Show import JSON dialog
   void _showImportJsonDialog() {
     _jsonController.clear();
     showDialog(
@@ -42,13 +49,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               SizedBox(height: AppConstants.smallPadding),
-              TextField(
-                controller: _jsonController,
-                style: TextStyle(color: AppTheme.textLight, fontSize: 12),
-                maxLines: 8,
-                decoration: InputDecoration(
-                  hintText: '{"recipes": [...]}',
-                  border: OutlineInputBorder(),
+              Container(
+                constraints: BoxConstraints(
+                  maxHeight: 300,
+                ),
+                child: TextField(
+                  controller: _jsonController,
+                  style: TextStyle(color: AppTheme.textLight, fontSize: 12),
+                  maxLines: null,
+                  expands: true,
+                  decoration: InputDecoration(
+                    hintText: '{"recipes": [...]}',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(12),
+                  ),
                 ),
               ),
               SizedBox(height: AppConstants.defaultPadding),
@@ -63,35 +77,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SizedBox(width: AppConstants.smallPadding),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () async {
-                        if (_jsonController.text.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Please paste JSON')),
-                          );
-                          return;
-                        }
-
-                        try {
-                          await _importService
-                              .importFromJsonText(_jsonController.text);
-                          Navigator.pop(context);
-                          Provider.of<AppState>(context, listen: false)
-                              .loadAllRecipes();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Recipes imported successfully!'),
-                              backgroundColor: AppTheme.success,
-                            ),
-                          );
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Import failed: $e'),
-                              backgroundColor: AppTheme.error,
-                            ),
-                          );
-                        }
-                      },
+                      onPressed: () => _importRecipes(),
                       child: Text('Import'),
                     ),
                   ),
@@ -104,27 +90,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _showImportFileDialog() async {
+  // Handle JSON import
+  Future<void> _importRecipes() async {
+    if (_jsonController.text.isEmpty) {
+      _showSnackBar('Please paste JSON', isError: true);
+      return;
+    }
+
     try {
-      final recipes = await _importService.importFromFile();
+      await _importService.importFromJsonText(_jsonController.text);
       Navigator.pop(context);
       Provider.of<AppState>(context, listen: false).loadAllRecipes();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${recipes.length} recipes imported!'),
-          backgroundColor: AppTheme.success,
-        ),
-      );
+      _showSnackBar('Recipes imported successfully!');
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Import failed: $e'),
-          backgroundColor: AppTheme.error,
-        ),
-      );
+      _showSnackBar('Import failed: $e', isError: true);
     }
   }
 
+  // Show add recipe dialog
   void _showAddRecipeDialog() {
     final idController = TextEditingController();
     final nameController = TextEditingController();
@@ -184,30 +167,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          final recipe = Recipe(
-                            id: idController.text,
-                            dishName: nameController.text,
-                            prepTime: 0,
-                            cookTime: 0,
-                            totalTime: 0,
-                            kcal: int.tryParse(kcalController.text) ?? 0,
-                            proteinG:
-                                double.tryParse(proteinController.text) ?? 0,
-                            highlights: '',
-                            ingredients: '',
-                            instructions: '',
-                            imageDescription: '',
-                            imageFilename: '',
+                          _addNewRecipe(
+                            idController,
+                            nameController,
+                            kcalController,
+                            proteinController,
                           );
-                          Provider.of<AppState>(context, listen: false)
-                              .addRecipe(recipe);
                           Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Recipe added!'),
-                              backgroundColor: AppTheme.success,
-                            ),
-                          );
                         },
                         child: Text('Add'),
                       ),
@@ -222,10 +188,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    _jsonController.dispose();
-    super.dispose();
+  // Add new recipe to database
+  Future<void> _addNewRecipe(
+    TextEditingController idController,
+    TextEditingController nameController,
+    TextEditingController kcalController,
+    TextEditingController proteinController,
+  ) async {
+    final recipe = Recipe(
+      id: idController.text,
+      dishName: nameController.text,
+      prepTime: 0,
+      cookTime: 0,
+      totalTime: 0,
+      kcal: int.tryParse(kcalController.text) ?? 0,
+      proteinG: double.tryParse(proteinController.text) ?? 0,
+      highlights: '',
+      ingredients: '',
+      instructions: '',
+      imageDescription: '',
+      imageFilename: '',
+    );
+
+    await Provider.of<AppState>(context, listen: false).addRecipe(recipe);
+    _showSnackBar('Recipe added!');
+  }
+
+  // Show snackbar
+  void _showSnackBar(String message, {bool isError = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? AppTheme.error : AppTheme.success,
+      ),
+    );
   }
 
   @override
@@ -313,14 +309,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 children: [
                   ElevatedButton.icon(
                     icon: Icon(Icons.upload),
-                    label: Text('Import JSON (Paste)'),
+                    label: Text('Import JSON'),
                     onPressed: _showImportJsonDialog,
-                  ),
-                  SizedBox(height: AppConstants.smallPadding),
-                  ElevatedButton.icon(
-                    icon: Icon(Icons.file_open),
-                    label: Text('Import JSON (File)'),
-                    onPressed: _showImportFileDialog,
                   ),
                   SizedBox(height: AppConstants.smallPadding),
                   OutlinedButton.icon(
@@ -358,7 +348,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             children: [
                               Text(
                                 'Total Recipes',
-                                style: Theme.of(context).textTheme.bodyMedium,
+                                style:
+                                    Theme.of(context).textTheme.bodyMedium,
                               ),
                               Text(
                                 '${appState.allRecipes.length}',
@@ -370,40 +361,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     ),
                               ),
                             ],
-                          ),
-                          ElevatedButton.icon(
-                            icon: Icon(Icons.delete),
-                            label: Text('Delete'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppTheme.error,
-                            ),
-                            onPressed: () {
-                              // Show delete confirmation
-                              showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  backgroundColor:
-                                      AppTheme.darkBgSecondary,
-                                  title: Text('Delete All Recipes?'),
-                                  content: Text(
-                                      'This action cannot be undone.'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(context),
-                                      child: Text('Cancel'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        // Delete implementation
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text('Delete'),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
                           ),
                         ],
                       ),

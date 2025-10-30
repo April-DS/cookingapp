@@ -193,51 +193,56 @@ class _SwipeScreenState extends State<SwipeScreen> {
               // Action buttons
               Padding(
                 padding: EdgeInsets.all(AppConstants.defaultPadding),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                child: Column(
                   children: [
-                    // Undo button
-                    ElevatedButton.icon(
-                      icon: Icon(Icons.undo),
-                      label: Text('Undo'),
-                      onPressed: appState.swipeHistory.isEmpty
-                          ? null
-                          : () => _handleUndo(appState),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: appState.swipeHistory.isEmpty
-                            ? AppTheme.textMuted.withOpacity(0.5)
-                            : AppTheme.pastelBlush,
-                        foregroundColor: AppTheme.darkBg,
-                        disabledForegroundColor: AppTheme.textMuted,
-                      ),
+                    Text(
+                      'Actions',
+                      style: Theme.of(context).textTheme.labelLarge,
                     ),
-
-                    // Filter button
-                    OutlinedButton.icon(
-                      icon: Icon(Icons.filter_list),
-                      label: Text('Filter'),
-                      onPressed: () => _showFilterModal(appState),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: _hasActiveFilters(appState)
-                            ? AppTheme.pastelPeach
-                            : AppTheme.pastelMint,
-                        side: BorderSide(
-                          color: _hasActiveFilters(appState)
-                              ? AppTheme.pastelPeach
-                              : AppTheme.pastelMint,
+                    SizedBox(height: AppConstants.smallPadding),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        // Filter button (primary)
+                        ElevatedButton.icon(
+                          icon: Icon(Icons.filter_list),
+                          label: Text('Filter'),
+                          onPressed: () => _showFilterModal(appState),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _hasActiveFilters(appState)
+                                ? AppTheme.pastelPeach
+                                : AppTheme.pastelMint,
+                            foregroundColor: AppTheme.darkBg,
+                          ),
                         ),
-                      ),
-                    ),
 
-                    // Skip button (for quick skipping)
-                    ElevatedButton.icon(
-                      icon: Icon(Icons.close),
-                      label: Text('Skip'),
-                      onPressed: () => _handleSwipeLeft(appState),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.pastelLavender,
-                        foregroundColor: AppTheme.darkBg,
-                      ),
+                        // Undo button
+                        ElevatedButton.icon(
+                          icon: Icon(Icons.undo),
+                          label: Text('Undo'),
+                          onPressed: appState.swipeHistory.isEmpty
+                              ? null
+                              : () => _handleUndo(appState),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: appState.swipeHistory.isEmpty
+                                ? AppTheme.textMuted.withOpacity(0.5)
+                                : AppTheme.pastelBlush,
+                            foregroundColor: AppTheme.darkBg,
+                            disabledForegroundColor: AppTheme.textMuted,
+                          ),
+                        ),
+
+                        // Skip button
+                        ElevatedButton.icon(
+                          icon: Icon(Icons.close),
+                          label: Text('Skip'),
+                          onPressed: () => _handleSwipeLeft(appState),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.pastelLavender,
+                            foregroundColor: AppTheme.darkBg,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

@@ -29,22 +29,22 @@ class Recipe {
 
   // Convert from JSON
   factory Recipe.fromJson(Map<String, dynamic> json) {
-    final cookingTime = json['cooking_time'] as Map<String, dynamic>;
-    final nutrition = json['nutrition'] as Map<String, dynamic>;
+    final cookingTime = json['cooking_time'] as Map<String, dynamic>? ?? {};
+    final nutrition = json['nutrition'] as Map<String, dynamic>? ?? {};
 
     return Recipe(
       id: json['id'] ?? '',
       dishName: json['dish_name'] ?? '',
-      prepTime: cookingTime['prep_time'] ?? 0,
-      cookTime: cookingTime['cook_time'] ?? 0,
-      totalTime: cookingTime['total_time'] ?? 0,
-      kcal: nutrition['kcal'] ?? 0,
-      proteinG: (nutrition['protein_g'] ?? 0).toDouble(),
-      highlights: nutrition['highlights'] ?? '',
-      ingredients: json['ingredients'] ?? '',
-      instructions: json['instructions'] ?? '',
-      imageDescription: json['image_description'] ?? '',
-      imageFilename: json['image_filename'] ?? '',
+      prepTime: (cookingTime['prep_time'] as int?) ?? 0,
+      cookTime: (cookingTime['cook_time'] as int?) ?? 0,
+      totalTime: (cookingTime['total_time'] as int?) ?? 0,
+      kcal: (nutrition['kcal'] as int?) ?? 0,
+      proteinG: (nutrition['protein_g'] as num?)?.toDouble() ?? 0.0,
+      highlights: nutrition['highlights'] as String? ?? '',
+      ingredients: json['ingredients'] as String? ?? '',
+      instructions: json['instructions'] as String? ?? '',
+      imageDescription: json['image_description'] as String? ?? '',
+      imageFilename: json['image_filename'] as String? ?? '',
     );
   }
 
