@@ -26,4 +26,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/placeholder.png
+    - assets/images/
+    - assets/recipe_images/
+    - assets/dishes_json.json

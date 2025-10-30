@@ -146,7 +146,7 @@ class AppState extends ChangeNotifier {
     _applyFilters();
   }
 
-  // Set target dish count
+  // Set target dish count (don't clear history)
   void setTargetCount(int count) {
     targetDishCount = count;
     notifyListeners();

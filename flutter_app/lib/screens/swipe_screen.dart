@@ -22,7 +22,8 @@ class _SwipeScreenState extends State<SwipeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<AppState>(context, listen: false).startNewSession();
+      final appState = Provider.of<AppState>(context, listen: false);
+      appState.startNewSession();
     });
   }
 

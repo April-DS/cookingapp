@@ -24,89 +24,28 @@ class RecipeCard extends StatefulWidget {
   State<RecipeCard> createState() => _RecipeCardState();
 }
 
-class _RecipeCardState extends State<RecipeCard>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  Offset _dragOffset = Offset.zero;
-  bool _isDragging = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: Duration(milliseconds: 300),
-      vsync: this,
-    );
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
+class _RecipeCardState extends State<RecipeCard> {
+  double _dragOffset = 0;
 
   void _handleDragUpdate(DragUpdateDetails details) {
     setState(() {
-      _dragOffset = Offset(
-        _dragOffset.dx + details.delta.dx,
-        0, // Keep Y at 0 for stable horizontal swipe
-      );
-      _isDragging = true;
+      _dragOffset += details.delta.dx;
     });
   }
 
   void _handleDragEnd(DragEndDetails details) {
-    const swipeThreshold = 100.0;
-    const velocityThreshold = 500.0;
+    const swipeThreshold = 50.0;
 
-    final velocity = details.primaryVelocity ?? 0;
-    final distance = _dragOffset.dx;
-
-    if (distance.abs() > swipeThreshold ||
-        velocity.abs() > velocityThreshold) {
-      if (distance > 0 || velocity > velocityThreshold) {
-        // Swipe right - like
-        _animateExit(true);
-      } else {
-        // Swipe left - skip
-        _animateExit(false);
-      }
-    } else {
-      // Reset position
-      setState(() {
-        _dragOffset = Offset.zero;
-        _isDragging = false;
-      });
+    if (_dragOffset > swipeThreshold) {
+      // Swipe right - like
+      widget.onSwipeRight();
+    } else if (_dragOffset < -swipeThreshold) {
+      // Swipe left - skip
+      widget.onSwipeLeft();
     }
-  }
 
-  void _animateExit(bool isRight) {
-    final endOffset = isRight ? 500.0 : -500.0;
-    final animation = Tween<Offset>(
-      begin: _dragOffset,
-      end: Offset(endOffset, 0),
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
-
-    _animationController.addListener(() {
-      setState(() {
-        _dragOffset = animation.value;
-      });
-    });
-
-    _animationController.forward().then((_) {
-      if (isRight) {
-        widget.onSwipeRight();
-      } else {
-        widget.onSwipeLeft();
-      }
-      // Reset everything
-      _dragOffset = Offset.zero;
-      _isDragging = false;
-      _animationController.reset();
-    });
+    // Reset
+    setState(() => _dragOffset = 0);
   }
 
   @override
@@ -114,17 +53,14 @@ class _RecipeCardState extends State<RecipeCard>
     return GestureDetector(
       onHorizontalDragUpdate: _handleDragUpdate,
       onHorizontalDragEnd: _handleDragEnd,
-      child: Opacity(
-        opacity: _isDragging ? 0.9 : 1.0,
-        child: Transform.translate(
-          offset: _dragOffset,
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(AppConstants.cardCornerRadius),
-            ),
-            child: _buildCardContent(context),
+      child: Transform.translate(
+        offset: Offset(_dragOffset, 0),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(AppConstants.cardCornerRadius),
           ),
+          child: _buildCardContent(context),
         ),
       ),
     );
@@ -143,16 +79,8 @@ class _RecipeCardState extends State<RecipeCard>
       ),
       child: Column(
         children: [
-          // Image section
-          Expanded(
-            flex: 3,
-            child: _buildImageSection(),
-          ),
-          // Info section
-          Expanded(
-            flex: 2,
-            child: _buildInfoSection(context),
-          ),
+          Expanded(flex: 3, child: _buildImageSection()),
+          Expanded(flex: 2, child: _buildInfoSection(context)),
         ],
       ),
     );
@@ -167,9 +95,7 @@ class _RecipeCardState extends State<RecipeCard>
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // Image or placeholder
           _buildImage(),
-          // Gradient overlay
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -185,16 +111,17 @@ class _RecipeCardState extends State<RecipeCard>
   }
 
   Widget _buildImage() {
-    try {
-      return Image.asset(
-        'assets/recipe_images/${widget.recipe.imageFilename}',
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) =>
-            _buildPlaceholder(),
-      );
-    } catch (_) {
-      return _buildPlaceholder();
-    }
+    final imagePath =
+        'assets/recipe_images/${widget.recipe.imageFilename}';
+    
+    return Image.asset(
+      imagePath,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        print('Image error: $imagePath - $error');
+        return _buildPlaceholder();
+      },
+    );
   }
 
   Widget _buildPlaceholder() {
@@ -207,12 +134,15 @@ class _RecipeCardState extends State<RecipeCard>
         ),
       ),
       child: Center(
-        child: Text(
-          widget.recipe.dishName,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                color: AppTheme.darkBg,
-              ),
+        child: Padding(
+          padding: EdgeInsets.all(AppConstants.defaultPadding),
+          child: Text(
+            widget.recipe.dishName,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                  color: AppTheme.darkBg,
+                ),
+          ),
         ),
       ),
     );
@@ -221,8 +151,7 @@ class _RecipeCardState extends State<RecipeCard>
   Widget _buildInfoSection(BuildContext context) {
     final ingredients =
         widget.recipe.ingredients.parseIngredients();
-    final ingredientPreview =
-        ingredients.take(2).join(', ');
+    final ingredientPreview = ingredients.take(3).join(', ');
 
     return Padding(
       padding: EdgeInsets.all(AppConstants.defaultPadding),
@@ -230,7 +159,6 @@ class _RecipeCardState extends State<RecipeCard>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Title and time
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -272,7 +200,6 @@ class _RecipeCardState extends State<RecipeCard>
                 ),
             ],
           ),
-          // Nutrition and ingredients
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -286,7 +213,7 @@ class _RecipeCardState extends State<RecipeCard>
               Text(
                 ingredientPreview,
                 style: Theme.of(context).textTheme.bodySmall,
-                maxLines: 1,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
             ],

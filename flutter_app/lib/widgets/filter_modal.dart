@@ -80,7 +80,7 @@ class _FilterModalState extends State<FilterModal> {
               context,
               icon: '⚡',
               title: 'Fast',
-              subtitle: '≤ 25 min',
+              subtitle: '≤ 30 min',
               value: filterFast,
               onChanged: (value) {
                 setState(() {

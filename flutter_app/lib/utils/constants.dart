@@ -21,7 +21,7 @@ class AppConstants {
 
   // Filter thresholds
   static const int lightCalorieThreshold = 500;
-  static const int fastCookTimeThreshold = 25;
+  static const int fastCookTimeThreshold = 30;
   static const int longCookTimeThreshold = 60;
 
   // UI constants

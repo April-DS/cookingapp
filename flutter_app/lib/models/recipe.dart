@@ -71,8 +71,8 @@ class Recipe {
   // Check if "light" (<=500 kcal)
   bool get isLight => kcal <= 500;
 
-  // Check if "fast" (<=25 min)
-  bool get isFast => totalTime <= 25;
+  // Check if "fast" (<=30 min)
+  bool get isFast => totalTime <= 30;
 
   // Check if "long" (>=60 min)
   bool get isLong => totalTime >= 60;
