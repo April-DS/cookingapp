@@ -27,8 +27,6 @@ class RecipeCard extends StatefulWidget {
 class _RecipeCardState extends State<RecipeCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
-  late Animation<Offset> _offsetAnimation;
-  late Animation<double> _opacityAnimation;
   Offset _dragOffset = Offset.zero;
   bool _isDragging = false;
 
@@ -51,7 +49,7 @@ class _RecipeCardState extends State<RecipeCard>
     setState(() {
       _dragOffset = Offset(
         _dragOffset.dx + details.delta.dx,
-        _dragOffset.dy + details.delta.dy,
+        0, // Keep Y at 0 for stable horizontal swipe
       );
       _isDragging = true;
     });
@@ -83,14 +81,20 @@ class _RecipeCardState extends State<RecipeCard>
   }
 
   void _animateExit(bool isRight) {
-    _offsetAnimation = Tween<Offset>(
+    final endOffset = isRight ? 500.0 : -500.0;
+    final animation = Tween<Offset>(
       begin: _dragOffset,
-      end: Offset(isRight ? 500 : -500, 0),
-    ).animate(_animationController);
+      end: Offset(endOffset, 0),
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
 
-    _opacityAnimation = Tween<double>(begin: 1, end: 0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
-    );
+    _animationController.addListener(() {
+      setState(() {
+        _dragOffset = animation.value;
+      });
+    });
 
     _animationController.forward().then((_) {
       if (isRight) {
@@ -98,6 +102,10 @@ class _RecipeCardState extends State<RecipeCard>
       } else {
         widget.onSwipeLeft();
       }
+      // Reset everything
+      _dragOffset = Offset.zero;
+      _isDragging = false;
+      _animationController.reset();
     });
   }
 
@@ -106,32 +114,18 @@ class _RecipeCardState extends State<RecipeCard>
     return GestureDetector(
       onHorizontalDragUpdate: _handleDragUpdate,
       onHorizontalDragEnd: _handleDragEnd,
-      child: AnimatedBuilder(
-        animation: _animationController,
-        builder: (context, child) {
-          return Opacity(
-            opacity: _isDragging && !_animationController.isAnimating
-                ? 0.8
-                : (_animationController.isAnimating
-                    ? _opacityAnimation.value
-                    : 1.0),
-            child: Transform.translate(
-              offset: _animationController.isAnimating
-                  ? _offsetAnimation.value
-                  : _dragOffset,
-              child: Transform.rotate(
-                angle: _dragOffset.dx * 0.01,
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(AppConstants.cardCornerRadius),
-                  ),
-                  child: _buildCardContent(context),
-                ),
-              ),
+      child: Opacity(
+        opacity: _isDragging ? 0.9 : 1.0,
+        child: Transform.translate(
+          offset: _dragOffset,
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius:
+                  BorderRadius.circular(AppConstants.cardCornerRadius),
             ),
-          );
-        },
+            child: _buildCardContent(context),
+          ),
+        ),
       ),
     );
   }

@@ -47,7 +47,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
   }
 
   void _handleUndo(AppState appState) {
-    if (appState.swipeHistory.isNotEmpty) {
+    if (appState.swipeHistory.isNotEmpty && _currentIndex > 0) {
       appState.undoLastSwipe();
       setState(() => _currentIndex--);
     }

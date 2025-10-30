@@ -90,7 +90,27 @@ class DatabaseService {
   Future<List<Recipe>> getAllRecipes() async {
     final db = await database;
     final maps = await db.query('recipes');
-    return [for (var m in maps) Recipe.fromJson(m)];
+    return [
+      for (var m in maps)
+        Recipe.fromJson({
+          'id': m['id'] ?? '',
+          'dish_name': m['dish_name'] ?? '',
+          'cooking_time': {
+            'prep_time': m['prep_time'] ?? 0,
+            'cook_time': m['cook_time'] ?? 0,
+            'total_time': m['total_time'] ?? 0,
+          },
+          'nutrition': {
+            'kcal': m['kcal'] ?? 0,
+            'protein_g': m['protein_g'] ?? 0,
+            'highlights': m['highlights'] ?? '',
+          },
+          'ingredients': m['ingredients'] ?? '',
+          'instructions': m['instructions'] ?? '',
+          'image_description': m['image_description'] ?? '',
+          'image_filename': m['image_filename'] ?? '',
+        })
+    ];
   }
 
   Future<Recipe?> getRecipeById(String id) async {
