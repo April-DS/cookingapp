@@ -46,11 +46,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     // Aggregate all ingredients
     for (final list in ingredientLists) {
       for (final ingredient in list) {
-        if (_ingredients.containsKey(ingredient)) {
-          // Already exists, just keep it
-          _ingredients[ingredient] = _ingredients[ingredient]!;
-        } else {
-          _ingredients[ingredient] = ingredient;
+        if (!_ingredients.containsKey(ingredient)) {
+          _ingredients[ingredient] = ''; // Empty quantity by default
         }
       }
     }
@@ -93,7 +90,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 children: [
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        controller.dispose();
+                        Navigator.pop(context);
+                      },
                       child: Text('Cancel'),
                     ),
                   ),
@@ -106,6 +106,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                             _ingredients[controller.text] = '';
                             _checkedItems[controller.text] = false;
                           });
+                          controller.dispose();
                           Navigator.pop(context);
                         }
                       },
@@ -119,7 +120,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         ),
       ),
     );
-    controller.dispose();
+    // Don't dispose controller here; dialog callbacks dispose when appropriate.
   }
 
   void _showSaveSessionDialog() {
@@ -163,9 +164,19 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        print('DEBUG: Saving with ${_ingredients.length} ingredients');
-                        Provider.of<AppState>(context, listen: false)
-                            .saveSession(_sessionNameController.text, _ingredients);
+                        // Ensure we have a checked state for every ingredient (default false)
+                        final fullChecked = Map<String, bool>.fromEntries(
+                          _ingredients.keys.map((k) => MapEntry(k, _checkedItems[k] ?? false)),
+                        );
+
+                        print('DEBUG: Saving with ${_ingredients.length} ingredients and ${fullChecked.values.where((v) => v).length} checked');
+                        Provider.of<AppState>(context, listen: false).saveSession(
+                          _sessionNameController.text,
+                          _ingredients,
+                          ingredientChecked: fullChecked,
+                          ingredientQuantities: _ingredients,
+                        );
+
                         Navigator.pop(context);
                         // Go back to sessions history
                         Navigator.pop(context);

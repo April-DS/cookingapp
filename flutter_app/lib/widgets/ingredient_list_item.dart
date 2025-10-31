@@ -35,62 +35,65 @@ class _IngredientListItemState extends State<IngredientListItem> {
     super.dispose();
   }
 
-  void _showEditDialog() {
+  Future<void> _showEditDialog() async {
     final controller = TextEditingController(text: widget.quantity);
     
-    showDialog(
-      context: context,
-      builder: (dialogContext) => Dialog(
-        backgroundColor: AppTheme.darkBgSecondary,
-        child: Padding(
-          padding: EdgeInsets.all(AppConstants.defaultPadding),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Edit Quantity',
-                style: Theme.of(dialogContext).textTheme.displayMedium,
-              ),
-              SizedBox(height: AppConstants.defaultPadding),
-              TextField(
-                controller: controller,
-                style: TextStyle(color: AppTheme.textLight),
-                decoration: InputDecoration(
-                  labelText: widget.ingredient,
-                  hintText: 'e.g., 2 cups, 500ml',
+    await showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (dialogContext) => Dialog(
+          backgroundColor: AppTheme.darkBgSecondary,
+          child: Padding(
+            padding: EdgeInsets.all(AppConstants.defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Edit Quantity',
+                  style: Theme.of(dialogContext).textTheme.displayMedium,
                 ),
-                autofocus: true,
-              ),
-              SizedBox(height: AppConstants.defaultPadding),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.pop(dialogContext);
-                        controller.dispose();
-                      },
-                      child: Text('Cancel'),
-                    ),
+                SizedBox(height: AppConstants.defaultPadding),
+                TextField(
+                  controller: controller,
+                  style: TextStyle(color: AppTheme.textLight),
+                  decoration: InputDecoration(
+                    labelText: widget.ingredient,
+                    hintText: 'e.g., 2 cups, 500ml',
                   ),
-                  SizedBox(width: AppConstants.smallPadding),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(dialogContext);
-                        widget.onEdit(controller.text);
-                        controller.dispose();
-                      },
-                      child: Text('Save'),
+                  autofocus: true,
+                ),
+                SizedBox(height: AppConstants.defaultPadding),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.pop(dialogContext);
+                        },
+                        child: const Text('Cancel'),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    SizedBox(width: AppConstants.smallPadding),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          final text = controller.text;
+                          Navigator.pop(dialogContext);
+                          widget.onEdit(text);
+                        },
+                        child: const Text('Save'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    } finally {
+      controller.dispose();
+    }
   }
 
   @override
@@ -103,9 +106,10 @@ class _IngredientListItemState extends State<IngredientListItem> {
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: AppConstants.defaultPadding),
         color: AppTheme.error.withOpacity(0.8),
-        child: Icon(Icons.delete, color: Colors.white),
+        child: const Icon(Icons.delete, color: Colors.white),
       ),
       child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 4),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppConstants.buttonCornerRadius),
         ),
@@ -115,49 +119,64 @@ class _IngredientListItemState extends State<IngredientListItem> {
             vertical: AppConstants.smallPadding,
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Checkbox
-              Checkbox(
-                value: widget.checked,
-                onChanged: (value) => widget.onCheckChanged(value ?? false),
-              ),
-              SizedBox(width: AppConstants.smallPadding),
-
-              // Ingredient and quantity
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.ingredient,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            decoration: widget.checked
-                                ? TextDecoration.lineThrough
-                                : TextDecoration.none,
-                            color: widget.checked
-                                ? AppTheme.textMuted
-                                : AppTheme.textLight,
-                          ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      widget.quantity,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppTheme.pastelPeach,
-                          ),
-                    ),
-                  ],
+              Transform.scale(
+                scale: 1.2,
+                child: Checkbox(
+                  value: widget.checked,
+                  onChanged: (value) => widget.onCheckChanged(value ?? false),
                 ),
               ),
               SizedBox(width: AppConstants.smallPadding),
-
-              // Edit button
-              IconButton(
-                icon: Icon(Icons.edit, size: 18),
-                onPressed: _showEditDialog,
-                constraints: BoxConstraints(minWidth: 32, minHeight: 32),
-                padding: EdgeInsets.zero,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.ingredient,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              decoration: widget.checked
+                                  ? TextDecoration.lineThrough
+                                  : TextDecoration.none,
+                              color: widget.checked
+                                  ? AppTheme.textMuted
+                                  : AppTheme.textLight,
+                              fontSize: 16,
+                              height: 1.3,
+                            ),
+                      ),
+                      if (widget.quantity.isNotEmpty) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          widget.quantity,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: AppTheme.pastelPeach,
+                              ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: _showEditDialog,
+                    tooltip: 'Edit quantity',
+                    constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete_outline, color: AppTheme.error),
+                    onPressed: widget.onDelete,
+                    tooltip: 'Remove item',
+                    constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                  ),
+                ],
               ),
             ],
           ),

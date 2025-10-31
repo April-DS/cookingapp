@@ -4,7 +4,7 @@ class Session {
   final DateTime dateCreated;
   final int targetCount;
   final List<String> recipeIds;
-  final Map<String, int> ingredientQuantities;
+  final Map<String, String> ingredientQuantities;
   final Map<String, bool> ingredientChecked;
   final Map<String, bool> recipesCooked;
   final Map<String, String> shoppingList;
@@ -28,7 +28,7 @@ class Session {
     'date_created': dateCreated.toIso8601String(),
     'target_count': targetCount,
     'recipe_ids': recipeIds.join(','),
-    'ingredient_quantities': ingredientQuantities,
+  'ingredient_quantities': ingredientQuantities,
     'ingredient_checked': ingredientChecked,
     'recipes_cooked': recipesCooked,
     'shopping_list': shoppingList,
@@ -42,7 +42,7 @@ class Session {
       dateCreated: DateTime.parse(json['date_created']),
       targetCount: json['target_count'] ?? 5,
       recipeIds: (json['recipe_ids'] as String).split(',').where((id) => id.isNotEmpty).toList(),
-      ingredientQuantities: Map<String, int>.from(json['ingredient_quantities'] ?? {}),
+  ingredientQuantities: Map<String, String>.from(json['ingredient_quantities']?.map((k, v) => MapEntry(k.toString(), v.toString())) ?? {}),
       ingredientChecked: Map<String, bool>.from(json['ingredient_checked'] ?? {}),
       recipesCooked: Map<String, bool>.from(json['recipes_cooked'] ?? {}),
       shoppingList: Map<String, String>.from(json['shopping_list'] ?? {}),
@@ -55,7 +55,7 @@ class Session {
     DateTime? dateCreated,
     int? targetCount,
     List<String>? recipeIds,
-    Map<String, int>? ingredientQuantities,
+    Map<String, String>? ingredientQuantities,
     Map<String, bool>? ingredientChecked,
     Map<String, bool>? recipesCooked,
     Map<String, String>? shoppingList,

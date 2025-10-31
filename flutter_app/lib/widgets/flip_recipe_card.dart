@@ -219,17 +219,28 @@ class _FlipRecipeCardState extends State<FlipRecipeCard>
           SizedBox(height: 6),
           Expanded(
             child: SingleChildScrollView(
-              child: Text(
-                ingredients.isNotEmpty 
-                    ? ingredients.join(', ')
-                    : 'No ingredients',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: widget.isCooked
-                          ? AppTheme.textMuted
-                          : AppTheme.textLight,
+              child: ingredients.isNotEmpty
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (var ing in ingredients)
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 6),
+                            child: Text(
+                              '• $ing',
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: widget.isCooked ? AppTheme.textMuted : AppTheme.textLight,
+                                  ),
+                            ),
+                          ),
+                      ],
+                    )
+                  : Text(
+                      'No ingredients',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: widget.isCooked ? AppTheme.textMuted : AppTheme.textLight,
+                          ),
                     ),
-                maxLines: null,
-              ),
             ),
           ),
         ],

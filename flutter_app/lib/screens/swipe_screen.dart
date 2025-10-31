@@ -33,6 +33,14 @@ class _SwipeScreenState extends State<SwipeScreen> {
 
       if (appState.sessionComplete) {
         _showSessionCompleteDialog(appState);
+      } else {
+        setState(() {
+          if (_currentIndex < appState.filteredRecipes.length - 1) {
+            _currentIndex++;
+          } else {
+            _currentIndex = appState.filteredRecipes.length - 1;
+          }
+        });
       }
     }
   }
@@ -40,22 +48,30 @@ class _SwipeScreenState extends State<SwipeScreen> {
   void _handleSwipeLeft(AppState appState) {
     if (_currentIndex < appState.filteredRecipes.length) {
       appState.skipRecipe(appState.filteredRecipes[_currentIndex]);
+      setState(() {
+        if (_currentIndex < appState.filteredRecipes.length - 1) {
+          _currentIndex++;
+        } else {
+          _currentIndex = appState.filteredRecipes.length - 1;
+        }
+      });
     }
   }
 
   void _handleUndo(AppState appState) {
     if (appState.swipeHistory.isEmpty) return;
-    
-    final wasLike = appState.swipeWasLike.isNotEmpty 
-        ? appState.swipeWasLike.last 
-        : false;
-    
-    appState.undoLastSwipe();
-    
+
+    final wasLike = appState.undoLastSwipe();
+
     if (wasLike) {
       if (_currentIndex > 0) {
         setState(() => _currentIndex--);
       }
+    } else {
+      // For a skipped recipe being restored, keep the index so the restored
+      // card appears next (we insert it at position 0 in AppState), so set
+      // index to 0 to show the restored recipe.
+      setState(() => _currentIndex = 0);
     }
   }
 

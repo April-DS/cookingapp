@@ -68,6 +68,7 @@ class AppState extends ChangeNotifier {
   // Add recipe to current session (swipe right)
   void likeRecipe(Recipe recipe) {
     swipeHistory.add(recipe);
+    swipeWasLike.add(true);
     currentSessionRecipes.add(recipe);
     filteredRecipes.removeWhere((r) => r.id == recipe.id);
     notifyListeners();
@@ -75,25 +76,35 @@ class AppState extends ChangeNotifier {
 
   // Skip recipe (swipe left)
   void skipRecipe(Recipe recipe) {
+    // Record skip in history so undo can restore it
+    swipeHistory.add(recipe);
+    swipeWasLike.add(false);
     filteredRecipes.removeWhere((r) => r.id == recipe.id);
     notifyListeners();
   }
 
-  // Undo last swipe
-  void undoLastSwipe() {
-    if (swipeHistory.isEmpty) return;
-    
+  // Returns true if the undone swipe was a 'like', false if it was a 'skip' or nothing
+  bool undoLastSwipe() {
+    if (swipeHistory.isEmpty || swipeWasLike.isEmpty) return false;
+
+    final wasLike = swipeWasLike.removeLast();
     final lastRecipe = swipeHistory.removeLast();
-    currentSessionRecipes.removeWhere((r) => r.id == lastRecipe.id);
-    
-    // Re-add to filtered list
-    filteredRecipes.add(lastRecipe);
-    filteredRecipes.sort((a, b) => a.dishName.compareTo(b.dishName));
-    
+
+    if (wasLike) {
+      // Remove from liked recipes
+      currentSessionRecipes.removeWhere((r) => r.id == lastRecipe.id);
+    }
+
+    // Re-add to filtered list if not already present. Insert at front so it appears next.
+    if (!filteredRecipes.any((r) => r.id == lastRecipe.id)) {
+      filteredRecipes.insert(0, lastRecipe);
+    }
+
     notifyListeners();
+    return wasLike;
   }
 
-  // Apply filters
+  // Apply filters and randomize order
   void _applyFilters({Set<String>? excludeIds}) {
     filteredRecipes = allRecipes.where((recipe) {
       // Exclude recipes from previous session
@@ -115,6 +126,9 @@ class AppState extends ChangeNotifier {
 
       return true;
     }).toList();
+
+    // Randomize the order
+    filteredRecipes.shuffle();
 
     notifyListeners();
   }
@@ -154,7 +168,7 @@ class AppState extends ChangeNotifier {
   }
 
   // Save current session with shopping list
-  Future<void> saveSession(String sessionName, Map<String, String> shoppingList) async {
+  Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {Map<String, bool>? ingredientChecked, Map<String, String>? ingredientQuantities}) async {
     print('DEBUG AppState: saveSession called with ${shoppingList.length} items');
     
     // Auto-generate name if empty
@@ -168,6 +182,8 @@ class AppState extends ChangeNotifier {
       targetCount: targetDishCount,
       recipeIds: currentSessionRecipes.map((r) => r.id).toList(),
       shoppingList: shoppingList,
+      ingredientChecked: ingredientChecked ?? {},
+      ingredientQuantities: ingredientQuantities ?? {},
     );
 
     try {
@@ -179,6 +195,12 @@ class AppState extends ChangeNotifier {
       await _dbService.deleteOldSessions(maxSessions: 4);
       
       await loadPastSessions();
+
+      // After saving a session, reset to a new session so the user can't add
+      // more recipes to the saved session. This will exclude the recipes that
+      // were just saved from the next session.
+      startNewSession();
+
       notifyListeners();
     } catch (e) {
       print('DEBUG AppState: Error saving session: $e');
@@ -192,6 +214,13 @@ class AppState extends ChangeNotifier {
   // Delete session
   Future<void> deleteSession(int sessionId) async {
     await _dbService.deleteSession(sessionId);
+    await loadPastSessions();
+    notifyListeners();
+  }
+
+  // Update an existing session (e.g., toggle shopping list checked state)
+  Future<void> updateSession(Session session) async {
+    await _dbService.updateSession(session);
     await loadPastSessions();
     notifyListeners();
   }
