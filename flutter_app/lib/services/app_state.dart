@@ -21,6 +21,7 @@ class AppState extends ChangeNotifier {
 
   // Undo history
   List<Recipe> swipeHistory = [];
+  List<bool> swipeWasLike = []; // Track if swipe was like (true) or skip (false)
 
   // Getters
   int get likedCount => currentSessionRecipes.length;
@@ -152,19 +153,40 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Save current session
-  Future<void> saveSession(String sessionName) async {
+  // Save current session with shopping list
+  Future<void> saveSession(String sessionName, Map<String, String> shoppingList) async {
+    print('DEBUG AppState: saveSession called with ${shoppingList.length} items');
+    
+    // Auto-generate name if empty
+    final finalName = sessionName.isEmpty
+        ? _formatDateTime(DateTime.now())
+        : sessionName;
+
     final session = Session(
-      sessionName: sessionName,
+      sessionName: finalName,
       dateCreated: DateTime.now(),
       targetCount: targetDishCount,
       recipeIds: currentSessionRecipes.map((r) => r.id).toList(),
+      shoppingList: shoppingList,
     );
 
-    final id = await _dbService.insertSession(session);
-    currentSession = session.copyWith(id: id);
-    await loadPastSessions();
-    notifyListeners();
+    try {
+      final id = await _dbService.insertSession(session);
+      print('DEBUG AppState: Session saved with ID: $id');
+      currentSession = session.copyWith(id: id);
+      
+      // Keep only last 4 sessions
+      await _dbService.deleteOldSessions(maxSessions: 4);
+      
+      await loadPastSessions();
+      notifyListeners();
+    } catch (e) {
+      print('DEBUG AppState: Error saving session: $e');
+    }
+  }
+
+  String _formatDateTime(DateTime dt) {
+    return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
   }
 
   // Delete session

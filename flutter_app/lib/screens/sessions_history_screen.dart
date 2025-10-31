@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../models/session.dart';
+import '../models/recipe.dart';
 import '../services/app_state.dart';
 import '../theme/theme.dart';
 import '../utils/constants.dart';
+import '../widgets/flip_recipe_card.dart';
 
 class SessionsHistoryScreen extends StatefulWidget {
   const SessionsHistoryScreen({Key? key}) : super(key: key);
@@ -15,6 +18,13 @@ class SessionsHistoryScreen extends StatefulWidget {
 }
 
 class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
+  late Map<String, bool> cookedRecipes = {};
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,8 +68,7 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
                 padding: EdgeInsets.only(
                   bottom: AppConstants.defaultPadding,
                 ),
-                child:
-                    _buildSessionCard(context, appState, session),
+                child: _buildSessionCard(context, appState, session),
               );
             },
           );
@@ -77,207 +86,106 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
     final formattedDate =
         dateFormatter.format(session.dateCreated);
 
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppConstants.cardCornerRadius),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(AppConstants.defaultPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return ExpansionTile(
+      title: Text(session.sessionName),
+      subtitle: Text(formattedDate),
+      trailing: SizedBox(
+        width: 100,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            // Session name and date
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        session.sessionName,
-                        style: Theme.of(context)
-                            .textTheme
-                            .displayMedium,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+            IconButton(
+              icon: Icon(Icons.shopping_cart, color: AppTheme.pastelMint),
+              onPressed: () {
+                _showShoppingList(context, session, appState);
+              },
+              constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+              padding: EdgeInsets.zero,
+            ),
+            IconButton(
+              icon: Icon(Icons.delete, color: AppTheme.error),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    backgroundColor: AppTheme.darkBgSecondary,
+                    title: Text('Delete Session?'),
+                    content: Text('Delete "${session.sessionName}"?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text('Cancel'),
                       ),
-                      SizedBox(height: AppConstants.smallPadding),
-                      Text(
-                        formattedDate,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall,
+                      TextButton(
+                        onPressed: () {
+                          appState.deleteSession(session.id ?? 0);
+                          Navigator.pop(context);
+                        },
+                        child: Text('Delete'),
                       ),
                     ],
                   ),
-                ),
-                SizedBox(width: AppConstants.defaultPadding),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppTheme.pastelMint,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        '${session.recipeIds.length} recipes',
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelLarge
-                            ?.copyWith(
-                              color: AppTheme.darkBg,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: AppConstants.defaultPadding),
-
-            // Recipes preview
-            FutureBuilder<List<String>>(
-              future: Future.value(session.recipeIds),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return SizedBox(height: 40);
-                }
-
-                final recipes = snapshot.data!;
-                return Wrap(
-                  spacing: AppConstants.smallPadding,
-                  runSpacing: AppConstants.smallPadding,
-                  children: recipes
-                      .take(3)
-                      .map((id) =>
-                          _buildRecipeChip(id))
-                      .toList(),
                 );
               },
-            ),
-            if (session.recipeIds.length > 3)
-              Padding(
-                padding: EdgeInsets.only(
-                  top: AppConstants.smallPadding,
-                ),
-                child: Text(
-                  '+${session.recipeIds.length - 3} more',
-                  style:
-                      Theme.of(context).textTheme.bodySmall,
-                ),
-              ),
-            SizedBox(height: AppConstants.defaultPadding),
-
-            // Action buttons
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    icon: Icon(Icons.visibility),
-                    label: Text('View'),
-                    onPressed: () =>
-                        _showSessionDetails(
-                          context,
-                          appState,
-                          session,
-                        ),
-                  ),
-                ),
-                SizedBox(width: AppConstants.smallPadding),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    icon: Icon(Icons.delete),
-                    label: Text('Delete'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppTheme.error,
-                      side: BorderSide(color: AppTheme.error),
-                    ),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          backgroundColor: AppTheme.darkBgSecondary,
-                          title: Text('Delete Session?'),
-                          content: Text(
-                            'Delete "${session.sessionName}"?',
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () =>
-                                  Navigator.pop(context),
-                              child: Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                appState
-                                    .deleteSession(session.id ?? 0);
-                                Navigator.pop(context);
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(
-                                  SnackBar(
-                                    content: Text('Session deleted'),
-                                    backgroundColor:
-                                        AppTheme.success,
-                                  ),
-                                );
-                              },
-                              child: Text('Delete'),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
+              constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+              padding: EdgeInsets.zero,
             ),
           ],
         ),
       ),
-    );
-  }
+      children: [
+        FutureBuilder<List<Recipe>>(
+          future: appState.getSessionRecipes(session),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            }
 
-  Widget _buildRecipeChip(String recipeId) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 4,
-      ),
-      decoration: BoxDecoration(
-        color: AppTheme.darkBgSecondary,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.pastelLavender),
-      ),
-      child: Text(
-        recipeId.replaceAll('_', ' ').toUpperCase(),
-        style: TextStyle(
-          color: AppTheme.pastelLavender,
-          fontSize: 10,
-          fontWeight: FontWeight.w500,
+            final recipes = snapshot.data!;
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.all(AppConstants.defaultPadding),
+              itemCount: recipes.length,
+              itemBuilder: (context, index) {
+                final recipe = recipes[index];
+                final key = '${session.id}_${recipe.id}';
+                return Padding(
+                  padding: EdgeInsets.only(
+                    bottom: AppConstants.defaultPadding,
+                  ),
+                  child: SizedBox(
+                    height: 280,
+                    child: FlipRecipeCard(
+                      recipe: recipe,
+                      isCooked: cookedRecipes[key] ?? false,
+                      onCookedChanged: (value) {
+                        setState(() {
+                          cookedRecipes[key] = value;
+                        });
+                      },
+                    ),
+                  ),
+                );
+              },
+            );
+          },
         ),
-      ),
+      ],
     );
   }
 
-  void _showSessionDetails(
+  void _showShoppingList(
     BuildContext context,
-    AppState appState,
     Session session,
+    AppState appState,
   ) {
     showDialog(
       context: context,
       builder: (context) => Dialog(
         backgroundColor: AppTheme.darkBgSecondary,
         shape: RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.circular(AppConstants.cardCornerRadius),
+          borderRadius: BorderRadius.circular(AppConstants.cardCornerRadius),
         ),
         child: Padding(
           padding: EdgeInsets.all(AppConstants.defaultPadding),
@@ -285,59 +193,101 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                session.sessionName,
+                'Shopping List',
                 style: Theme.of(context).textTheme.displayMedium,
+              ),
+              SizedBox(height: AppConstants.smallPadding),
+              Text(
+                session.sessionName,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
               SizedBox(height: AppConstants.defaultPadding),
               Divider(color: AppTheme.textMuted, height: 1),
               SizedBox(height: AppConstants.defaultPadding),
               Expanded(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: session.recipeIds.length,
-                  itemBuilder: (context, index) {
-                    final recipeId =
-                        session.recipeIds[index];
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical:
-                            AppConstants.smallPadding / 2,
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.check_circle,
-                              size: 16,
-                              color:
-                                  AppTheme.success),
-                          SizedBox(
-                              width:
-                                  AppConstants
-                                      .smallPadding),
-                          Expanded(
-                            child: Text(
-                              recipeId
-                                  .replaceAll('_', ' ')
-                                  .toUpperCase(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _buildShoppingListItems(session),
+                  ),
                 ),
               ),
               SizedBox(height: AppConstants.defaultPadding),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Close'),
+              ElevatedButton.icon(
+                icon: Icon(Icons.copy),
+                label: Text('Copy List'),
+                onPressed: () {
+                  _copyShoppingListToClipboard(session);
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Copied to clipboard!'),
+                      backgroundColor: AppTheme.success,
+                    ),
+                  );
+                },
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildShoppingListItems(Session session) {
+    print('DEBUG: Shopping list has ${session.shoppingList.length} items');
+    
+    if (session.shoppingList.isEmpty) {
+      return [
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: AppConstants.smallPadding),
+          child: Text(
+            'No items saved',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
+      ];
+    }
+
+    final sortedKeys = session.shoppingList.keys.toList()..sort();
+    return [
+      for (var key in sortedKeys)
+        Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: AppConstants.smallPadding,
+          ),
+          child: Row(
+            children: [
+              Checkbox(
+                value: false,
+                onChanged: (_) {},
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      key,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    if (session.shoppingList[key]!.isNotEmpty)
+                      Text(
+                        session.shoppingList[key]!,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+    ];
+  }
+
+  void _copyShoppingListToClipboard(Session session) {
+    final list = session.recipeIds
+        .map((id) => '☐ ${id.replaceAll('_', ' ')}')
+        .join('\n');
+    Clipboard.setData(ClipboardData(text: list));
   }
 }

@@ -7,6 +7,7 @@ import '../theme/theme.dart';
 import '../utils/constants.dart';
 import '../utils/extensions.dart';
 import '../widgets/ingredient_list_item.dart';
+import 'sessions_history_screen.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({Key? key}) : super(key: key);
@@ -40,8 +41,27 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         .map((r) => r.ingredients.parseIngredients())
         .toList();
 
-    _ingredients =
-        ListExtensions.aggregateIngredients(ingredientLists);
+    _ingredients = {};
+    
+    // Aggregate all ingredients
+    for (final list in ingredientLists) {
+      for (final ingredient in list) {
+        if (_ingredients.containsKey(ingredient)) {
+          // Already exists, just keep it
+          _ingredients[ingredient] = _ingredients[ingredient]!;
+        } else {
+          _ingredients[ingredient] = ingredient;
+        }
+      }
+    }
+    
+    // Sort alphabetically
+    final sorted = Map.fromEntries(
+      _ingredients.entries.toList()..sort((a, b) => a.key.compareTo(b.key))
+    );
+    _ingredients = sorted;
+    
+    print('DEBUG: Aggregated ${_ingredients.length} ingredients');
   }
 
   void _showAddItemDialog() {
@@ -125,8 +145,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 controller: _sessionNameController,
                 style: TextStyle(color: AppTheme.textLight),
                 decoration: InputDecoration(
-                  hintText: 'e.g., Weekly Meal Prep',
-                  labelText: 'Session Name',
+                  hintText: 'Leave empty for auto-generated name',
+                  labelText: 'Session Name (Optional)',
                 ),
                 autofocus: true,
               ),
@@ -143,19 +163,18 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        if (_sessionNameController.text.isNotEmpty) {
-                          Provider.of<AppState>(context, listen: false)
-                              .saveSession(
-                                _sessionNameController.text,
-                              );
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Session saved!'),
-                              backgroundColor: AppTheme.success,
-                            ),
-                          );
-                        }
+                        print('DEBUG: Saving with ${_ingredients.length} ingredients');
+                        Provider.of<AppState>(context, listen: false)
+                            .saveSession(_sessionNameController.text, _ingredients);
+                        Navigator.pop(context);
+                        // Go back to sessions history
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SessionsHistoryScreen(),
+                          ),
+                        );
                       },
                       child: Text('Save'),
                     ),
@@ -247,7 +266,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                         ),
                     itemCount: _ingredients.length,
                     itemBuilder: (context, index) {
-                      final key = _ingredients.keys.toList()[index];
+                      final sortedKeys = _ingredients.keys.toList()..sort();
+                      final key = sortedKeys[index];
                       final value = _ingredients[key]!;
 
                       return Padding(

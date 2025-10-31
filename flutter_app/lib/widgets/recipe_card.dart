@@ -151,12 +151,11 @@ class _RecipeCardState extends State<RecipeCard> {
   Widget _buildInfoSection(BuildContext context) {
     final ingredients =
         widget.recipe.ingredients.parseIngredients();
-    final ingredientPreview = ingredients.take(3).join(', ');
 
     return Padding(
       padding: EdgeInsets.all(AppConstants.defaultPadding),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -168,14 +167,16 @@ class _RecipeCardState extends State<RecipeCard> {
                   children: [
                     Text(
                       widget.recipe.dishName,
-                      style: Theme.of(context).textTheme.displayMedium,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 4),
+                    SizedBox(height: 2),
                     Text(
                       '⏱️ ${StringExtensions.formatDuration(widget.recipe.totalTime)}',
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
@@ -183,40 +184,41 @@ class _RecipeCardState extends State<RecipeCard> {
               if (widget.recipe.isLight)
                 Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
+                    horizontal: 6,
+                    vertical: 2,
                   ),
                   decoration: BoxDecoration(
                     color: AppTheme.pastelMint,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
                     'Light',
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           color: AppTheme.darkBg,
                           fontWeight: FontWeight.bold,
+                          fontSize: 10,
                         ),
                   ),
                 ),
             ],
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${widget.recipe.kcal.toCalorieString()} • ${widget.recipe.proteinG.toProteinString()}',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.pastelPeach,
-                    ),
-              ),
-              SizedBox(height: 4),
-              Text(
-                ingredientPreview,
+          SizedBox(height: 4),
+          Text(
+            '${widget.recipe.kcal} kcal • ${widget.recipe.proteinG.toStringAsFixed(1)}g protein',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppTheme.pastelPeach,
+                  fontSize: 12,
+                ),
+          ),
+          SizedBox(height: 4),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Text(
+                ingredients.join(', '),
                 style: Theme.of(context).textTheme.bodySmall,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+                maxLines: null,
               ),
-            ],
+            ),
           ),
         ],
       ),

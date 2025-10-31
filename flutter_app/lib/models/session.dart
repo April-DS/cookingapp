@@ -3,9 +3,11 @@ class Session {
   final String sessionName;
   final DateTime dateCreated;
   final int targetCount;
-  final List<String> recipeIds; // Recipe IDs selected in this session
-  final Map<String, int> ingredientQuantities; // For shopping list aggregation
-  final Map<String, bool> ingredientChecked; // Tick state for shopping items
+  final List<String> recipeIds;
+  final Map<String, int> ingredientQuantities;
+  final Map<String, bool> ingredientChecked;
+  final Map<String, bool> recipesCooked;
+  final Map<String, String> shoppingList;
 
   Session({
     this.id,
@@ -15,6 +17,8 @@ class Session {
     required this.recipeIds,
     this.ingredientQuantities = const {},
     this.ingredientChecked = const {},
+    this.recipesCooked = const {},
+    this.shoppingList = const {},
   });
 
   // Convert to JSON for storage
@@ -23,9 +27,11 @@ class Session {
     'session_name': sessionName,
     'date_created': dateCreated.toIso8601String(),
     'target_count': targetCount,
-    'recipe_ids': recipeIds.join(','), // Store as comma-separated
+    'recipe_ids': recipeIds.join(','),
     'ingredient_quantities': ingredientQuantities,
     'ingredient_checked': ingredientChecked,
+    'recipes_cooked': recipesCooked,
+    'shopping_list': shoppingList,
   };
 
   // Create from JSON
@@ -35,9 +41,11 @@ class Session {
       sessionName: json['session_name'] ?? 'Unnamed Session',
       dateCreated: DateTime.parse(json['date_created']),
       targetCount: json['target_count'] ?? 5,
-      recipeIds: (json['recipe_ids'] as String).split(','),
+      recipeIds: (json['recipe_ids'] as String).split(',').where((id) => id.isNotEmpty).toList(),
       ingredientQuantities: Map<String, int>.from(json['ingredient_quantities'] ?? {}),
       ingredientChecked: Map<String, bool>.from(json['ingredient_checked'] ?? {}),
+      recipesCooked: Map<String, bool>.from(json['recipes_cooked'] ?? {}),
+      shoppingList: Map<String, String>.from(json['shopping_list'] ?? {}),
     );
   }
 
@@ -49,6 +57,8 @@ class Session {
     List<String>? recipeIds,
     Map<String, int>? ingredientQuantities,
     Map<String, bool>? ingredientChecked,
+    Map<String, bool>? recipesCooked,
+    Map<String, String>? shoppingList,
   }) {
     return Session(
       id: id ?? this.id,
@@ -58,6 +68,8 @@ class Session {
       recipeIds: recipeIds ?? this.recipeIds,
       ingredientQuantities: ingredientQuantities ?? this.ingredientQuantities,
       ingredientChecked: ingredientChecked ?? this.ingredientChecked,
+      recipesCooked: recipesCooked ?? this.recipesCooked,
+      shoppingList: shoppingList ?? this.shoppingList,
     );
   }
 }

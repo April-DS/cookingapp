@@ -25,24 +25,22 @@ class IngredientListItem extends StatefulWidget {
 }
 
 class _IngredientListItemState extends State<IngredientListItem> {
-  late TextEditingController _editController;
-
   @override
   void initState() {
     super.initState();
-    _editController = TextEditingController(text: widget.quantity);
   }
 
   @override
   void dispose() {
-    _editController.dispose();
     super.dispose();
   }
 
   void _showEditDialog() {
+    final controller = TextEditingController(text: widget.quantity);
+    
     showDialog(
       context: context,
-      builder: (context) => Dialog(
+      builder: (dialogContext) => Dialog(
         backgroundColor: AppTheme.darkBgSecondary,
         child: Padding(
           padding: EdgeInsets.all(AppConstants.defaultPadding),
@@ -51,11 +49,11 @@ class _IngredientListItemState extends State<IngredientListItem> {
             children: [
               Text(
                 'Edit Quantity',
-                style: Theme.of(context).textTheme.displayMedium,
+                style: Theme.of(dialogContext).textTheme.displayMedium,
               ),
               SizedBox(height: AppConstants.defaultPadding),
               TextField(
-                controller: _editController,
+                controller: controller,
                 style: TextStyle(color: AppTheme.textLight),
                 decoration: InputDecoration(
                   labelText: widget.ingredient,
@@ -68,7 +66,10 @@ class _IngredientListItemState extends State<IngredientListItem> {
                 children: [
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        Navigator.pop(dialogContext);
+                        controller.dispose();
+                      },
                       child: Text('Cancel'),
                     ),
                   ),
@@ -76,8 +77,9 @@ class _IngredientListItemState extends State<IngredientListItem> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        widget.onEdit(_editController.text);
-                        Navigator.pop(context);
+                        Navigator.pop(dialogContext);
+                        widget.onEdit(controller.text);
+                        controller.dispose();
                       },
                       child: Text('Save'),
                     ),

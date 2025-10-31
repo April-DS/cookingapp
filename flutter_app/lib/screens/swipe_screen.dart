@@ -33,8 +33,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
 
       if (appState.sessionComplete) {
         _showSessionCompleteDialog(appState);
-      } else {
-        setState(() => _currentIndex++);
       }
     }
   }
@@ -42,15 +40,22 @@ class _SwipeScreenState extends State<SwipeScreen> {
   void _handleSwipeLeft(AppState appState) {
     if (_currentIndex < appState.filteredRecipes.length) {
       appState.skipRecipe(appState.filteredRecipes[_currentIndex]);
-      // Don't increment index, same recipe gets replaced
-      setState(() {});
     }
   }
 
   void _handleUndo(AppState appState) {
-    if (appState.swipeHistory.isNotEmpty && _currentIndex > 0) {
-      appState.undoLastSwipe();
-      setState(() => _currentIndex--);
+    if (appState.swipeHistory.isEmpty) return;
+    
+    final wasLike = appState.swipeWasLike.isNotEmpty 
+        ? appState.swipeWasLike.last 
+        : false;
+    
+    appState.undoLastSwipe();
+    
+    if (wasLike) {
+      if (_currentIndex > 0) {
+        setState(() => _currentIndex--);
+      }
     }
   }
 
@@ -135,8 +140,11 @@ class _SwipeScreenState extends State<SwipeScreen> {
             return _buildEmptyState(context, appState);
           }
 
-          final currentRecipe =
-              appState.filteredRecipes[_currentIndex];
+          if (_currentIndex >= appState.filteredRecipes.length) {
+            _currentIndex = appState.filteredRecipes.length - 1;
+          }
+
+          final currentRecipe = appState.filteredRecipes[_currentIndex];
 
           return Column(
             children: [

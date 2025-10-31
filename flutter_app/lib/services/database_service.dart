@@ -184,6 +184,28 @@ class DatabaseService {
     );
   }
 
+  // Delete old sessions, keeping only the most recent maxSessions
+  Future<void> deleteOldSessions({int maxSessions = 4}) async {
+    final db = await database;
+    
+    // Get all sessions ordered by date
+    final sessions = await db.query(
+      'sessions',
+      orderBy: 'date_created DESC',
+    );
+
+    // Delete sessions beyond maxSessions
+    if (sessions.length > maxSessions) {
+      for (var i = maxSessions; i < sessions.length; i++) {
+        await db.delete(
+          'sessions',
+          where: 'id = ?',
+          whereArgs: [sessions[i]['id']],
+        );
+      }
+    }
+  }
+
   Future<void> close() async {
     final db = await database;
     await db.close();
