@@ -38,7 +38,8 @@ class _IngredientListItemState extends State<IngredientListItem> {
   Future<void> _showEditDialog() async {
     final controller = TextEditingController(text: widget.quantity);
     
-    await showDialog<void>(
+    try {
+      final result = await showDialog<String>(
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) => Dialog(
@@ -77,9 +78,7 @@ class _IngredientListItemState extends State<IngredientListItem> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          final text = controller.text;
-                          Navigator.pop(dialogContext);
-                          widget.onEdit(text);
+                          Navigator.of(dialogContext).pop(controller.text);
                         },
                         child: const Text('Save'),
                       ),
@@ -91,6 +90,10 @@ class _IngredientListItemState extends State<IngredientListItem> {
           ),
         ),
       );
+      
+      if (result != null) {
+        widget.onEdit(result);
+      }
     } finally {
       controller.dispose();
     }
