@@ -25,24 +25,34 @@ class IngredientListItem extends StatefulWidget {
 }
 
 class _IngredientListItemState extends State<IngredientListItem> {
+  late TextEditingController _editController;
+
   @override
   void initState() {
     super.initState();
+    _editController = TextEditingController(text: widget.quantity);
+  }
+
+  @override
+  void didUpdateWidget(covariant IngredientListItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.quantity != widget.quantity) {
+      _editController.text = widget.quantity;
+    }
   }
 
   @override
   void dispose() {
+    _editController.dispose();
     super.dispose();
   }
 
   Future<void> _showEditDialog() async {
-    final controller = TextEditingController(text: widget.quantity);
-    
-    try {
-      final result = await showDialog<String>(
-        context: context,
-        barrierDismissible: false,
-        builder: (dialogContext) => Dialog(
+    final result = await showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return Dialog(
           backgroundColor: AppTheme.darkBgSecondary,
           child: Padding(
             padding: EdgeInsets.all(AppConstants.defaultPadding),
@@ -55,7 +65,7 @@ class _IngredientListItemState extends State<IngredientListItem> {
                 ),
                 SizedBox(height: AppConstants.defaultPadding),
                 TextField(
-                  controller: controller,
+                  controller: _editController,
                   style: TextStyle(color: AppTheme.textLight),
                   decoration: InputDecoration(
                     labelText: widget.ingredient,
@@ -68,9 +78,7 @@ class _IngredientListItemState extends State<IngredientListItem> {
                   children: [
                     Expanded(
                       child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.pop(dialogContext);
-                        },
+                        onPressed: () => Navigator.pop(dialogContext),
                         child: const Text('Cancel'),
                       ),
                     ),
@@ -78,7 +86,7 @@ class _IngredientListItemState extends State<IngredientListItem> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.of(dialogContext).pop(controller.text);
+                          Navigator.of(dialogContext).pop(_editController.text);
                         },
                         child: const Text('Save'),
                       ),
@@ -88,21 +96,19 @@ class _IngredientListItemState extends State<IngredientListItem> {
               ],
             ),
           ),
-        ),
-      );
-      
-      if (result != null) {
-        widget.onEdit(result);
-      }
-    } finally {
-      controller.dispose();
+        );
+      },
+    );
+
+    if (result != null) {
+      widget.onEdit(result);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: ValueKey('${widget.ingredient}-${widget.quantity}'),
+      key: Key('${widget.ingredient}_${widget.quantity}_${widget.checked}'),
       direction: DismissDirection.endToStart,
       onDismissed: (_) => widget.onDelete(),
       background: Container(

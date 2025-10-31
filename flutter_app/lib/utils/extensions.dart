@@ -48,51 +48,75 @@ extension ListExtensions on List<String> {
     for (final list in ingredientLists) {
       for (final ingredient in list) {
         final parsed = _parseIngredientWithQuantity(ingredient);
+        final name = parsed['name'] as String;
         
-        if (aggregated.containsKey(parsed['name'])) {
-          // Try to sum quantities
-          final existing = aggregated[parsed['name']];
-          if (existing is Map && parsed['quantity'] != null) {
-            existing['total'] = (existing['total'] ?? 0) + parsed['quantity'];
+        if (aggregated.containsKey(name)) {
+          final existing = aggregated[name] as Map<String, dynamic>;
+          final existingQuantity = existing['quantity'] ?? 0.0;
+          final existingUnit = existing['unit'] ?? '';
+          final newQuantity = parsed['quantity'] ?? 0.0;
+          final newUnit = parsed['unit'] ?? '';
+          
+          // Only combine if units match
+          if (existingUnit == newUnit) {
+            aggregated[name] = {
+              'quantity': (existingQuantity as double) + (newQuantity as double),
+              'unit': existingUnit,
+            };
+          } else {
+            // If units don't match, keep as separate entries
+            final uniqueKey = '$name (${parsed['unit']})';
+            if (!aggregated.containsKey(uniqueKey)) {
+              aggregated[uniqueKey] = {
+                'quantity': newQuantity,
+                'unit': newUnit,
+              };
+            }
           }
         } else {
-          aggregated[parsed['name']] = parsed;
+          aggregated[name] = {
+            'quantity': parsed['quantity'],
+            'unit': parsed['unit'],
+          };
         }
       }
     }
 
-    return aggregated.map(
-      (name, data) {
-        String display;
-        if (data is Map && data['total'] != null) {
-          display = '${data['total']} ${data['unit'] ?? ''}';
-        } else {
-          display = data.toString();
+    // Convert to final string format
+    return aggregated.map((name, data) {
+      if (data is Map<String, dynamic>) {
+        final quantity = data['quantity'];
+        final unit = data['unit'] as String;
+        
+        if (quantity != null && (quantity as double) > 0) {
+          final quantityStr = (quantity as double).toStringAsFixed(quantity % 1 == 0 ? 0 : 1);
+          return MapEntry(name, '$quantityStr${unit.isNotEmpty ? ' $unit' : ''}');
         }
-        return MapEntry(name, display.trim());
-      },
-    );
+      }
+      return MapEntry(name, '');
+    });
   }
 
   /// Parse a single ingredient line into quantity, unit, and name
-  /// Examples:
-  /// "Tomatoes 1 kg" -> {quantity: 1, unit: "kg", name: "Tomatoes"}
-  /// "Olive oil" -> {name: "Olive oil"}
   static Map<String, dynamic> _parseIngredientWithQuantity(String ingredient) {
-    final pattern = RegExp(r'^(.+?)\s+(\d+(?:[.,]\d+)?)\s*([a-z%]*)', 
-      caseSensitive: false);
+    // Simple parsing - look for numbers at the beginning
+    final pattern = RegExp(r'^(\d+(?:\.\d+)?)\s*([a-zA-Z]*)\s+(.+)');
     final match = pattern.firstMatch(ingredient);
 
     if (match != null) {
       return {
-        'name': match.group(1)!.trim(),
-        'quantity': double.tryParse(match.group(2)!.replaceAll(',', '.')) ?? 0,
-        'unit': match.group(3)?.trim() ?? '',
-        'total': double.tryParse(match.group(2)!.replaceAll(',', '.')) ?? 0,
+        'quantity': double.tryParse(match.group(1)!) ?? 0.0,
+        'unit': match.group(2)?.trim() ?? '',
+        'name': match.group(3)?.trim() ?? ingredient.trim(),
       };
     }
 
-    return {'name': ingredient.trim()};
+    // If no quantity found, return the whole string as name
+    return {
+      'quantity': 0.0,
+      'unit': '',
+      'name': ingredient.trim(),
+    };
   }
 }
 

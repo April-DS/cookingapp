@@ -7,7 +7,6 @@ import '../theme/theme.dart';
 import '../utils/constants.dart';
 import '../utils/extensions.dart';
 import '../widgets/ingredient_list_item.dart';
-import 'sessions_history_screen.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({Key? key}) : super(key: key);
@@ -17,16 +16,16 @@ class ShoppingListScreen extends StatefulWidget {
 }
 
 class _ShoppingListScreenState extends State<ShoppingListScreen> {
-  late Map<String, String> _ingredients;
-  late Map<String, bool> _checkedItems;
-  late TextEditingController _sessionNameController;
+  final TextEditingController _sessionNameController = TextEditingController();
+  final Map<String, String> _ingredients = {};
+  final Map<String, bool> _checked = {};
 
   @override
   void initState() {
     super.initState();
-    _sessionNameController = TextEditingController();
-    _aggregateIngredients();
-    _checkedItems = {};
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadIngredients();
+    });
   }
 
   @override
@@ -35,96 +34,33 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     super.dispose();
   }
 
-  void _aggregateIngredients() {
+  void _loadIngredients() {
     final appState = Provider.of<AppState>(context, listen: false);
-    final ingredientLists = appState.currentSessionRecipes
-        .map((r) => r.ingredients.parseIngredients())
-        .toList();
-
-    _ingredients = {};
     
-    // Aggregate all ingredients
-    for (final list in ingredientLists) {
-      for (final ingredient in list) {
-        if (!_ingredients.containsKey(ingredient)) {
-          _ingredients[ingredient] = ''; // Empty quantity by default
-        }
+    // Aggregate ingredients from all selected recipes
+    final allIngredientLists = <List<String>>[];
+    for (var recipe in appState.currentSessionRecipes) {
+      if (recipe.ingredients.isNotEmpty) {
+        allIngredientLists.add(recipe.ingredients.parseIngredients());
       }
     }
+
+    final aggregated = ListExtensions.aggregateIngredients(allIngredientLists);
     
-    // Sort alphabetically
-    final sorted = Map.fromEntries(
-      _ingredients.entries.toList()..sort((a, b) => a.key.compareTo(b.key))
-    );
-    _ingredients = sorted;
-    
-    print('DEBUG: Aggregated ${_ingredients.length} ingredients');
+    setState(() {
+      _ingredients.clear();
+      _ingredients.addAll(aggregated);
+      // Initialize all items as unchecked
+      for (var key in _ingredients.keys) {
+        _checked[key] = false;
+      }
+    });
   }
 
-  void _showAddItemDialog() {
-    final controller = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        backgroundColor: AppTheme.darkBgSecondary,
-        child: Padding(
-          padding: EdgeInsets.all(AppConstants.defaultPadding),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Add Item',
-                style: Theme.of(context).textTheme.displayMedium,
-              ),
-              SizedBox(height: AppConstants.defaultPadding),
-              TextField(
-                controller: controller,
-                style: TextStyle(color: AppTheme.textLight),
-                decoration: InputDecoration(
-                  hintText: 'e.g., 2 cups flour',
-                ),
-                autofocus: true,
-              ),
-              SizedBox(height: AppConstants.defaultPadding),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        controller.dispose();
-                        Navigator.pop(context);
-                      },
-                      child: Text('Cancel'),
-                    ),
-                  ),
-                  SizedBox(width: AppConstants.smallPadding),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (controller.text.isNotEmpty) {
-                          setState(() {
-                            _ingredients[controller.text] = '';
-                            _checkedItems[controller.text] = false;
-                          });
-                          controller.dispose();
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: Text('Add'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-    // Don't dispose controller here; dialog callbacks dispose when appropriate.
-  }
+  void _addNewItem() {
+    final nameController = TextEditingController();
+    final quantityController = TextEditingController();
 
-  void _showSaveSessionDialog() {
-    _sessionNameController.clear();
     showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -138,18 +74,27 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Save Session',
+                'Add Item',
                 style: Theme.of(context).textTheme.displayMedium,
               ),
               SizedBox(height: AppConstants.defaultPadding),
               TextField(
-                controller: _sessionNameController,
+                controller: nameController,
                 style: TextStyle(color: AppTheme.textLight),
                 decoration: InputDecoration(
-                  hintText: 'Leave empty for auto-generated name',
-                  labelText: 'Session Name (Optional)',
+                  labelText: 'Item name',
+                  hintText: 'e.g., Tomatoes',
                 ),
                 autofocus: true,
+              ),
+              SizedBox(height: AppConstants.smallPadding),
+              TextField(
+                controller: quantityController,
+                style: TextStyle(color: AppTheme.textLight),
+                decoration: InputDecoration(
+                  labelText: 'Quantity (optional)',
+                  hintText: 'e.g., 2 kg, 500ml',
+                ),
               ),
               SizedBox(height: AppConstants.defaultPadding),
               Row(
@@ -164,30 +109,16 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        // Ensure we have a checked state for every ingredient (default false)
-                        final fullChecked = Map<String, bool>.fromEntries(
-                          _ingredients.keys.map((k) => MapEntry(k, _checkedItems[k] ?? false)),
-                        );
-
-                        print('DEBUG: Saving with ${_ingredients.length} ingredients and ${fullChecked.values.where((v) => v).length} checked');
-                        Provider.of<AppState>(context, listen: false).saveSession(
-                          _sessionNameController.text,
-                          _ingredients,
-                          ingredientChecked: fullChecked,
-                          ingredientQuantities: _ingredients,
-                        );
-
-                        Navigator.pop(context);
-                        // Go back to sessions history
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => SessionsHistoryScreen(),
-                          ),
-                        );
+                        final name = nameController.text.trim();
+                        if (name.isNotEmpty) {
+                          setState(() {
+                            _ingredients[name] = quantityController.text.trim();
+                            _checked[name] = false;
+                          });
+                          Navigator.pop(context);
+                        }
                       },
-                      child: Text('Save'),
+                      child: Text('Add'),
                     ),
                   ),
                 ],
@@ -196,153 +127,218 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           ),
         ),
       ),
-    );
+    ).then((_) {
+      nameController.dispose();
+      quantityController.dispose();
+    });
   }
 
   void _copyToClipboard() {
-    final clipboard = _ingredients.entries
-        .map((e) {
-          final checked = _checkedItems[e.key] ?? false;
-          final mark = checked ? '☑' : '☐';
-          return '$mark ${e.key}${e.value.isNotEmpty ? ' ${e.value}' : ''}';
-        })
-        .join('\n');
-
-    Clipboard.setData(ClipboardData(text: clipboard));
+    final sortedKeys = _ingredients.keys.toList()..sort();
+    final list = sortedKeys.map((key) {
+      final checked = _checked[key] ?? false;
+      final quantity = _ingredients[key] ?? '';
+      final mark = checked ? '☑' : '☐';
+      return '$mark $key${quantity.isNotEmpty ? ' ($quantity)' : ''}';
+    }).join('\n');
+    
+    Clipboard.setData(ClipboardData(text: list));
+    
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Copied to clipboard!'),
+        content: Text('Shopping list copied to clipboard'),
         backgroundColor: AppTheme.success,
         duration: Duration(seconds: 2),
       ),
     );
   }
 
+  Future<void> _saveSession() async {
+    final appState = Provider.of<AppState>(context, listen: false);
+    
+    try {
+      await appState.saveSession(
+        _sessionNameController.text.trim(),
+        _ingredients,
+        ingredientChecked: _checked,
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Session saved!'),
+            backgroundColor: AppTheme.success,
+            duration: Duration(seconds: 2),
+          ),
+        );
+
+        // Navigate back to swipe screen
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error saving session: $e'),
+          backgroundColor: AppTheme.error,
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
+  void _handleCheckChanged(String key, bool value) {
+    setState(() {
+      _checked[key] = value;
+    });
+  }
+
+  void _handleDelete(String key) {
+    setState(() {
+      _ingredients.remove(key);
+      _checked.remove(key);
+    });
+  }
+
+  void _handleEdit(String key, String newQuantity) {
+    setState(() {
+      _ingredients[key] = newQuantity;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
+    final sortedKeys = _ingredients.keys.toList()..sort();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Shopping List'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.copy),
+            onPressed: _copyToClipboard,
+            tooltip: 'Copy to clipboard',
+          ),
+        ],
       ),
       body: Column(
         children: [
-          // Info header
+          // Session name input
           Padding(
             padding: EdgeInsets.all(AppConstants.defaultPadding),
-            child: Container(
-              padding: EdgeInsets.all(AppConstants.defaultPadding),
-              decoration: BoxDecoration(
-                color: AppTheme.darkBgSecondary,
-                borderRadius:
-                    BorderRadius.circular(AppConstants.buttonCornerRadius),
-              ),
-              child: Consumer<AppState>(
-                builder: (context, appState, _) => Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${appState.currentSessionRecipes.length} Recipes Selected',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppTheme.pastelMint,
-                          ),
-                    ),
-                    SizedBox(height: AppConstants.smallPadding),
-                    Text(
-                      '${_ingredients.length} Items to Buy',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Session Name (optional)',
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
-              ),
+                SizedBox(height: AppConstants.smallPadding),
+                TextField(
+                  controller: _sessionNameController,
+                  style: TextStyle(color: AppTheme.textLight),
+                  decoration: InputDecoration(
+                    hintText: 'Auto-generates if empty',
+                    suffixIcon: Icon(Icons.edit, color: AppTheme.textMuted),
+                  ),
+                ),
+              ],
             ),
           ),
 
-          // Ingredient list
+          Divider(color: AppTheme.textMuted, height: 1),
+
+          // Recipe count
+          Padding(
+            padding: EdgeInsets.all(AppConstants.defaultPadding),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${appState.currentSessionRecipes.length} Recipes',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                Text(
+                  '${_ingredients.length} Ingredients',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppTheme.pastelMint,
+                      ),
+                ),
+              ],
+            ),
+          ),
+
+          // Shopping list
           Expanded(
             child: _ingredients.isEmpty
                 ? Center(
-                    child: Text(
-                      'No ingredients',
-                      style: Theme.of(context).textTheme.bodyMedium,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.shopping_cart_outlined,
+                            size: 64, color: AppTheme.textMuted),
+                        SizedBox(height: AppConstants.defaultPadding),
+                        Text(
+                          'No ingredients',
+                          style: Theme.of(context).textTheme.displayMedium,
+                        ),
+                      ],
                     ),
                   )
                 : ListView.builder(
-                    padding:
-                        EdgeInsets.symmetric(
-                          horizontal: AppConstants.defaultPadding,
-                        ),
-                    itemCount: _ingredients.length,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppConstants.defaultPadding,
+                    ),
+                    itemCount: sortedKeys.length,
                     itemBuilder: (context, index) {
-                      final sortedKeys = _ingredients.keys.toList()..sort();
                       final key = sortedKeys[index];
-                      final value = _ingredients[key]!;
-
-                      return Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: AppConstants.smallPadding / 2,
-                        ),
-                        child: IngredientListItem(
-                          ingredient: key,
-                          quantity: value,
-                          checked: _checkedItems[key] ?? false,
-                          onCheckChanged: (value) {
-                            setState(() {
-                              _checkedItems[key] = value;
-                            });
-                          },
-                          onDelete: () {
-                            setState(() {
-                              _ingredients.remove(key);
-                              _checkedItems.remove(key);
-                            });
-                          },
-                          onEdit: (newQuantity) {
-                            setState(() {
-                              _ingredients[key] = newQuantity;
-                            });
-                          },
-                        ),
+                      return IngredientListItem(
+                        ingredient: key,
+                        quantity: _ingredients[key] ?? '',
+                        checked: _checked[key] ?? false,
+                        onCheckChanged: (value) => _handleCheckChanged(key, value),
+                        onDelete: () => _handleDelete(key),
+                        onEdit: (newQuantity) => _handleEdit(key, newQuantity),
                       );
                     },
                   ),
           ),
 
-          // Add item button
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppConstants.defaultPadding,
-              vertical: AppConstants.smallPadding,
-            ),
-            child: OutlinedButton.icon(
-              icon: Icon(Icons.add),
-              label: Text('Add Item'),
-              onPressed: _showAddItemDialog,
-            ),
-          ),
-
-          // Action buttons
-          Padding(
+          // Bottom actions
+          Container(
             padding: EdgeInsets.all(AppConstants.defaultPadding),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    icon: Icon(Icons.copy),
-                    label: Text('Copy'),
-                    onPressed: _copyToClipboard,
-                  ),
+            decoration: BoxDecoration(
+              color: AppTheme.darkBgSecondary,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 8,
+                  offset: Offset(0, -2),
                 ),
-                SizedBox(width: AppConstants.smallPadding),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    icon: Icon(Icons.save),
-                    label: Text('Save'),
-                    onPressed: _showSaveSessionDialog,
-                  ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        icon: Icon(Icons.add),
+                        label: Text('Add Item'),
+                        onPressed: _addNewItem,
+                      ),
+                    ),
+                    SizedBox(width: AppConstants.smallPadding),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        icon: Icon(Icons.save),
+                        label: Text('Save Session'),
+                        onPressed: _saveSession,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
