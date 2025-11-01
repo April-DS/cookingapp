@@ -37,15 +37,21 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   void _loadIngredients() {
     final appState = Provider.of<AppState>(context, listen: false);
     
+    print('DEBUG: Loading ingredients for ${appState.currentSessionRecipes.length} recipes');
+    
     // Aggregate ingredients from all selected recipes
     final allIngredientLists = <List<String>>[];
     for (var recipe in appState.currentSessionRecipes) {
       if (recipe.ingredients.isNotEmpty) {
-        allIngredientLists.add(recipe.ingredients.parseIngredients());
+        final parsed = recipe.ingredients.parseIngredients();
+        print('DEBUG: Recipe ${recipe.dishName} has ingredients: $parsed');
+        allIngredientLists.add(parsed);
       }
     }
 
     final aggregated = ListExtensions.aggregateIngredients(allIngredientLists);
+    
+    print('DEBUG: Aggregated ingredients: $aggregated');
     
     setState(() {
       _ingredients.clear();
@@ -127,10 +133,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           ),
         ),
       ),
-    ).then((_) {
-      nameController.dispose();
-      quantityController.dispose();
-    });
+    );
   }
 
   void _copyToClipboard() {
@@ -156,6 +159,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   Future<void> _saveSession() async {
     final appState = Provider.of<AppState>(context, listen: false);
     
+    print('DEBUG: Saving session with ${_ingredients.length} items');
+    print('DEBUG: Shopping list data: $_ingredients');
+    print('DEBUG: Checked states: $_checked');
+    
     try {
       await appState.saveSession(
         _sessionNameController.text.trim(),
@@ -166,7 +173,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Session saved!'),
+            content: Text('Session saved successfully!'),
             backgroundColor: AppTheme.success,
             duration: Duration(seconds: 2),
           ),
@@ -176,6 +183,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
     } catch (e) {
+      print('DEBUG: Error saving session: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error saving session: $e'),
@@ -281,8 +289,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                             size: 64, color: AppTheme.textMuted),
                         SizedBox(height: AppConstants.defaultPadding),
                         Text(
-                          'No ingredients',
+                          'No ingredients found',
                           style: Theme.of(context).textTheme.displayMedium,
+                        ),
+                        SizedBox(height: AppConstants.smallPadding),
+                        Text(
+                          'Try adding recipes with ingredients first',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          textAlign: TextAlign.center,
                         ),
                       ],
                     ),

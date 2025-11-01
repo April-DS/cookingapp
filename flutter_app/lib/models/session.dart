@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Session {
   final int? id;
   final String sessionName;
@@ -28,7 +30,7 @@ class Session {
     'date_created': dateCreated.toIso8601String(),
     'target_count': targetCount,
     'recipe_ids': recipeIds.join(','),
-  'ingredient_quantities': ingredientQuantities,
+    'ingredient_quantities': ingredientQuantities,
     'ingredient_checked': ingredientChecked,
     'recipes_cooked': recipesCooked,
     'shopping_list': shoppingList,
@@ -36,16 +38,47 @@ class Session {
 
   // Create from JSON
   factory Session.fromJson(Map<String, dynamic> json) {
+    // Helper function to parse map fields
+    Map<String, String> parseStringMap(dynamic data) {
+      if (data == null) return {};
+      if (data is Map<String, String>) return data;
+      if (data is String && data.isNotEmpty) {
+        try {
+          final decoded = jsonDecode(data) as Map<String, dynamic>;
+          return decoded.map((k, v) => MapEntry(k.toString(), v.toString()));
+        } catch (e) {
+          print('Error parsing string map: $e');
+          return {};
+        }
+      }
+      return {};
+    }
+
+    Map<String, bool> parseBoolMap(dynamic data) {
+      if (data == null) return {};
+      if (data is Map<String, bool>) return data;
+      if (data is String && data.isNotEmpty) {
+        try {
+          final decoded = jsonDecode(data) as Map<String, dynamic>;
+          return decoded.map((k, v) => MapEntry(k.toString(), v == true));
+        } catch (e) {
+          print('Error parsing bool map: $e');
+          return {};
+        }
+      }
+      return {};
+    }
+
     return Session(
       id: json['id'],
       sessionName: json['session_name'] ?? 'Unnamed Session',
       dateCreated: DateTime.parse(json['date_created']),
       targetCount: json['target_count'] ?? 5,
       recipeIds: (json['recipe_ids'] as String).split(',').where((id) => id.isNotEmpty).toList(),
-  ingredientQuantities: Map<String, String>.from(json['ingredient_quantities']?.map((k, v) => MapEntry(k.toString(), v.toString())) ?? {}),
-      ingredientChecked: Map<String, bool>.from(json['ingredient_checked'] ?? {}),
-      recipesCooked: Map<String, bool>.from(json['recipes_cooked'] ?? {}),
-      shoppingList: Map<String, String>.from(json['shopping_list'] ?? {}),
+      ingredientQuantities: parseStringMap(json['ingredient_quantities']),
+      ingredientChecked: parseBoolMap(json['ingredient_checked']),
+      recipesCooked: parseBoolMap(json['recipes_cooked']),
+      shoppingList: parseStringMap(json['shopping_list']),
     );
   }
 

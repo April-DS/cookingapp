@@ -168,44 +168,44 @@ class AppState extends ChangeNotifier {
   }
 
   // Save current session with shopping list
-  Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {Map<String, bool>? ingredientChecked, Map<String, String>? ingredientQuantities}) async {
-    print('DEBUG AppState: saveSession called with ${shoppingList.length} items');
+Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {Map<String, bool>? ingredientChecked, Map<String, String>? ingredientQuantities}) async {
+  print('DEBUG AppState: saveSession called with ${shoppingList.length} items');
+  print('DEBUG AppState: shoppingList data: $shoppingList');
+  
+  // Auto-generate name if empty
+  final finalName = sessionName.isEmpty
+      ? _formatDateTime(DateTime.now())
+      : sessionName;
+
+  final session = Session(
+    sessionName: finalName,
+    dateCreated: DateTime.now(),
+    targetCount: targetDishCount,
+    recipeIds: currentSessionRecipes.map((r) => r.id).toList(),
+    shoppingList: shoppingList,
+    ingredientChecked: ingredientChecked ?? {},
+    ingredientQuantities: ingredientQuantities ?? {},
+  );
+
+  try {
+    final id = await _dbService.insertSession(session);
+    print('DEBUG AppState: Session saved with ID: $id');
+    currentSession = session.copyWith(id: id);
     
-    // Auto-generate name if empty
-    final finalName = sessionName.isEmpty
-        ? _formatDateTime(DateTime.now())
-        : sessionName;
+    // Keep only last 4 sessions
+    await _dbService.deleteOldSessions(maxSessions: 4);
+    
+    await loadPastSessions();
 
-    final session = Session(
-      sessionName: finalName,
-      dateCreated: DateTime.now(),
-      targetCount: targetDishCount,
-      recipeIds: currentSessionRecipes.map((r) => r.id).toList(),
-      shoppingList: shoppingList,
-      ingredientChecked: ingredientChecked ?? {},
-      ingredientQuantities: ingredientQuantities ?? {},
-    );
+    // After saving a session, reset to a new session
+    startNewSession();
 
-    try {
-      final id = await _dbService.insertSession(session);
-      print('DEBUG AppState: Session saved with ID: $id');
-      currentSession = session.copyWith(id: id);
-      
-      // Keep only last 4 sessions
-      await _dbService.deleteOldSessions(maxSessions: 4);
-      
-      await loadPastSessions();
-
-      // After saving a session, reset to a new session so the user can't add
-      // more recipes to the saved session. This will exclude the recipes that
-      // were just saved from the next session.
-      startNewSession();
-
-      notifyListeners();
-    } catch (e) {
-      print('DEBUG AppState: Error saving session: $e');
-    }
+    notifyListeners();
+  } catch (e) {
+    print('DEBUG AppState: Error saving session: $e');
+    rethrow;
   }
+}
 
   String _formatDateTime(DateTime dt) {
     return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';

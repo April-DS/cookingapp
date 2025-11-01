@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -34,7 +33,6 @@ class DatabaseService {
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // If upgrading from version 1 to 2, add new columns to sessions table
     if (oldVersion < 2) {
       try {
         await db.execute('ALTER TABLE sessions ADD COLUMN ingredient_quantities TEXT');
@@ -188,37 +186,32 @@ class DatabaseService {
 
   Future<int> insertSession(Session session) async {
     final db = await database;
-    // Debug: show what will be stored for verification
-    try {
-      print('DEBUG DatabaseService: inserting session with shopping_list=${jsonEncode(session.shoppingList)}');
-    } catch (_) {}
-
-    return await db.insert(
-    'sessions',
-    {
-    'session_name': session.sessionName,
-    'date_created': session.dateCreated.toIso8601String(),
-    'target_count': session.targetCount,
-    'recipe_ids': session.recipeIds.join(','),
-    'ingredient_quantities': session.ingredientQuantities.isNotEmpty
-      ? jsonEncode(session.ingredientQuantities)
-      : null,
-    'ingredient_checked': session.ingredientChecked.isNotEmpty
-      ? jsonEncode(session.ingredientChecked)
-      : null,
-    'recipes_cooked': session.recipesCooked.isNotEmpty
-      ? jsonEncode(session.recipesCooked)
-      : null,
-    'shopping_list': session.shoppingList.isNotEmpty
-      ? jsonEncode(session.shoppingList)
-      : null,
-    },
-  );
+    
+    print('DEBUG: Inserting session with shopping list: ${session.shoppingList}');
+    
+    final result = await db.insert(
+      'sessions',
+      {
+        'session_name': session.sessionName,
+        'date_created': session.dateCreated.toIso8601String(),
+        'target_count': session.targetCount,
+        'recipe_ids': session.recipeIds.join(','),
+        'ingredient_quantities': jsonEncode(session.ingredientQuantities),
+        'ingredient_checked': jsonEncode(session.ingredientChecked),
+        'recipes_cooked': jsonEncode(session.recipesCooked),
+        'shopping_list': jsonEncode(session.shoppingList),
+      },
+    );
+    
+    print('DEBUG: Session inserted with ID: $result');
+    return result;
   }
 
-  // Update an existing session row
   Future<void> updateSession(Session session) async {
     final db = await database;
+    
+    print('DEBUG: Updating session ${session.id} with shopping list: ${session.shoppingList}');
+    
     await db.update(
       'sessions',
       {
@@ -226,46 +219,59 @@ class DatabaseService {
         'date_created': session.dateCreated.toIso8601String(),
         'target_count': session.targetCount,
         'recipe_ids': session.recipeIds.join(','),
-        'ingredient_quantities': session.ingredientQuantities.isNotEmpty ? jsonEncode(session.ingredientQuantities) : null,
-        'ingredient_checked': session.ingredientChecked.isNotEmpty ? jsonEncode(session.ingredientChecked) : null,
-        'recipes_cooked': session.recipesCooked.isNotEmpty ? jsonEncode(session.recipesCooked) : null,
-        'shopping_list': session.shoppingList.isNotEmpty ? jsonEncode(session.shoppingList) : null,
+        'ingredient_quantities': jsonEncode(session.ingredientQuantities),
+        'ingredient_checked': jsonEncode(session.ingredientChecked),
+        'recipes_cooked': jsonEncode(session.recipesCooked),
+        'shopping_list': jsonEncode(session.shoppingList),
       },
       where: 'id = ?',
       whereArgs: [session.id],
     );
+    
+    print('DEBUG: Session updated successfully');
   }
 
   Future<List<Session>> getAllSessions() async {
     final db = await database;
     final maps = await db.query('sessions', orderBy: 'date_created DESC');
 
-    // Convert JSON strings back to Maps where appropriate.
     final sessions = <Session>[];
     for (var m in maps) {
-      final parsed = Map<String, dynamic>.from(m);
-
-      Map<String, dynamic> _decodeMapField(dynamic field) {
-        if (field == null) return {};
-        if (field is Map<String, dynamic>) return field;
-        try {
-          final decoded = jsonDecode(field as String);
-          if (decoded is Map<String, dynamic>) return decoded;
-        } catch (_) {
-          // If decoding fails, return empty map
-        }
-        return {};
+      try {
+        final session = Session(
+          id: m['id'] as int?,
+          sessionName: m['session_name'] as String? ?? 'Unnamed Session',
+          dateCreated: DateTime.parse(m['date_created'] as String),
+          targetCount: m['target_count'] as int? ?? 5,
+          recipeIds: (m['recipe_ids'] as String).split(',').where((id) => id.isNotEmpty).toList(),
+          ingredientQuantities: _parseJsonMap<String, String>(m['ingredient_quantities']),
+          ingredientChecked: _parseJsonMap<String, bool>(m['ingredient_checked']),
+          recipesCooked: _parseJsonMap<String, bool>(m['recipes_cooked']),
+          shoppingList: _parseJsonMap<String, String>(m['shopping_list']),
+        );
+        sessions.add(session);
+      } catch (e) {
+        print('Error parsing session: $e');
       }
-
-      parsed['ingredient_quantities'] = _decodeMapField(m['ingredient_quantities']);
-      parsed['ingredient_checked'] = _decodeMapField(m['ingredient_checked']);
-      parsed['recipes_cooked'] = _decodeMapField(m['recipes_cooked']);
-      parsed['shopping_list'] = _decodeMapField(m['shopping_list']);
-
-      sessions.add(Session.fromJson(parsed));
     }
 
     return sessions;
+  }
+
+  Map<K, V> _parseJsonMap<K, V>(dynamic jsonData) {
+    if (jsonData == null) return {};
+    try {
+      if (jsonData is String) {
+        final decoded = jsonDecode(jsonData) as Map<String, dynamic>;
+        return decoded.map((k, v) => MapEntry(k as K, v as V));
+      }
+      if (jsonData is Map) {
+        return jsonData.map((k, v) => MapEntry(k as K, v as V));
+      }
+    } catch (e) {
+      print('Error parsing JSON map: $e');
+    }
+    return {};
   }
 
   Future<Session?> getSessionById(int id) async {
@@ -277,24 +283,18 @@ class DatabaseService {
     );
     if (maps.isEmpty) return null;
     final m = maps.first;
-    final parsed = Map<String, dynamic>.from(m);
-
-    Map<String, dynamic> _decodeMapField(dynamic field) {
-      if (field == null) return {};
-      if (field is Map<String, dynamic>) return field;
-      try {
-        final decoded = jsonDecode(field as String);
-        if (decoded is Map<String, dynamic>) return decoded;
-      } catch (_) {}
-      return {};
-    }
-
-    parsed['ingredient_quantities'] = _decodeMapField(m['ingredient_quantities']);
-    parsed['ingredient_checked'] = _decodeMapField(m['ingredient_checked']);
-    parsed['recipes_cooked'] = _decodeMapField(m['recipes_cooked']);
-    parsed['shopping_list'] = _decodeMapField(m['shopping_list']);
-
-    return Session.fromJson(parsed);
+    
+    return Session(
+      id: m['id'] as int?,
+      sessionName: m['session_name'] as String? ?? 'Unnamed Session',
+      dateCreated: DateTime.parse(m['date_created'] as String),
+      targetCount: m['target_count'] as int? ?? 5,
+      recipeIds: (m['recipe_ids'] as String).split(',').where((id) => id.isNotEmpty).toList(),
+      ingredientQuantities: _parseJsonMap<String, String>(m['ingredient_quantities']),
+      ingredientChecked: _parseJsonMap<String, bool>(m['ingredient_checked']),
+      recipesCooked: _parseJsonMap<String, bool>(m['recipes_cooked']),
+      shoppingList: _parseJsonMap<String, String>(m['shopping_list']),
+    );
   }
 
   Future<void> deleteSession(int id) async {

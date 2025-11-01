@@ -206,201 +206,174 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           child: Padding(
             padding: const EdgeInsets.all(AppConstants.defaultPadding),
-            child: StatefulBuilder(
-              builder: (context, setState) {
-                final shopping = Map<String, String>.from(session.shoppingList);
-                final checked = Map<String, bool>.from(session.ingredientChecked);
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Header
+                Text('Last Shopping List',
+                    style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: AppConstants.smallPadding),
 
-                return Column(
+                // List
+                Expanded(
+                  child: session.shoppingList.isEmpty
+                      ? Center(
+                          child: Text('No items saved',
+                              style: Theme.of(context).textTheme.bodyMedium),
+                        )
+                      : ListView(
+                          children: [
+                            for (var key in session.shoppingList.keys.toList()..sort())
+                              IngredientListItem(
+                                ingredient: key,
+                                quantity: session.shoppingList[key] ?? '',
+                                checked: session.ingredientChecked[key] ?? false,
+                                onCheckChanged: (value) async {
+                                  final updatedChecked = Map<String, bool>.from(session.ingredientChecked);
+                                  updatedChecked[key] = value;
+                                  final updatedSession = session.copyWith(
+                                    ingredientChecked: updatedChecked,
+                                  );
+                                  await Provider.of<AppState>(context, listen: false)
+                                      .updateSession(updatedSession);
+                                  // Force rebuild by showing dialog again
+                                  Navigator.pop(context);
+                                  _showLastSessionShoppingList(context, updatedSession);
+                                },
+                                onDelete: () async {
+                                  final updatedShopping = Map<String, String>.from(session.shoppingList)..remove(key);
+                                  final updatedChecked = Map<String, bool>.from(session.ingredientChecked)..remove(key);
+                                  final updatedSession = session.copyWith(
+                                    shoppingList: updatedShopping,
+                                    ingredientChecked: updatedChecked,
+                                  );
+                                  await Provider.of<AppState>(context, listen: false)
+                                      .updateSession(updatedSession);
+                                  // Force rebuild by showing dialog again
+                                  Navigator.pop(context);
+                                  _showLastSessionShoppingList(context, updatedSession);
+                                },
+                                onEdit: (newQuantity) async {
+                                  final updatedSession = session.copyWith(
+                                    shoppingList: {
+                                      ...session.shoppingList,
+                                      key: newQuantity,
+                                    },
+                                  );
+                                  await Provider.of<AppState>(context, listen: false)
+                                      .updateSession(updatedSession);
+                                  // Force rebuild by showing dialog again
+                                  Navigator.pop(context);
+                                  _showLastSessionShoppingList(context, updatedSession);
+                                },
+                              ),
+                          ],
+                        ),
+                ),
+
+                // Actions
+                const SizedBox(height: AppConstants.defaultPadding),
+                Row(
                   children: [
-                    // Header
-                    Text('Last Shopping List',
-                        style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: AppConstants.smallPadding),
-
-                    // List
                     Expanded(
-                      child: shopping.isEmpty
-                          ? Center(
-                              child: Text('No items saved',
-                                  style: Theme.of(context).textTheme.bodyMedium),
-                            )
-                          : ListView(
-                              children: [
-                                for (var key in shopping.keys.toList()..sort())
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: AppConstants.smallPadding / 2),
-                                    child: IngredientListItem(
-                                      ingredient: key,
-                                      quantity: shopping[key] ?? '',
-                                      checked: checked[key] ?? false,
-                                      onCheckChanged: (value) async {
-                                        checked[key] = value;
-                                        final updatedSession = session.copyWith(
-                                          ingredientChecked: Map.from(checked),
-                                        );
-                                        await Provider.of<AppState>(context,
-                                                listen: false)
-                                            .updateSession(updatedSession);
-                                        setState(() {});
-                                      },
-                                      onDelete: () async {
-                                        final updatedShopping =
-                                            Map<String, String>.from(shopping)
-                                              ..remove(key);
-                                        final updatedChecked =
-                                            Map<String, bool>.from(checked)
-                                              ..remove(key);
-                                        final updatedSession = session.copyWith(
-                                          shoppingList: updatedShopping,
-                                          ingredientChecked: updatedChecked,
-                                        );
-                                        await Provider.of<AppState>(context,
-                                                listen: false)
-                                            .updateSession(updatedSession);
-                                        setState(() {});
-                                      },
-                                      onEdit: (newQuantity) async {
-                                        final updatedSession = session.copyWith(
-                                          shoppingList: {
-                                            ...shopping,
-                                            key: newQuantity,
-                                          },
-                                        );
-                                        await Provider.of<AppState>(context,
-                                                listen: false)
-                                            .updateSession(updatedSession);
-                                        setState(() {});
-                                      },
-                                    ),
-                                  ),
-                              ],
-                            ),
-                    ),
-
-                    // Actions
-                    const SizedBox(height: AppConstants.defaultPadding),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            icon: const Icon(Icons.add),
-                            label: const Text('Add Item'),
-                            onPressed: () async {
-                              late final TextEditingController controller;
-                              final result = await showDialog<String>(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (dialogContext) {
-                                  controller = TextEditingController();
-                                  return Dialog(
-                                    backgroundColor: AppTheme.darkBgSecondary,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(
-                                          AppConstants.defaultPadding),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
+                      child: OutlinedButton.icon(
+                        icon: const Icon(Icons.add),
+                        label: const Text('Add Item'),
+                        onPressed: () async {
+                          final result = await showDialog<String>(
+                            context: context,
+                            builder: (dialogContext) {
+                              final controller = TextEditingController();
+                              return Dialog(
+                                backgroundColor: AppTheme.darkBgSecondary,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(AppConstants.defaultPadding),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        'Add Item',
+                                        style: Theme.of(dialogContext).textTheme.displayMedium,
+                                      ),
+                                      const SizedBox(height: AppConstants.defaultPadding),
+                                      TextField(
+                                        controller: controller,
+                                        style: const TextStyle(color: AppTheme.textLight),
+                                        decoration: const InputDecoration(
+                                          hintText: 'e.g., 2 cups flour',
+                                        ),
+                                        autofocus: true,
+                                      ),
+                                      const SizedBox(height: AppConstants.defaultPadding),
+                                      Row(
                                         children: [
-                                          Text(
-                                            'Add Item',
-                                            style: Theme.of(dialogContext)
-                                                .textTheme
-                                                .displayMedium,
-                                          ),
-                                          const SizedBox(
-                                              height:
-                                                  AppConstants.defaultPadding),
-                                          TextField(
-                                            controller: controller,
-                                            style: const TextStyle(
-                                                color: AppTheme.textLight),
-                                            decoration: const InputDecoration(
-                                              hintText: 'e.g., 2 cups flour',
+                                          Expanded(
+                                            child: OutlinedButton(
+                                              onPressed: () => Navigator.pop(dialogContext),
+                                              child: const Text('Cancel'),
                                             ),
-                                            autofocus: true,
                                           ),
-                                          const SizedBox(
-                                              height:
-                                                  AppConstants.defaultPadding),
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: OutlinedButton(
-                                                  onPressed: () {
-                                                    final ctrl = controller;
-                                                    Navigator.pop(dialogContext);
-                                                    ctrl.dispose();
-                                                  },
-                                                  child: const Text('Cancel'),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                  width: AppConstants
-                                                      .smallPadding),
-                                              Expanded(
-                                                child: ElevatedButton(
-                                                  onPressed: () {
-                                                    final text = controller.text;
-                                                    final ctrl = controller;
-                                                    if (text.isNotEmpty) {
-                                                      Navigator.pop(
-                                                          dialogContext, text);
-                                                    }
-                                                    ctrl.dispose();
-                                                  },
-                                                  child: const Text('Add'),
-                                                ),
-                                              ),
-                                            ],
+                                          const SizedBox(width: AppConstants.smallPadding),
+                                          Expanded(
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                final text = controller.text.trim();
+                                                if (text.isNotEmpty) {
+                                                  Navigator.pop(dialogContext, text);
+                                                }
+                                              },
+                                              child: const Text('Add'),
+                                            ),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  );
-                                },
+                                    ],
+                                  ),
+                                ),
                               );
+                            },
+                          );
 
-                              if (result != null && result.isNotEmpty) {
-                                final updatedSession = session.copyWith(
-                                  shoppingList: {
-                                    ...shopping,
-                                    result: '', // Empty quantity by default
-                                  },
-                                  ingredientChecked: {
-                                    ...checked,
-                                    result: false, // Unchecked by default
-                                  },
-                                );
-                                await Provider.of<AppState>(context,
-                                        listen: false)
-                                    .updateSession(updatedSession);
-                                setState(() {});
-                              }
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: AppConstants.smallPadding),
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            icon: const Icon(Icons.copy),
-                            label: const Text('Copy'),
-                            onPressed: () {
-                              final list = shopping.entries.map((e) {
-                                final mark = checked[e.key] ?? false ? '☑' : '☐';
-                                return '$mark ${e.key}${e.value.isNotEmpty ? ' (${e.value})' : ''}';
-                              }).join('\n');
-                              Clipboard.setData(ClipboardData(text: list));
-                              Navigator.pop(context);
-                              _showSnackBar('Copied to clipboard');
-                            },
-                          ),
-                        ),
-                      ],
+                          if (result != null && result.isNotEmpty) {
+                            final updatedSession = session.copyWith(
+                              shoppingList: {
+                                ...session.shoppingList,
+                                result: '', // Empty quantity by default
+                              },
+                              ingredientChecked: {
+                                ...session.ingredientChecked,
+                                result: false, // Unchecked by default
+                              },
+                            );
+                            await Provider.of<AppState>(context, listen: false)
+                                .updateSession(updatedSession);
+                            // Force rebuild by showing dialog again
+                            Navigator.pop(context);
+                            _showLastSessionShoppingList(context, updatedSession);
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: AppConstants.smallPadding),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.copy),
+                        label: const Text('Copy'),
+                        onPressed: () {
+                          final sortedKeys = session.shoppingList.keys.toList()..sort();
+                          final list = sortedKeys.map((key) {
+                            final mark = session.ingredientChecked[key] ?? false ? '☑' : '☐';
+                            return '$mark ${key}${session.shoppingList[key]!.isNotEmpty ? ' (${session.shoppingList[key]})' : ''}';
+                          }).join('\n');
+                          Clipboard.setData(ClipboardData(text: list));
+                          Navigator.pop(context);
+                          _showSnackBar('Copied to clipboard');
+                        },
+                      ),
                     ),
                   ],
-                );
-              },
+                ),
+              ],
             ),
           ),
         ),
