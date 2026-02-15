@@ -1,48 +1,264 @@
 {
   "recipes": [
     {
-      "id": "tomato_soup",
-      "dish_name": "Tomato Soup",
+      "id": "tuna_white_bean_power_bowl",
+      "dish_name": "Seared Tuna & White Bean Power Bowl",
       "cooking_time": {
-        "prep_time": 15,
-        "cook_time": 30,
-        "total_time": 45
+        "prep_time": 10,
+        "cook_time": 20,
+        "total_time": 30
       },
       "nutrition": {
-        "kcal": 400,
-        "protein_g": 8,
-        "highlights": "Good source of Vitamin A and Vitamin C from the vegetables. Contains healthy fats from olive oil and richness from cooking cream. High in fiber if using wholemeal bread."
+        "kcal": 640,
+        "protein_g": 56,
+        "highlights": "ULTRA HIGH **protein** from tuna (40g) + beans (16g). Extremely rich in **Omega-3 fatty acids**. High in iron, selenium, and B vitamins. Performance athlete-level nutrition."
       },
-      "ingredients": "1. Tomatoes 1 kg\n2. Capsicum 1\n3. Onion 1\n4. Garlic 4 cloves\n5. Olive oil\n6. Cooking cream 200ml\n7. Italian herbs\n8. Grated cheese\n9. Bread for serving",
-      "instructions": "1. Dice onion and capsicum. Mince garlic.\n2. Heat olive oil in large pot.\n3. Sauté onion and capsicum 5 min until soft.\n4. Add garlic, cook 1 min.\n5. Roughly chop tomatoes, add to pot.\n6. Add herbs, season with salt and pepper.\n7. Simmer 20 min until tomatoes broken down.\n8. Use immersion blender or transfer to blender. Blend until smooth.\n9. Return to pot, stir in cooking cream.\n10. Heat through 2-3 min.\n11. Serve topped with grated cheese and bread.",
-      "image_description": "Image of a bowl of creamy red tomato soup topped with grated cheese, served with a slice of crusty bread on the side.",
-      "image_filename": "tomato_soup.jpg"
+      "ingredients": "1. Fresh tuna steaks 350g (sushi-grade if eating rare)\n2. Cannellini beans 2 tins (800g), drained\n3. Cherry tomatoes 250g, halved\n4. Garlic 4 cloves (2 minced, 2 sliced)\n5. Baby spinach 3 cups\n6. Lemon zest and juice 1 lemon\n7. Fresh basil 1/2 cup torn\n8. Parmesan 30g grated\n9. Olive oil 4 tbsp\n10. Balsamic vinegar 1 tbsp\n11. Dijon mustard 1 tsp\n12. Salt and pepper\n13. Sesame seeds for crusting tuna",
+      "instructions": "**Using Ninja SmartLid + Ninja Dual Zone Air Fryer:**\n\n1. **Ninja SmartLid:** Select SEAR/SAUT\u00c9 mode. Add 2 tbsp olive oil.\n2. Add sliced garlic, cook 1 min until golden.\n3. Add cherry tomatoes, cook 3 min until starting to burst.\n4. Add cannellini beans, lemon zest, salt, pepper.\n5. Lock lid, select PRESSURE COOK, 5 min.\n6. Quick release. Select SEAR/SAUT\u00c9, add spinach, stir until wilted (2 min).\n7. Stir in half the basil, lemon juice, Parmesan. Keep warm.\n8. **While beans cook:** Pat tuna steaks very dry. Season with salt, pepper.\n9. Press sesame seeds onto both sides of tuna.\n10. Brush with 1 tbsp olive oil.\n11. **Air Fryer Zone 1:** Preheat 3 min at 200\u00b0C. Add tuna steaks.\n12. Air fry at 200\u00b0C for 6-8 min (6 min for rare, 8 min for medium-rare, 12 min for well done).\n13. **Make dressing:** Whisk remaining olive oil, balsamic vinegar, minced garlic, Dijon mustard.\n14. **To serve:** Divide warm bean mixture among bowls.\n15. Slice tuna steaks thickly. Arrange over beans.\n16. Drizzle with dressing, top with remaining basil.\n\n**Protein tip:** Fresh tuna has MORE protein than chicken breast! Searing keeps it moist. The sesame crust adds texture and healthy fats.\n\n**Time:** 30 minutes total\n**Protein:** 56g per serving",
+      "image_description": "Image of seared sesame-crusted tuna slices (pink in the middle) over a bed of white beans with tomatoes and wilted spinach, garnished with basil.",
+      "image_filename": "tuna_white_bean_power_bowl.jpg"
     },
     {
-      "id": "chickpeas_eggplant",
-      "dish_name": "Chickpeas Eggplant",
+      "id": "super_protein_salmon_lentil_bowl",
+      "dish_name": "Super Protein Salmon & Lentil Bowl",
       "cooking_time": {
-        "prep_time": 15,
-        "cook_time": 30,
-        "total_time": 55
+        "prep_time": 10,
+        "cook_time": 25,
+        "total_time": 35
       },
       "nutrition": {
-        "kcal": 375,
-        "protein_g": 17,
-        "highlights": "Excellent source of plant-based protein and fiber (from chickpeas). Rich in vitamins and antioxidants from tomatoes and eggplant. Naturally vegan."
+        "kcal": 680,
+        "protein_g": 54,
+        "highlights": "ULTRA HIGH **protein** from salmon (35g) + lentils (18g). Exceptional **Omega-3** content. Rich in iron, folate, and complete amino acids. Bodybuilder-approved nutrition."
       },
-      "ingredients": "1. Chickpeas 480g (2 cans)\n2. Tinned cherry tomatoes 400g\n3. Sundried tomatoes 1/2 cup chopped\n4. Eggplant 1 big, diced\n5. Garlic 4 cloves minced\n6. Olive oil\n7. Italian herbs\n8. Salt and pepper",
-      "instructions": "1. Dice eggplant into 2cm cubes. Sprinkle with salt, let sit 10 min.\n2. Pat eggplant dry with paper towel.\n3. Heat olive oil in large pan or pot.\n4. Cook eggplant 8-10 min until golden and soft. Remove, set aside.\n5. Add more oil if needed. Add garlic, cook 1 min.\n6. Add sundried tomatoes, cook 2 min.\n7. Add tinned cherry tomatoes, chickpeas (drained and rinsed).\n8. Add Italian herbs, season with salt and pepper.\n9. Simmer 10 min.\n10. Add cooked eggplant back to pot. Stir gently.\n11. Cook 5 min more.\n12. Serve with rice, couscous, or crusty bread.",
-      "image_description": "Image of a hearty, rustic eggplant and chickpea stew in a tomato sauce, garnished with fresh herbs, served in a terracotta bowl.",
-      "image_filename": "chickpeas_eggplant.jpg"
+      "ingredients": "1. Salmon fillets 400g\n2. Green or brown lentils 1 cup (dried)\n3. Broccoli 300g, cut into florets\n4. Garlic 4 cloves (2 minced, 2 whole)\n5. Vegetable broth 2.5 cups\n6. Lemon juice and zest 1 lemon\n7. Fresh dill 1/3 cup\n8. Greek yogurt 1/2 cup\n9. Dijon mustard 2 tsp\n10. Tahini 2 tbsp\n11. Cumin 1 tsp\n12. Olive oil\n13. Salt and pepper",
+      "instructions": "**Using Ninja SmartLid + Ninja Dual Zone Air Fryer:**\n\n1. **Ninja SmartLid:** Add rinsed lentils, 2 whole garlic cloves, vegetable broth, cumin, salt.\n2. Lock lid, select PRESSURE COOK, 12 min.\n3. When done, quick release. Drain excess liquid if any. Remove garlic cloves, mash and return to lentils.\n4. Stir in lemon zest, half the dill, 1 tbsp olive oil. Keep warm.\n5. **While lentils cook:** Season salmon with salt, pepper, lemon juice. Brush with olive oil.\n6. **Air Fryer Zone 1:** Place salmon skin-side down. Air fry at 180\u00b0C for 12 min.\n7. **Air Fryer Zone 2:** Toss broccoli with 1 tsp olive oil, salt, pepper. After salmon cooks 4 min, add broccoli. Air fry at 190\u00b0C for 8 min. Use SYNC FINISH.\n8. **Make creamy sauce:** Mix Greek yogurt, tahini, minced garlic, Dijon mustard, lemon juice, 2 tbsp water, salt, pepper until smooth.\n9. **Assemble bowls:** Divide warm lentils among bowls.\n10. Top with salmon (break into chunks), roasted broccoli.\n11. Drizzle generously with yogurt-tahini sauce.\n12. Garnish with remaining dill.\n\n**Protein tip:** Lentils + salmon = complete protein spectrum. This combo provides all essential amino acids plus sustained energy. The yogurt sauce adds another protein boost.\n\n**Time:** 35 minutes total\n**Protein:** 54g per serving",
+      "image_description": "Image of a power bowl with warm lentils, flaky salmon pieces, roasted broccoli florets, drizzled with white creamy sauce and fresh dill.",
+      "image_filename": "super_protein_salmon_lentil_bowl.jpg"
+    },
+    {
+      "id": "double_protein_salmon_cottage_cheese",
+      "dish_name": "Double Protein Salmon with Herbed Cottage Cheese",
+      "cooking_time": {
+        "prep_time": 10,
+        "cook_time": 25,
+        "total_time": 35
+      },
+      "nutrition": {
+        "kcal": 580,
+        "protein_g": 52,
+        "highlights": "ULTRA HIGH **protein** from salmon (35g) + cottage cheese (17g). Rich in **Omega-3 fatty acids**, calcium, and complete amino acids. Low carb, muscle-building powerhouse."
+      },
+      "ingredients": "1. Salmon fillets 400g (2 large fillets)\n2. Cottage cheese 200g (high protein variety)\n3. Baby potatoes 300g, halved\n4. Asparagus or green beans 200g\n5. Fresh dill 1/4 cup chopped\n6. Fresh chives 2 tbsp chopped\n7. Garlic 2 cloves minced\n8. Lemon zest and juice 1 lemon\n9. Capers 1 tbsp\n10. Olive oil\n11. Dijon mustard 1 tsp\n12. Salt and pepper",
+      "instructions": "**Using Ninja Dual Zone Air Fryer:**\n\n1. Toss halved baby potatoes with 1 tbsp olive oil, salt, pepper.\n2. **Air Fryer Zone 1:** Add potatoes. Air fry at 200\u00b0C for 20 min, shaking halfway.\n3. **While potatoes cook:** Season salmon with salt, pepper, lemon zest. Brush with olive oil.\n4. Trim asparagus/beans, toss with 1 tsp olive oil.\n5. **Air Fryer Zone 2:** After potatoes cook 10 min, add salmon skin-side down. Air fry at 180\u00b0C for 10 min.\n6. **After salmon cooks 5 min:** Add asparagus/beans around salmon. Continue cooking. Use SYNC FINISH so all finish together.\n7. **Make herbed cottage cheese:** Mix cottage cheese, dill, chives, minced garlic, lemon juice, capers, Dijon mustard, salt, pepper.\n8. **To serve:** Plate salmon with potatoes and asparagus.\n9. Top salmon generously with herbed cottage cheese (serves as creamy sauce).\n10. Extra lemon wedges on side.\n\n**Protein tip:** The cottage cheese topping adds 17g protein while creating a restaurant-quality creamy sauce. Use full-fat for richest flavor.\n\n**Time:** 35 minutes total\n**Protein:** 52g per serving",
+      "image_description": "Image of a perfectly cooked salmon fillet topped with creamy herbed cottage cheese, served with crispy baby potatoes and asparagus.",
+      "image_filename": "double_protein_salmon_cottage_cheese.jpg"
+    },
+    {
+      "id": "cod_gigantes_beans",
+      "dish_name": "Baked Cod with Gigantes Beans",
+      "cooking_time": {
+        "prep_time": 8,
+        "cook_time": 25,
+        "total_time": 33
+      },
+      "nutrition": {
+        "kcal": 540,
+        "protein_g": 52,
+        "highlights": "ULTRA HIGH **protein** from cod (38g) + giant beans (14g). Very high in selenium, B vitamins, and fiber. Low fat, extremely filling, restaurant-quality dish."
+      },
+      "ingredients": "1. Cod fillets 450g (or other thick white fish)\n2. Giant butter beans (lima beans) 2 tins, drained\n3. Cherry tomatoes 300g, halved\n4. Garlic 6 cloves, sliced\n5. Fresh oregano 3 tbsp (or 1.5 tsp dried)\n6. Lemon 1, sliced\n7. Feta cheese 100g, crumbled\n8. Kalamata olives 1/2 cup\n9. Vegetable broth 1 cup\n10. Tomato paste 2 tbsp\n11. Olive oil 4 tbsp\n12. Fresh parsley 1/3 cup\n13. Wholegrain bread\n14. Salt and pepper",
+      "instructions": "**Using Ninja SmartLid Multi Cooker:**\n\n1. Select SEAR/SAUT\u00c9 mode. Add 2 tbsp olive oil.\n2. Add sliced garlic, cook 2 min until fragrant.\n3. Add tomato paste, stir 1 min.\n4. Add cherry tomatoes, cook 3 min until starting to break down.\n5. Add giant beans, vegetable broth, oregano (if using dried), olives, salt, pepper.\n6. Lock lid, PRESSURE COOK 8 min.\n7. Quick release.\n8. Select SEAR/SAUT\u00c9 mode. Let come to gentle simmer.\n9. Season cod fillets with salt, pepper, 1 tbsp olive oil.\n10. Nestle cod fillets into bean mixture. Top each fillet with lemon slices.\n11. Sprinkle feta around fish.\n12. Close glass lid (not pressure lid). Cook 8-10 min until fish flakes easily.\n13. **Last 2 min:** Add fresh oregano if using.\n14. Drizzle with remaining olive oil, garnish with parsley.\n15. Serve in shallow bowls with bread to soak up sauce.\n\n**Protein tip:** Thick white fish like cod has MORE protein per calorie than chicken! Giant beans are creamier than regular beans and add substantial protein.\n\n**Time:** 33 minutes total\n**Protein:** 52g per serving",
+      "image_description": "Image of thick cod fillets with lemon slices on top, nestled in creamy giant white beans with tomatoes, olives, and crumbled feta in a rich sauce.",
+      "image_filename": "cod_gigantes_beans.jpg"
+    },
+    {
+      "id": "ultimate_protein_grain_bowl",
+      "dish_name": "Ultimate Protein Grain Bowl (Triple Protein)",
+      "cooking_time": {
+        "prep_time": 12,
+        "cook_time": 22,
+        "total_time": 34
+      },
+      "nutrition": {
+        "kcal": 650,
+        "protein_g": 50,
+        "highlights": "ULTRA HIGH **protein** from tempeh (20g) + quinoa (8g) + chickpeas (14g) + tahini (3g) + edamame (5g). Complete amino acid profile. Maximum plant protein possible in one bowl!"
+      },
+      "ingredients": "1. Tempeh 200g block\n2. Quinoa 1 cup\n3. Chickpeas 1 tin, drained and dried\n4. Edamame 1 cup (frozen, shelled)\n5. Sweet potato 1 medium, cubed\n6. Kale 2 cups, chopped\n7. Tahini 3 tbsp\n8. Lemon juice 2 tbsp\n9. Garlic 2 cloves minced\n10. Soy sauce 2 tbsp\n11. Maple syrup 1 tbsp\n12. Sesame oil 1 tsp\n13. Ginger 1 tsp grated\n14. Olive oil\n15. Sesame seeds 2 tbsp\n16. Salt and pepper",
+      "instructions": "**Using Ninja SmartLid + Ninja Dual Zone Air Fryer:**\n\n1. **Ninja SmartLid:** Add 1 cup quinoa, 1.5 cups water. Lock lid, RICE mode (12 min).\n2. **While quinoa cooks:** Steam tempeh in SmartLid with steamer basket for 5 min first (see Tempeh 101 recipe). Pat dry, cube.\n3. Marinade tempeh cubes in mix of soy sauce, maple syrup, sesame oil, grated ginger. Set aside.\n4. Pat chickpeas dry, toss with 1 tsp olive oil, salt, pepper.\n5. Toss sweet potato cubes with 1 tsp olive oil, salt, pepper.\n6. **Air Fryer Zone 1:** Add chickpeas. Air fry 200\u00b0C for 20 min, shaking every 5 min.\n7. **Air Fryer Zone 2:** Add sweet potato cubes. Air fry 200\u00b0C for 15 min, shaking halfway.\n8. **After 10 min:** Add marinated tempeh cubes to Zone 2 with sweet potatoes. Continue 5 min.\n9. **Last 3 min:** Add frozen edamame and chopped kale to Zone 2. Use SYNC FINISH.\n10. **Make tahini dressing:** Whisk tahini, lemon juice, minced garlic, 3-4 tbsp water, salt until pourable.\n11. **Assemble bowls:** Quinoa base, arrange all proteins and vegetables in sections.\n12. Drizzle generously with tahini dressing, sprinkle sesame seeds.\n\n**Protein tip:** This bowl has FIVE protein sources! Perfect for athletes or anyone needing maximum plant-based protein. Each ingredient adds different amino acids for complete nutrition.\n\n**Time:** 34 minutes total\n**Protein:** 50g per serving",
+      "image_description": "Image of an Instagram-worthy grain bowl with distinct sections of golden quinoa, crispy chickpeas, tempeh cubes, sweet potato, edamame, kale, drizzled with tahini and sesame seeds.",
+      "image_filename": "ultimate_protein_grain_bowl.jpg"
+    },
+    {
+      "id": "double_fish_mediterranean_stew",
+      "dish_name": "Double Fish Mediterranean Stew",
+      "cooking_time": {
+        "prep_time": 10,
+        "cook_time": 25,
+        "total_time": 35
+      },
+      "nutrition": {
+        "kcal": 580,
+        "protein_g": 48,
+        "highlights": "ULTRA HIGH **protein** from white fish (30g) + cannellini beans (18g). Rich in **Omega-3s**, selenium, and fiber. Low carb, high volume, extremely satisfying."
+      },
+      "ingredients": "1. White fish fillets 400g (barramundi, snapper, or cod), cut into chunks\n2. Cannellini beans 2 tins (800g), drained\n3. Tinned diced tomatoes 400g\n4. Fish or vegetable stock 1.5 cups\n5. Fennel bulb 1, sliced (or use celery)\n6. Garlic 4 cloves, sliced\n7. Cherry tomatoes 200g, halved\n8. Kalamata olives 1/2 cup\n9. Capers 2 tbsp\n10. Fresh basil 1/2 cup\n11. Lemon 1, sliced\n12. Saffron pinch (optional - adds authentic flavor)\n13. Bay leaves 2\n14. Olive oil\n15. Crusty wholegrain bread\n16. Salt and pepper",
+      "instructions": "**Using Ninja SmartLid Multi Cooker:**\n\n1. Select SEAR/SAUT\u00c9 mode. Add 2 tbsp olive oil.\n2. Add sliced fennel (or celery), cook 4 min until starting to soften.\n3. Add sliced garlic, cook 1 min.\n4. Add tinned tomatoes, stock, bay leaves, saffron if using, salt, pepper.\n5. Add cannellini beans, cherry tomatoes, olives, capers.\n6. Lock lid, select PRESSURE COOK mode, 8 min.\n7. Quick release when done.\n8. Select SEAR/SAUT\u00c9 mode.\n9. Let mixture come to gentle simmer.\n10. Add fish chunks and lemon slices on top. Do not stir (fish is delicate).\n11. Close glass lid (not pressure lid). Simmer 5-7 min until fish just cooked through and flakes easily.\n12. Gently stir in half the fresh basil.\n13. Serve in deep bowls, topped with remaining basil.\n14. Serve with crusty bread for dipping in broth.\n\n**Protein tip:** Combining fish + beans gives you complete protein plus fiber. The beans thicken the broth naturally. Fish cooks in minutes - don't overcook!\n\n**Time:** 35 minutes total\n**Protein:** 48g per serving",
+      "image_description": "Image of a rustic Mediterranean fish stew in a bowl with chunks of white fish, white beans, tomatoes, olives, and fresh basil in a rich broth.",
+      "image_filename": "double_fish_mediterranean_stew.jpg"
+    },
+    {
+      "id": "greek_baked_ricotta_eggs",
+      "dish_name": "Greek Baked Ricotta with Eggs & Lentils",
+      "cooking_time": {
+        "prep_time": 10,
+        "cook_time": 25,
+        "total_time": 35
+      },
+      "nutrition": {
+        "kcal": 580,
+        "protein_g": 46,
+        "highlights": "VERY HIGH **protein** from ricotta (20g) + eggs (18g) + lentils (8g). Exceptional calcium source. Complete amino acids. Vegetarian protein powerhouse."
+      },
+      "ingredients": "1. Ricotta cheese 300g (full fat for richness)\n2. Eggs 6\n3. Cooked lentils 1 cup (or 1 tin, drained)\n4. Spinach 2 cups chopped\n5. Sundried tomatoes 1/3 cup chopped\n6. Feta cheese 80g crumbled\n7. Garlic 3 cloves minced\n8. Fresh oregano 2 tbsp (or 1 tsp dried)\n9. Lemon zest 1 lemon\n10. Pine nuts 2 tbsp\n11. Olive oil\n12. Wholegrain bread or pita\n13. Salt and pepper",
+      "instructions": "**Using Ninja SmartLid (if cooking lentils from scratch) + Ninja Dual Zone Air Fryer:**\n\n**If using dried lentils:**\n1. **Ninja SmartLid:** Add 1 cup dried lentils, 2.5 cups water, pinch salt.\n2. Lock lid, PRESSURE COOK 10 min. Quick release. Drain and set aside.\n\n**If using canned lentils, start here:**\n3. In large bowl, mix ricotta, 2 eggs (lightly beaten), minced garlic, oregano, lemon zest, salt, pepper until smooth.\n4. Fold in cooked/canned lentils, chopped spinach, sundried tomatoes, half the feta.\n5. Pour mixture into oven-safe dish that fits in air fryer (or 2 smaller dishes for both zones).\n6. Make 4 wells in the mixture. Crack remaining 4 eggs into wells.\n7. Top with remaining feta and pine nuts. Drizzle with olive oil.\n8. **Air Fryer Zone 1:** Place dish in basket. Air fry at 170\u00b0C for 15-18 min until eggs set (yolks still slightly runny) and top golden.\n9. **Air Fryer Zone 2:** Add thick slices of bread. Toast at 180\u00b0C for 4 min. Time so bread finishes when eggs do.\n10. Let rest 3 min before serving.\n11. Serve directly from dish with toasted bread.\n\n**Protein tip:** Ricotta has nearly as much protein as Greek yogurt but creamier. Baking it creates a texture like crustless quiche.\n\n**Time:** 35 minutes total (25 min if using canned lentils)\n**Protein:** 46g per serving",
+      "image_description": "Image of a baked ricotta casserole with visible eggs nestled in creamy white ricotta mixture, dotted with sundried tomatoes and feta, topped with toasted pine nuts.",
+      "image_filename": "greek_baked_ricotta_eggs.jpg"
+    },
+    {
+      "id": "high_protein_tofu_scramble_bowl",
+      "dish_name": "High-Protein Tofu Scramble Bowl (Tofu 101)",
+      "cooking_time": {
+        "prep_time": 10,
+        "cook_time": 22,
+        "total_time": 32
+      },
+      "nutrition": {
+        "kcal": 560,
+        "protein_g": 44,
+        "highlights": "VERY HIGH **protein** from tofu (32g) + quinoa (8g) + Greek yogurt (4g). Complete amino acids. High in calcium and iron. Vegan-adaptable powerhouse breakfast/lunch."
+      },
+      "ingredients": "1. Extra-firm tofu 450g block, pressed\n2. Quinoa 1 cup\n3. Cherry tomatoes 200g, halved\n4. Mushrooms 200g, sliced\n5. Baby spinach 3 cups\n6. Nutritional yeast 3 tbsp (gives cheesy flavor + B12)\n7. Turmeric 1/2 tsp (for golden color)\n8. Garlic powder 1 tsp\n9. Smoked paprika 1/2 tsp\n10. Greek yogurt 1/2 cup (or vegan alternative)\n11. Fresh chives 2 tbsp\n12. Olive oil\n13. Salt and pepper\n14. Avocado 1, sliced (optional)",
+      "instructions": "**Using Ninja SmartLid + Ninja Dual Zone Air Fryer:**\n\n**TOFU 101 - How to make it taste amazing:**\n1. **Key:** Press tofu for 10 min between paper towels with heavy object on top. Removes water = better texture.\n2. **Ninja SmartLid:** Add 1 cup quinoa and 1.5 cups water. Lock lid, select RICE mode (12 min).\n3. **While quinoa cooks:** Crumble pressed tofu with hands into bite-size pieces (like scrambled eggs).\n4. In bowl, mix crumbled tofu with nutritional yeast, turmeric, garlic powder, smoked paprika, salt, pepper.\n5. Toss with 1 tbsp olive oil until well coated (this is your 'marinade').\n6. **Air Fryer Zone 1:** Spread seasoned tofu in basket. Air fry at 190\u00b0C for 15 min, shaking every 5 min until golden and slightly crispy.\n7. **Air Fryer Zone 2:** Toss mushrooms and cherry tomatoes with 1 tsp olive oil, salt, pepper. Air fry at 180\u00b0C for 12 min. Use SYNC FINISH.\n8. **Last 2 min of cooking:** Add spinach to mushroom/tomato basket, let wilt.\n9. **Assemble bowls:** Quinoa base, top with golden tofu scramble, roasted vegetables.\n10. Dollop Greek yogurt, sprinkle chives, add avocado if using.\n\n**Tofu tip:** Nutritional yeast + turmeric makes tofu taste eggy and cheesy! Pressing is crucial - wet tofu = mushy tofu. Air frying makes it crispy on edges.\n\n**Time:** 32 minutes total\n**Protein:** 44g per serving",
+      "image_description": "Image of a bowl with fluffy quinoa topped with golden, crumbly tofu scramble, roasted mushrooms and tomatoes, wilted spinach, and a dollop of yogurt.",
+      "image_filename": "high_protein_tofu_scramble_bowl.jpg"
+    },
+    {
+      "id": "mediterranean_tuna_nicoise",
+      "dish_name": "Quick Mediterranean Tuna Bowl",
+      "cooking_time": {
+        "prep_time": 10,
+        "cook_time": 18,
+        "total_time": 28
+      },
+      "nutrition": {
+        "kcal": 520,
+        "protein_g": 42,
+        "highlights": "Extremely high **protein** from tuna and eggs. Rich in **Omega-3 fatty acids**. Contains vitamins, minerals, and healthy fats. Complete meal with protein, carbs, and vegetables."
+      },
+      "ingredients": "1. Fresh tuna steaks 300g (or tinned tuna 2 tins as budget option)\n2. Baby potatoes 400g, halved\n3. Eggs 4\n4. Green beans 200g, trimmed\n5. Cherry tomatoes 150g halved\n6. Kalamata olives 1/2 cup\n7. Capers 2 tbsp\n8. Dijon mustard 1 tbsp\n9. Lemon juice 2 tbsp\n10. Olive oil 4 tbsp\n11. Fresh basil\n12. Salt and pepper",
+      "instructions": "**Using Ninja Dual Zone Air Fryer + Ninja SmartLid:**\n\n1. **Ninja SmartLid:** Add 1.5 cups water and steamer basket. Add eggs to basket.\n2. Lock lid, select PRESSURE COOK, 5 min. When done, quick release. Transfer eggs to ice water.\n3. **Keep SmartLid pot:** Add baby potatoes and green beans to basket with 1 cup water.\n4. Lock lid, select PRESSURE COOK, 4 min. Quick release when done. Drain and set aside.\n5. **While vegetables steam:** Season tuna steaks with salt, pepper, olive oil.\n6. **Air Fryer Zone 1:** Place tuna steaks. Air fry at 200\u00b0C for 8 min for medium-rare (10 min for well done).\n7. **Make dressing:** Whisk together 3 tbsp olive oil, lemon juice, mustard, salt, pepper.\n8. **Assemble bowls:** Divide potatoes, green beans, cherry tomatoes, olives among bowls.\n9. Peel and halve eggs. Add to bowls.\n10. Break tuna into chunks over bowls (or add tinned tuna).\n11. Drizzle with dressing, add capers and fresh basil.\n\n**Effortless tip:** SmartLid cooks eggs and vegetables hands-free while tuna air fries!\n\n**Time:** 28 minutes total",
+      "image_description": "Image of a beautiful bowl with seared tuna chunks, baby potatoes, green beans, halved eggs, olives, and cherry tomatoes, drizzled with lemon dressing.",
+      "image_filename": "mediterranean_tuna_nicoise.jpg"
+    },
+    {
+      "id": "crispy_tempeh_buddha_bowl",
+      "dish_name": "Crispy Tempeh Buddha Bowl (Tempeh 101)",
+      "cooking_time": {
+        "prep_time": 12,
+        "cook_time": 22,
+        "total_time": 34
+      },
+      "nutrition": {
+        "kcal": 620,
+        "protein_g": 42,
+        "highlights": "VERY HIGH **protein** from tempeh (31g) + quinoa (8g) + tahini (3g). Complete amino acids. Rich in probiotics, fiber, and iron. Fermented soy is easier to digest."
+      },
+      "ingredients": "1. Tempeh 300g block\n2. Quinoa 1 cup\n3. Edamame 1 cup (frozen, shelled)\n4. Red cabbage 2 cups shredded\n5. Carrot 1 large, julienned\n6. Cucumber 1, sliced\n7. Soy sauce or tamari 3 tbsp\n8. Maple syrup 1 tbsp\n9. Rice vinegar 2 tbsp\n10. Sesame oil 1 tbsp\n11. Tahini 3 tbsp\n12. Garlic 2 cloves minced\n13. Fresh coriander 1/4 cup\n14. Sesame seeds 2 tbsp\n15. Olive oil",
+      "instructions": "**Using Ninja SmartLid + Ninja Dual Zone Air Fryer:**\n\n**TEMPEH 101 - How to prepare:**\n1. Cut tempeh into 1.5cm cubes or thick slices.\n2. **KEY STEP:** Steam first to remove bitterness and help marinade absorb.\n3. **Ninja SmartLid:** Add 1 cup water and steamer basket. Add tempeh cubes.\n4. Lock lid, select STEAM mode, 5 min. Remove tempeh, pat dry.\n5. **Make marinade:** Mix soy sauce, maple syrup, 1 tbsp rice vinegar, sesame oil, minced garlic.\n6. Toss steamed tempeh in marinade. Let sit 5 min (longer is better).\n7. **Rinse SmartLid pot.** Add 1 cup quinoa and 1.5 cups water. Lock lid, select RICE mode (12 min).\n8. **Air Fryer Zone 1:** Add marinated tempeh (reserve marinade). Air fry at 200\u00b0C for 15 min, shaking every 5 min until golden and crispy.\n9. **Air Fryer Zone 2:** Add frozen edamame after tempeh cooks 10 min. Air fry at 180\u00b0C for 5 min. Use SYNC FINISH.\n10. **Make tahini dressing:** Mix tahini, remaining rice vinegar, 3 tbsp water, salt until smooth.\n11. **Assemble bowls:** Quinoa base, top with crispy tempeh, edamame, cabbage, carrot, cucumber.\n12. Drizzle with tahini dressing and reserved marinade.\n13. Garnish with coriander and sesame seeds.\n\n**Tempeh tip:** Steaming removes bitterness - this is the secret! Air frying makes it crispy like bacon. Tempeh has more protein than tofu.\n\n**Time:** 34 minutes total\n**Protein:** 42g per serving",
+      "image_description": "Image of a colorful Buddha bowl with crispy golden tempeh cubes, fluffy quinoa, edamame, purple cabbage, carrots, and cucumber, drizzled with tahini sauce.",
+      "image_filename": "crispy_tempeh_buddha_bowl.jpg"
+    },
+    {
+      "id": "mackerel_white_bean_salad",
+      "dish_name": "Smoked Mackerel & White Bean Power Salad",
+      "cooking_time": {
+        "prep_time": 12,
+        "cook_time": 18,
+        "total_time": 30
+      },
+      "nutrition": {
+        "kcal": 590,
+        "protein_g": 42,
+        "highlights": "VERY HIGH **protein** from mackerel (26g) + beans (16g). Extremely rich in **Omega-3 fatty acids** (more than salmon!). High in vitamin D and B12. Budget-friendly superfood."
+      },
+      "ingredients": "1. Smoked mackerel fillets 250g (or fresh mackerel)\n2. Cannellini beans 2 tins (800g), drained\n3. Baby potatoes 400g, quartered\n4. Green beans 200g, trimmed\n5. Cherry tomatoes 200g, halved\n6. Rocket (arugula) 3 cups\n7. Red capsicum 1, sliced\n8. Capers 2 tbsp\n9. Fresh parsley 1/2 cup\n10. Lemon juice and zest 1 lemon\n11. Dijon mustard 2 tsp\n12. Horseradish 1 tsp (optional - adds zing)\n13. Olive oil 4 tbsp\n14. Salt and pepper",
+      "instructions": "**Using Ninja Dual Zone Air Fryer:**\n\n1. Toss quartered potatoes with 2 tbsp olive oil, salt, pepper.\n2. **Air Fryer Zone 1:** Add potatoes. Air fry at 200\u00b0C for 18 min, shaking halfway.\n3. **Air Fryer Zone 2:** Toss green beans and capsicum with 1 tsp olive oil. After potatoes cook 8 min, add vegetables to Zone 2. Air fry at 180\u00b0C for 10 min. Use SYNC FINISH.\n4. **While cooking:** Make dressing - whisk remaining olive oil, lemon juice, Dijon mustard, horseradish if using, salt, pepper.\n5. In large bowl, combine cannellini beans, cherry tomatoes, capers, half the parsley.\n6. When vegetables done, add warm potatoes and green beans to bowl.\n7. Toss everything with dressing.\n8. Add rocket, toss gently.\n9. Break mackerel into large flakes over salad (if using fresh mackerel, air fry with vegetables in Zone 2 for 8 min at 180\u00b0C).\n10. Top with remaining parsley and lemon zest.\n11. Serve warm or room temperature.\n\n**Protein tip:** Smoked mackerel is pre-cooked and incredibly convenient. It has MORE Omega-3s than salmon! The oily fish + beans combo is nutritionally perfect.\n\n**Time:** 30 minutes total\n**Protein:** 42g per serving",
+      "image_description": "Image of a hearty salad with flaked smoked mackerel over white beans, warm potatoes, green beans, tomatoes, and rocket, dressed with a mustard vinaigrette.",
+      "image_filename": "mackerel_white_bean_salad.jpg"
+    },
+    {
+      "id": "crispy_tofu_greek_style",
+      "dish_name": "Crispy Tofu Greek-Style with Tzatziki",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 20,
+        "total_time": 35
+      },
+      "nutrition": {
+        "kcal": 520,
+        "protein_g": 40,
+        "highlights": "HIGH **protein** from tofu (28g) + Greek yogurt (12g). Rich in calcium, iron, and probiotics. Mediterranean flavors make tofu irresistible."
+      },
+      "ingredients": "1. Extra-firm tofu 450g block, pressed\n2. Greek yogurt 300g (high protein)\n3. Cucumber 1, grated and squeezed\n4. Cherry tomatoes 200g, halved\n5. Garlic 4 cloves (2 minced for tzatziki, 2 for marinade)\n6. Lemon juice and zest 1 lemon\n7. Fresh dill 1/2 cup chopped\n8. Fresh mint 1/4 cup chopped\n9. Dried oregano 2 tsp\n10. Smoked paprika 1 tsp\n11. Olive oil 3 tbsp\n12. Wholegrain pita bread\n13. Red capsicum 1, sliced\n14. Kalamata olives 1/2 cup\n15. Salt and pepper",
+      "instructions": "**Using Ninja Dual Zone Air Fryer:**\n\n**Make tzatziki first (can be done ahead):**\n1. Grate cucumber, squeeze out excess water in paper towel.\n2. Mix Greek yogurt, cucumber, 2 minced garlic cloves, half the dill, half the mint, lemon juice, salt, pepper. Refrigerate.\n\n**Prepare tofu:**\n3. Press tofu 10 min, cut into 2cm cubes.\n4. **Marinade:** Mix 2 tbsp olive oil, remaining minced garlic, oregano, smoked paprika, lemon zest, salt, pepper.\n5. Toss tofu cubes in marinade. Let sit 5 min.\n6. **Air Fryer Zone 1:** Spread marinated tofu in single layer. Air fry at 200\u00b0C for 18 min, shaking every 6 min until golden and crispy.\n7. **Air Fryer Zone 2:** Toss cherry tomatoes, capsicum slices with 1 tsp olive oil, salt. Air fry at 180\u00b0C for 12 min.\n8. After vegetables cook 8 min, add pita bread to Zone 2. Toast final 4 min. Use SYNC FINISH.\n9. **Assemble:** Cut warm pita into triangles.\n10. Serve crispy tofu with roasted vegetables, olives, tzatziki for dipping.\n11. Garnish with remaining dill and mint.\n12. Drizzle olive oil over everything.\n\n**Tofu tip:** Greek seasonings transform tofu! The tzatziki adds major protein while cooling the spices. Make extra tzatziki - it's amazing with everything.\n\n**Time:** 35 minutes total\n**Protein:** 40g per serving",
+      "image_description": "Image of golden crispy tofu cubes with Greek seasonings, served with roasted vegetables, pita triangles, olives, and a bowl of creamy tzatziki.",
+      "image_filename": "crispy_tofu_greek_style.jpg"
+    },
+    {
+      "id": "mediterranean_white_fish_potatoes",
+      "dish_name": "One-Tray Mediterranean Fish & Potatoes",
+      "cooking_time": {
+        "prep_time": 8,
+        "cook_time": 22,
+        "total_time": 30
+      },
+      "nutrition": {
+        "kcal": 450,
+        "protein_g": 38,
+        "highlights": "Very high **protein** from white fish. Rich in **Omega-3 fatty acids** and selenium. Low fat, heart-healthy. Complete meal with protein, carbs, and vegetables."
+      },
+      "ingredients": "1. White fish fillets 400g (barramundi, cod, or snapper)\n2. Baby potatoes 400g, quartered\n3. Cherry tomatoes 200g, whole\n4. Garlic 4 cloves sliced\n5. Kalamata olives 1/2 cup\n6. Capers 2 tbsp\n7. Fresh oregano or dried 1 tsp\n8. Lemon 1, sliced\n9. Olive oil 3 tbsp\n10. Fresh parsley 1/4 cup\n11. Feta cheese 50g crumbled (optional)\n12. Salt and pepper",
+      "instructions": "**Using Ninja Dual Zone Air Fryer:**\n\n1. **Air Fryer Zone 1:** Toss quartered potatoes with 2 tbsp olive oil, salt, pepper, oregano. Spread in basket.\n2. Air fry at 200\u00b0C for 15 min, shaking halfway.\n3. **After 15 min:** Add cherry tomatoes, garlic, olives, capers to potatoes. Toss gently. Air fry 5 more min at 200\u00b0C.\n4. **Air Fryer Zone 2:** While potatoes cook, season fish with salt, pepper, 1 tbsp olive oil. Place lemon slices on top.\n5. After potatoes have cooked 12 min, add fish to Zone 2. Air fry at 180\u00b0C for 8-10 min until fish flakes easily. Use SYNC FINISH.\n6. **To serve:** Transfer potato mixture to serving platter. Place fish on top.\n7. Squeeze fresh lemon juice over everything.\n8. Garnish with fresh parsley and feta crumbles if using.\n9. Serve immediately.\n\n**Effortless tip:** Complete meal in two air fryer zones with perfect timing. Zero stovetop mess!\n\n**Time:** 30 minutes total",
+      "image_description": "Image of a platter with white fish fillets topped with lemon slices, surrounded by roasted baby potatoes, cherry tomatoes, olives, and capers, garnished with parsley.",
+      "image_filename": "mediterranean_white_fish_potatoes.jpg"
+    },
+    {
+      "id": "sardine_chickpea_smash",
+      "dish_name": "Mediterranean Sardine & Chickpea Smash",
+      "cooking_time": {
+        "prep_time": 8,
+        "cook_time": 20,
+        "total_time": 28
+      },
+      "nutrition": {
+        "kcal": 550,
+        "protein_g": 38,
+        "highlights": "HIGH **protein** from sardines (24g) + chickpeas (14g). Extremely rich in **Omega-3s**, calcium (from bones), and vitamin D. Budget-friendly superfood."
+      },
+      "ingredients": "1. Sardines in olive oil 2 tins (220g total, drained)\n2. Chickpeas 2 tins (800g), drained and dried\n3. Cherry tomatoes 200g, halved\n4. Garlic 4 cloves (2 whole, 2 minced)\n5. Fresh parsley 1/2 cup chopped\n6. Lemon juice and zest 1 lemon\n7. Capers 2 tbsp\n8. Kalamata olives 1/2 cup, chopped\n9. Greek yogurt 1/2 cup\n10. Smoked paprika 1 tsp\n11. Cumin 1/2 tsp\n12. Olive oil\n13. Wholegrain sourdough bread 4 thick slices\n14. Salt and pepper",
+      "instructions": "**Using Ninja Dual Zone Air Fryer:**\n\n1. Pat chickpeas very dry. Toss with 1 tbsp olive oil, smoked paprika, cumin, salt, pepper.\n2. **Air Fryer Zone 1:** Spread chickpeas in basket. Air fry at 200\u00b0C for 18 min, shaking every 6 min until crispy.\n3. **Air Fryer Zone 2:** Toss cherry tomatoes and 2 whole garlic cloves with 1 tsp olive oil. Air fry at 180\u00b0C for 12 min.\n4. After tomatoes cook 8 min, add bread slices to Zone 2. Toast alongside tomatoes for final 4 min. Use SYNC FINISH.\n5. **While cooking:** In bowl, mash sardines roughly with fork (keep some chunks).\n6. Add minced garlic, capers, olives, lemon zest, half the parsley, 1 tbsp olive oil. Mix gently.\n7. When tomatoes done, squeeze roasted garlic from skins into sardine mixture. Add half the roasted tomatoes. Fold gently.\n8. **Make yogurt sauce:** Mix Greek yogurt, lemon juice, salt, pepper.\n9. **To serve:** Spread yogurt sauce on toasted bread.\n10. Top with sardine-chickpea mixture.\n11. Add crispy chickpeas, remaining roasted tomatoes, remaining parsley.\n12. Drizzle with olive oil.\n\n**Protein tip:** Sardines are incredibly nutrient-dense - more Omega-3s than salmon! Eat the bones for calcium. The 'smash' style makes them less fishy.\n\n**Time:** 28 minutes total\n**Protein:** 38g per serving",
+      "image_description": "Image of rustic open-faced sandwiches with mashed sardines and chickpeas on toasted sourdough, topped with crispy chickpeas and roasted tomatoes.",
+      "image_filename": "sardine_chickpea_smash.jpg"
     },
     {
       "id": "salmon_beans",
       "dish_name": "Salmon Beans",
       "cooking_time": {
         "prep_time": 10,
-        "cook_time": 20,
-        "total_time": 30
+        "cook_time": 15,
+        "total_time": 25
       },
       "nutrition": {
         "kcal": 550,
@@ -50,27 +266,99 @@
         "highlights": "High in **Protein** and **Omega-3 fatty acids** (from salmon). Good source of fiber (from beans) and iron (from spinach). Light coconut cream reduces saturated fat compared to traditional cream."
       },
       "ingredients": "1. Salmon 2-3 fillets\n2. Sundried tomatoes 1/2 cup chopped\n3. Garlic 4 cloves minced\n4. Spinach 2 cups\n5. Light coconut cream 240g\n6. Beans 1 tin (cannellini or butter beans)\n7. Olive oil\n8. Italian herbs\n9. Salt and pepper",
-      "instructions": "1. Season salmon with salt, pepper, Italian herbs.\n2. Heat olive oil in large pan.\n3. Cook salmon 4-5 min per side until cooked through. Remove, set aside.\n4. In same pan add garlic, cook 1 min.\n5. Add sundried tomatoes, cook 2 min.\n6. Add coconut cream, bring to simmer.\n7. Add beans (drained and rinsed), stir.\n8. Add spinach, cook until wilted.\n9. Break salmon into chunks, add back to pan.\n10. Heat through 2-3 min.\n11. Season with salt and pepper.\n12. Serve with rice or bread.",
+      "instructions": "**Using Ninja Dual Zone Air Fryer + Ninja SmartLid:**\n\n1. Season salmon with salt, pepper, Italian herbs. Brush with olive oil.\n2. **Air Fryer Zone 1:** Place salmon skin-side down. Air fry at 180\u00b0C for 10 min.\n3. **While air frying, use Ninja SmartLid:** Select SEAR/SAUT\u00c9 mode.\n4. Add olive oil and garlic, cook 1 min.\n5. Add sundried tomatoes, cook 2 min.\n6. Add coconut cream, bring to simmer.\n7. Add beans (drained and rinsed), stir.\n8. Add spinach, cook until wilted (2-3 min).\n9. When salmon is done, break into chunks and add to pot.\n10. Heat through 2 min.\n11. Season with salt and pepper.\n12. Serve with rice or bread.\n\n**Time saved:** 5 minutes; salmon cooks perfectly in air fryer",
       "image_description": "Image of salmon fillets broken into chunks and mixed into a creamy light coconut sauce with cannellini beans and wilted spinach, served in a skillet.",
       "image_filename": "salmon_beans.jpg"
     },
     {
-      "id": "one_pot_rice",
-      "dish_name": "One Pot Rice",
+      "id": "baked_potato_barramundi",
+      "dish_name": "Baked Potato with Salad and Barramundi",
       "cooking_time": {
         "prep_time": 15,
-        "cook_time": 25,
-        "total_time": 40
+        "cook_time": 35,
+        "total_time": 50
       },
       "nutrition": {
         "kcal": 500,
-        "protein_g": 12,
-        "highlights": "High in Carbohydrates for energy. Contains fiber from beans and spinach. Offers Vitamin K and minerals from the various vegetables and healthy fats from coconut milk and olives."
+        "protein_g": 35,
+        "highlights": "High in **protein** (from barramundi). Good source of carbohydrates (potatoes) for energy, and vitamins and fiber from the fresh salad vegetables. Barramundi is also a good source of **Omega-3 fatty acids**."
       },
-      "ingredients": "1. Rice 1.5 cups\n2. Butter beans 1 tin\n3. Sliced olives 1/2 cup\n4. Cherry tomatoes 250g halved\n5. Sundried tomatoes 1/2 cup chopped\n6. Spinach 2 cups\n7. Artichoke hearts 1 tin, quartered\n8. Lemon juice 2 tbsp\n9. Garlic 4 cloves minced\n10. Coconut milk 400ml\n11. Feta cheese crumbles\n12. Olive oil\n13. Vegetable broth 1 cup\n14. Italian herbs",
-      "instructions": "1. Heat olive oil in large pot with lid.\n2. Add garlic, cook 1 min.\n3. Add rice, stir 2 min to coat.\n4. Add sundried tomatoes, cherry tomatoes, olives, artichokes.\n5. Add coconut milk, vegetable broth, Italian herbs.\n6. Bring to boil, reduce heat to low.\n7. Cover, simmer 15-18 min until rice almost cooked.\n8. Add butter beans (drained and rinsed), spinach on top.\n9. Cover, cook 5 min more until spinach wilted and rice tender.\n10. Stir in lemon juice.\n11. Season with salt and pepper.\n12. Top with feta crumbles before serving.",
-      "image_description": "Image of a colorful one-pot rice dish with visible cherry tomatoes, olives, artichoke hearts, spinach, and feta crumbles on top.",
-      "image_filename": "one_pot_rice.jpg"
+      "ingredients": "1. Small potatoes 8-10\n2. Cucumber 1, diced\n3. Tomatoes 2, diced\n4. Capsicum 1, diced\n5. Sour cream 1/2 cup\n6. Barramundi fillets 2-3\n7. Olive oil\n8. Lemon 1\n9. Fresh dill or parsley\n10. Salt and pepper",
+      "instructions": "**Using Ninja Dual Zone Air Fryer:**\n\n1. Wash potatoes, prick with fork. Toss with olive oil and salt.\n2. Season barramundi with salt, pepper, lemon juice. Brush with olive oil.\n3. **Air Fryer Zone 1:** Add potatoes. Set to 200\u00b0C for 35 min.\n4. **Air Fryer Zone 2:** After potatoes have cooked 25 min, add barramundi skin-side down. Set to 180\u00b0C for 10 min. Use SYNC FINISH so both finish together.\n5. **While cooking:** Dice cucumber, tomatoes, capsicum.\n6. Mix vegetables in bowl. Season with salt, pepper, lemon juice, olive oil.\n7. When done, split baked potatoes and fluff with fork.\n8. Serve barramundi with baked potatoes and vegetable salad.\n9. Dollop sour cream on potatoes.\n10. Garnish with fresh herbs.\n\n**Time saved:** 15 minutes; both cook simultaneously with perfect timing",
+      "image_description": "Image of a split baked potato with a dollop of sour cream, served alongside a pan-seared barramundi fillet and a fresh vegetable salad.",
+      "image_filename": "baked_potato_barramundi.jpg"
+    },
+    {
+      "id": "zaatar_halloumi_salad",
+      "dish_name": "Crispy Za'atar Halloumi Power Salad",
+      "cooking_time": {
+        "prep_time": 10,
+        "cook_time": 15,
+        "total_time": 25
+      },
+      "nutrition": {
+        "kcal": 480,
+        "protein_g": 32,
+        "highlights": "Very high **protein** from halloumi and chickpeas. Rich in calcium from cheese. High fiber from chickpeas and vegetables. Healthy fats from olive oil and nuts."
+      },
+      "ingredients": "1. Halloumi cheese 250g, sliced 1cm thick\n2. Chickpeas 1 tin, drained and patted dry\n3. Mixed salad leaves 4 cups\n4. Cherry tomatoes 200g halved\n5. Cucumber 1, diced\n6. Za'atar 2 tbsp\n7. Pine nuts or almonds 1/4 cup\n8. Pomegranate molasses 2 tbsp\n9. Lemon juice 2 tbsp\n10. Olive oil 3 tbsp\n11. Fresh mint 1/4 cup\n12. Salt and pepper",
+      "instructions": "**Using Ninja Dual Zone Air Fryer:**\n\n1. Pat chickpeas very dry with paper towel. Toss with 1 tbsp olive oil, 1 tbsp za'atar, salt and pepper.\n2. Brush halloumi slices with olive oil, sprinkle with remaining za'atar.\n3. **Air Fryer Zone 1:** Add chickpeas. Air fry at 200\u00b0C for 15 min, shaking every 5 min.\n4. **Air Fryer Zone 2:** Add halloumi slices in single layer. Air fry at 190\u00b0C for 8 min, flipping halfway. Use SYNC FINISH.\n5. **While cooking:** Make dressing - whisk together pomegranate molasses, lemon juice, 2 tbsp olive oil.\n6. Toast pine nuts in dry pan for 2 min until golden.\n7. Arrange salad leaves in large bowl or plates.\n8. Add cherry tomatoes, cucumber.\n9. When done, add crispy chickpeas and halloumi slices.\n10. Drizzle with dressing, top with toasted nuts and fresh mint.\n11. Serve immediately while halloumi is warm.\n\n**Effortless tip:** Both chickpeas and halloumi crisp up perfectly hands-free. No pan mess!\n\n**Time:** 25 minutes total",
+      "image_description": "Image of a colorful salad with golden crispy halloumi slices, roasted chickpeas, fresh vegetables, and herbs, drizzled with dark pomegranate dressing.",
+      "image_filename": "zaatar_halloumi_salad.jpg"
+    },
+    {
+      "id": "crispy_tofu_tahini_bowl",
+      "dish_name": "Crispy Air Fryer Tofu Tahini Bowl",
+      "cooking_time": {
+        "prep_time": 10,
+        "cook_time": 18,
+        "total_time": 28
+      },
+      "nutrition": {
+        "kcal": 520,
+        "protein_g": 28,
+        "highlights": "High in plant-based **protein** from tofu and tahini. Rich in calcium and iron. Contains healthy fats from tahini and fiber from quinoa and vegetables. Complete amino acid profile."
+      },
+      "ingredients": "1. Firm tofu 400g block, pressed and cubed\n2. Quinoa 1 cup\n3. Cherry tomatoes 200g halved\n4. Cucumber 1, diced\n5. Tahini 3 tbsp\n6. Lemon juice 2 tbsp\n7. Garlic 2 cloves minced\n8. Fresh parsley 1/2 cup chopped\n9. Olive oil\n10. Za'atar 1 tbsp\n11. Hummus 1/2 cup (optional)\n12. Salt and pepper",
+      "instructions": "**Using Ninja Dual Zone Air Fryer + Ninja SmartLid:**\n\n1. **Ninja SmartLid:** Add 1 cup quinoa and 1.5 cups water. Lock lid, select RICE mode (takes 12 min).\n2. **While quinoa cooks:** Press tofu between paper towels to remove excess water. Cut into 2cm cubes.\n3. Toss tofu cubes with 1 tbsp olive oil, za'atar, salt and pepper.\n4. **Air Fryer Zone 1:** Spread tofu in single layer. Air fry at 200\u00b0C for 18 min, shaking at 6 and 12 min marks for even crispiness.\n5. **Air Fryer Zone 2:** Add cherry tomatoes (whole). Air fry at 180\u00b0C for 12 min. Use SYNC FINISH with Zone 1.\n6. **Make tahini sauce:** Mix tahini, lemon juice, garlic, 2-3 tbsp water, salt. Whisk until smooth and pourable.\n7. Dice cucumber, chop parsley.\n8. **Assemble bowls:** Divide quinoa between 2-3 bowls. Top with crispy tofu, roasted tomatoes, cucumber, parsley.\n9. Drizzle generously with tahini sauce. Add dollop of hummus if desired.\n10. Serve immediately.\n\n**Effortless tip:** Both appliances work hands-free simultaneously. Total active time is just 5 minutes!\n\n**Time:** 28 minutes total",
+      "image_description": "Image of a colorful bowl with fluffy quinoa, golden crispy tofu cubes, roasted cherry tomatoes, fresh cucumber, and parsley, drizzled with creamy tahini sauce.",
+      "image_filename": "crispy_tofu_tahini_bowl.jpg"
+    },
+    {
+      "id": "harissa_roasted_chickpea_bowl",
+      "dish_name": "Harissa Chickpea & Egg Bowl",
+      "cooking_time": {
+        "prep_time": 8,
+        "cook_time": 20,
+        "total_time": 28
+      },
+      "nutrition": {
+        "kcal": 480,
+        "protein_g": 28,
+        "highlights": "High **protein** from chickpeas and eggs. Complete amino acids. Rich in fiber, iron, and folate. Spicy, satisfying, and nutrient-dense."
+      },
+      "ingredients": "1. Chickpeas 2 tins (800g), drained and dried\n2. Eggs 4\n3. Brown rice or quinoa 1 cup\n4. Harissa paste 2-3 tbsp (adjust to taste - not chilli hot, more flavorful)\n5. Garlic 3 cloves minced\n6. Cumin 1 tsp\n7. Smoked paprika 1 tsp\n8. Greek yogurt 1/2 cup\n9. Cucumber 1, diced\n10. Fresh coriander or parsley 1/2 cup\n11. Lemon juice 2 tbsp\n12. Olive oil\n13. Salt and pepper",
+      "instructions": "**Using Ninja SmartLid + Ninja Dual Zone Air Fryer:**\n\n1. **Ninja SmartLid:** Add 1 cup brown rice and 1.5 cups water. Lock lid, select RICE mode (takes 15 min).\n2. **While rice cooks:** Pat chickpeas very dry. Toss with 1 tbsp olive oil, harissa paste, cumin, smoked paprika, salt.\n3. **Air Fryer Zone 1:** Spread chickpeas in single layer. Air fry at 200\u00b0C for 18 min, shaking every 6 min.\n4. **Air Fryer Zone 2:** After chickpeas have cooked 8 min, crack eggs into 2 small oven-safe ramekins (2 eggs each). Season with salt and pepper. Air fry at 160\u00b0C for 10 min for runny yolks. Use SYNC FINISH.\n5. **Make yogurt sauce:** Mix Greek yogurt, lemon juice, minced garlic, salt.\n6. Dice cucumber, chop herbs.\n7. **Assemble bowls:** Divide rice among bowls. Top with crispy harissa chickpeas, air-fried eggs, cucumber.\n8. Drizzle with yogurt sauce, garnish with fresh herbs.\n\n**Effortless tip:** All three appliances work simultaneously! Zero active cooking time.\n\n**Time:** 28 minutes total",
+      "image_description": "Image of a bowl with brown rice, crispy reddish chickpeas coated in harissa, perfectly cooked eggs with runny yolks, cucumber, and white yogurt sauce.",
+      "image_filename": "harissa_roasted_chickpea_bowl.jpg"
+    },
+    {
+      "id": "white_bean_spinach_feta",
+      "dish_name": "Creamy White Bean, Spinach & Feta",
+      "cooking_time": {
+        "prep_time": 5,
+        "cook_time": 18,
+        "total_time": 23
+      },
+      "nutrition": {
+        "kcal": 420,
+        "protein_g": 26,
+        "highlights": "High **plant-based protein** from beans and feta. Excellent source of iron and calcium. Rich in fiber. Quick, filling, one-pot comfort food."
+      },
+      "ingredients": "1. Cannellini beans 2 tins (800g), drained\n2. Spinach 4 cups fresh (or 2 cups frozen)\n3. Feta cheese 150g crumbled\n4. Garlic 4 cloves minced\n5. Vegetable broth 1 cup\n6. Lemon zest and juice 1 lemon\n7. Dried oregano 1 tsp\n8. Olive oil 2 tbsp\n9. Greek yogurt 1/2 cup\n10. Fresh dill 1/4 cup\n11. Wholegrain bread or pita\n12. Salt and pepper",
+      "instructions": "**Using Ninja SmartLid Multi Cooker:**\n\n1. Select SEAR/SAUT\u00c9 mode. Add olive oil.\n2. Add minced garlic, cook 1 min.\n3. Add beans, vegetable broth, oregano, lemon zest.\n4. Season with salt and pepper.\n5. Lock lid, select PRESSURE COOK mode, set 8 min.\n6. Quick release when done.\n7. Select SEAR/SAUT\u00c9 mode.\n8. Add spinach (if fresh) or frozen spinach. Stir until wilted (2-3 min).\n9. Use potato masher or fork to lightly mash some beans (creates creaminess while leaving texture).\n10. Stir in Greek yogurt and lemon juice.\n11. Add most of the feta, stir gently.\n12. Serve in bowls topped with remaining feta and fresh dill.\n13. Serve with warm bread.\n\n**Effortless tip:** Pressure cooker makes beans ultra-creamy in minutes. One pot, minimal stirring!\n\n**Time:** 23 minutes total",
+      "image_description": "Image of creamy white beans with wilted spinach and crumbled feta in a rustic bowl, garnished with fresh dill.",
+      "image_filename": "white_bean_spinach_feta.jpg"
     },
     {
       "id": "tuna_salad",
@@ -86,17 +374,71 @@
         "highlights": "Excellent source of **Protein** and **Omega-3 fatty acids** (from tuna). Provides essential vitamins and minerals from eggs, corn, and cucumbers. Using Greek yogurt instead of sour cream will increase the protein and decrease the fat content."
       },
       "ingredients": "1. Salad leaves mix\n2. Eggs 4\n3. Tuna 1 tin, drained\n4. Corn 1 tin, drained\n5. Cucumbers 2, diced\n6. Sour cream or Greek yogurt 3 tbsp\n7. Mustard 1 tbsp\n8. Salt and pepper\n9. Lemon juice (optional)",
-      "instructions": "1. Boil eggs 10 min for hard-boiled. Cool in ice water.\n2. Peel eggs, chop into quarters.\n3. Wash and arrange salad leaves on plates or large bowl.\n4. Dice cucumbers.\n5. Arrange eggs, tuna (broken into chunks), corn, cucumbers on salad.\n6. In small bowl mix sour cream or yogurt with mustard.\n7. Add lemon juice if desired. Season with salt and pepper.\n8. Drizzle dressing over salad or serve on the side.\n9. Toss just before eating.",
+      "instructions": "**Using Ninja SmartLid Multi Cooker:**\n\n1. Add 1.5 cups water to pot. Place steamer basket inside.\n2. Add eggs to steamer basket.\n3. Lock lid, select PRESSURE COOK mode, set 5 min.\n4. When done, quick release pressure.\n5. Transfer eggs to ice water immediately. Cool 5 min.\n6. **While eggs cool:** Dice cucumbers.\n7. Wash and arrange salad leaves on plates or large bowl.\n8. Peel eggs, chop into quarters.\n9. Arrange eggs, tuna (broken into chunks), corn, cucumbers on salad.\n10. In small bowl mix sour cream or yogurt with mustard.\n11. Add lemon juice if desired. Season with salt and pepper.\n12. Drizzle dressing over salad or serve on the side.\n13. Toss just before eating.\n\n**Time saved:** Perfect eggs with no watching required",
       "image_description": "Image of a vibrant tuna salad in a large bowl, showing mixed salad leaves, quartered hard-boiled eggs, chunks of tuna, corn kernels, and diced cucumbers, drizzled with a creamy dressing.",
       "image_filename": "tuna_salad.jpg"
+    },
+    {
+      "id": "shakshuka_eggs",
+      "dish_name": "Pressure Cooker Shakshuka",
+      "cooking_time": {
+        "prep_time": 8,
+        "cook_time": 15,
+        "total_time": 23
+      },
+      "nutrition": {
+        "kcal": 380,
+        "protein_g": 24,
+        "highlights": "High **protein** from eggs. Rich in vitamins A and C from tomatoes and capsicum. Contains lycopene (antioxidant). Iron from eggs. Low carb or serve with wholegrain pita."
+      },
+      "ingredients": "1. Eggs 6\n2. Tinned diced tomatoes 400g\n3. Capsicum (red and yellow) 2, sliced\n4. Garlic 4 cloves minced\n5. Tomato paste 2 tbsp\n6. Cumin 1 tsp\n7. Paprika 1 tsp\n8. Feta cheese 100g crumbled\n9. Fresh parsley or coriander 1/4 cup\n10. Olive oil\n11. Wholegrain pita bread\n12. Salt and pepper",
+      "instructions": "**Using Ninja SmartLid Multi Cooker:**\n\n1. Select SEAR/SAUT\u00c9 mode. Add 2 tbsp olive oil.\n2. Add sliced capsicum, cook 4 min until starting to soften.\n3. Add minced garlic, cumin, paprika. Cook 1 min until fragrant.\n4. Add tinned tomatoes, tomato paste, salt and pepper. Stir well.\n5. Lock lid, select PRESSURE COOK mode, set 5 min.\n6. Quick release pressure when done.\n7. Select SEAR/SAUT\u00c9 mode again.\n8. Make 6 wells in the sauce. Crack an egg into each well.\n9. Close glass lid (not pressure lid). Cook 4-5 min until egg whites set but yolks still runny.\n10. Turn off. Sprinkle feta and fresh herbs on top.\n11. Serve directly from pot with warm pita bread.\n\n**Effortless tip:** Sauce cooks hands-free under pressure, eggs finish in 5 min.\n\n**Time:** 23 minutes total",
+      "image_description": "Image of shakshuka in a large pot with eggs nestled in rich red tomato sauce, topped with crumbled feta and fresh herbs.",
+      "image_filename": "shakshuka_eggs.jpg"
+    },
+    {
+      "id": "greek_gigantes_beans",
+      "dish_name": "Greek Gigantes Beans (Giant Beans in Tomato)",
+      "cooking_time": {
+        "prep_time": 5,
+        "cook_time": 25,
+        "total_time": 30
+      },
+      "nutrition": {
+        "kcal": 380,
+        "protein_g": 22,
+        "highlights": "High **plant-based protein** and fiber from giant beans. Rich in iron, potassium, and folate. Low fat. Heart-healthy Mediterranean dish."
+      },
+      "ingredients": "1. Giant butter beans (lima beans) 2 tins (800g total), drained\n2. Tinned diced tomatoes 400g\n3. Tomato paste 2 tbsp\n4. Garlic 4 cloves minced\n5. Fresh dill 1/2 cup chopped\n6. Olive oil 3 tbsp\n7. Dried oregano 1 tsp\n8. Vegetable broth 1 cup\n9. Feta cheese crumbled (optional)\n10. Crusty wholegrain bread\n11. Lemon juice 1 tbsp\n12. Salt and pepper",
+      "instructions": "**Using Ninja SmartLid Multi Cooker:**\n\n1. Select SEAR/SAUT\u00c9 mode. Add olive oil.\n2. Add minced garlic, cook 1 min until fragrant.\n3. Add tomato paste, stir for 1 min.\n4. Add tinned tomatoes, vegetable broth, oregano.\n5. Add drained beans. Stir gently.\n6. Season with salt and pepper.\n7. Lock lid, select PRESSURE COOK mode, set 12 min.\n8. When done, natural release 5 min, then quick release.\n9. Select SEAR/SAUT\u00c9 mode.\n10. Simmer uncovered 5-7 min to thicken sauce, stirring occasionally.\n11. Stir in lemon juice and fresh dill.\n12. Serve in bowls with feta crumbled on top and crusty bread.\n\n**Effortless tip:** Hands-off pressure cooking makes beans ultra-creamy. Traditional recipe takes 90 min!\n\n**Time:** 30 minutes total",
+      "image_description": "Image of a rustic bowl filled with large white butter beans in rich red tomato sauce, garnished with crumbled feta and fresh dill.",
+      "image_filename": "greek_gigantes_beans.jpg"
+    },
+    {
+      "id": "spanakopita_egg_cups",
+      "dish_name": "Air Fryer Spanakopita Egg Cups",
+      "cooking_time": {
+        "prep_time": 10,
+        "cook_time": 18,
+        "total_time": 28
+      },
+      "nutrition": {
+        "kcal": 340,
+        "protein_g": 22,
+        "highlights": "High **protein** from eggs and feta. Rich in calcium, iron (from spinach), and vitamins. Low carb option. Greek-inspired flavors."
+      },
+      "ingredients": "1. Eggs 6\n2. Spinach 3 cups chopped (fresh or frozen, thawed and squeezed)\n3. Feta cheese 150g crumbled\n4. Greek yogurt 1/4 cup\n5. Garlic 2 cloves minced\n6. Fresh dill 1/4 cup chopped\n7. Nutmeg pinch\n8. Filo pastry 4 sheets (optional - for wrapping)\n9. Olive oil spray\n10. Lemon wedges\n11. Salt and pepper",
+      "instructions": "**Using Ninja Dual Zone Air Fryer:**\n\n**Version 1 - Crustless (faster):**\n1. In bowl, whisk eggs, Greek yogurt, salt, pepper, nutmeg.\n2. Squeeze excess water from spinach. Add to eggs with garlic, dill, most of feta.\n3. Spray 6 silicone muffin cups with olive oil.\n4. Divide mixture among cups. Top with remaining feta.\n5. **Air Fryer (both zones - MATCH COOK):** Place 3 cups in each zone. Air fry at 160\u00b0C for 18 min until set.\n6. Let cool 2 min before removing from cups.\n\n**Version 2 - With filo (crispy):**\n1. Mix spinach filling as above.\n2. Brush filo sheets with olive oil, layer 2 sheets. Cut into 6 squares.\n3. Press each square into muffin cup, fill with egg-spinach mixture.\n4. Air fry at 170\u00b0C for 18 min until golden.\n\n7. Serve with lemon wedges and Greek salad.\n\n**Effortless tip:** Make ahead and reheat! Freeze extras. Perfect protein-rich breakfast or lunch.\n\n**Time:** 28 minutes total",
+      "image_description": "Image of golden egg cups filled with spinach and feta, served on a plate with lemon wedges and fresh herbs.",
+      "image_filename": "spanakopita_egg_cups.jpg"
     },
     {
       "id": "sushi_sandwich",
       "dish_name": "Sushi Sandwich",
       "cooking_time": {
         "prep_time": 30,
-        "cook_time": 20,
-        "total_time": 80
+        "cook_time": 12,
+        "total_time": 72
       },
       "nutrition": {
         "kcal": 475,
@@ -104,71 +446,17 @@
         "highlights": "Good source of Carbohydrates for energy. Provides **protein** (from tuna and cream cheese) and healthy fats (from avocado). Contains iodine from nori."
       },
       "ingredients": "1. Avocado 2\n2. Rice 370g (about 1.5 cups uncooked)\n3. Tuna 1 can, drained\n4. Soft cheese (cream cheese) 360g\n5. Cucumber 1, julienned\n6. Nori sheets 4",
-      "instructions": "1. Cook rice according to package. Let cool to room temperature.\n2. Mix tuna with some cream cheese (about 50g) in bowl.\n3. Slice avocado thinly.\n4. Julienne cucumber into matchstick strips.\n5. Lay out plastic wrap on flat surface.\n6. Place 1 nori sheet on plastic wrap.\n7. Spread thin layer of cream cheese on nori.\n8. Spread layer of rice on top (about 1cm thick).\n9. Place another piece of plastic wrap on top.\n10. Flip entire thing so nori is on top, rice on bottom.\n11. Remove top plastic wrap.\n12. On the nori side, arrange line of tuna mixture, avocado, cucumber.\n13. Using plastic wrap, roll tightly like sushi.\n14. Wrap in plastic, refrigerate 30 min to set.\n15. Slice with sharp knife into 2cm pieces.\n16. Repeat with remaining ingredients.",
+      "instructions": "**Using Ninja SmartLid Multi Cooker:**\n\n1. Add 1.5 cups rice and 1.8 cups water to pot.\n2. Lock lid, select RICE mode (white rice setting).\n3. When done, let natural release 10 min. Spread rice on tray to cool to room temperature.\n4. **While rice cools:** Mix tuna with some cream cheese (about 50g) in bowl.\n5. Slice avocado thinly.\n6. Julienne cucumber into matchstick strips.\n7. Lay out plastic wrap on flat surface.\n8. Place 1 nori sheet on plastic wrap.\n9. Spread thin layer of cream cheese on nori.\n10. Spread layer of rice on top (about 1cm thick).\n11. Place another piece of plastic wrap on top.\n12. Flip entire thing so nori is on top, rice on bottom.\n13. Remove top plastic wrap.\n14. On the nori side, arrange line of tuna mixture, avocado, cucumber.\n15. Using plastic wrap, roll tightly like sushi.\n16. Wrap in plastic, refrigerate 30 min to set.\n17. Slice with sharp knife into 2cm pieces.\n18. Repeat with remaining ingredients.\n\n**Time saved:** 8 minutes; perfect sushi rice every time",
       "image_description": "Image of a sliced sushi sandwich (pressed sushi) with visible layers of rice, nori, tuna mixture, avocado, and cucumber.",
       "image_filename": "sushi_sandwich.jpg"
-    },
-    {
-      "id": "mushroom_soup",
-      "dish_name": "Mushroom Soup",
-      "cooking_time": {
-        "prep_time": 20,
-        "cook_time": 40,
-        "total_time": 60
-      },
-      "nutrition": {
-        "kcal": 350,
-        "protein_g": 6,
-        "highlights": "Low in calories and fat (if using less oil/butter). Good source of potassium and B vitamins from mushrooms and potatoes. Provides a comforting and creamy texture."
-      },
-      "ingredients": "1. Mushrooms 500g sliced\n2. Potatoes 8 medium, diced\n3. Cooking cream 200ml\n4. Cheese spread 2-3 tbsp\n5. Mushroom broth 1.5L (or vegetable broth)\n6. Onion 1, diced\n7. Garlic 3 cloves minced\n8. Olive oil or butter\n9. Salt and pepper\n10. Fresh herbs (thyme or parsley)",
-      "instructions": "1. Dice onion and potatoes. Slice mushrooms. Mince garlic.\n2. Heat oil or butter in large pot.\n3. Sauté onion 5 min until soft.\n4. Add mushrooms, cook 8-10 min until browned and liquid released.\n5. Add garlic, cook 1 min.\n6. Add diced potatoes, stir.\n7. Add broth, bring to boil.\n8. Reduce heat, simmer 20 min until potatoes tender.\n9. Use immersion blender to partially blend (leave some chunks) or blend half and return to pot.\n10. Stir in cooking cream and cheese spread.\n11. Heat through 5 min, stirring until cheese melted.\n12. Season with salt and pepper.\n13. Garnish with fresh herbs.",
-      "image_description": "Image of a rustic bowl of creamy mushroom soup with fresh herbs, showing some visible mushroom and potato chunks.",
-      "image_filename": "mushroom_soup.jpg"
-    },
-    {
-      "id": "pasta_vegs",
-      "dish_name": "Pasta Vegs",
-      "cooking_time": {
-        "prep_time": 15,
-        "cook_time": 20,
-        "total_time": 35
-      },
-      "nutrition": {
-        "kcal": 550,
-        "protein_g": 18,
-        "highlights": "Provides carbohydrates for energy. Contains **protein** (from vegan chicken and feta) and a range of vitamins and minerals from the vegetable mix. Quick and easy one-pan meal."
-      },
-      "ingredients": "1. Pasta 400g\n2. Frozen vegetable mix 500g\n3. Feta cheese crumbled\n4. Vegan chicken filet 200g, sliced\n5. Olive oil\n6. Garlic 3 cloves minced\n7. Italian herbs\n8. Salt and pepper",
-      "instructions": "1. Cook pasta according to package. Reserve 1 cup pasta water. Drain.\n2. Heat olive oil in large pan.\n3. Cook vegan chicken slices 5-7 min until golden. Remove, set aside.\n4. Add more oil if needed. Add garlic, cook 1 min.\n5. Add frozen vegetables, cook 8-10 min until tender.\n6. Add Italian herbs, season with salt and pepper.\n7. Add cooked pasta and chicken back to pan.\n8. Toss to combine. Add pasta water if needed.\n9. Top with crumbled feta.\n10. Serve immediately.",
-      "image_description": "Image of a one-pan pasta dish with mixed vegetables, vegan chicken slices, and crumbled feta cheese.",
-      "image_filename": "pasta_vegs.jpg"
-    },
-    {
-      "id": "mash_potatoes_lentils",
-      "dish_name": "Mash Potatoes Lentils Mix",
-      "cooking_time": {
-        "prep_time": 20,
-        "cook_time": 35,
-        "total_time": 55
-      },
-      "nutrition": {
-        "kcal": 600,
-        "protein_g": 15,
-        "highlights": "High in fiber and **plant-based protein** (from lentils). Excellent source of carbohydrates for energy (from potatoes). Rich in vitamins A and C from carrots and tomatoes, and potassium from potatoes."
-      },
-      "ingredients": "1. Cherry tomatoes 250g halved\n2. Potatoes 6 large\n3. Milk 1/2 cup\n4. Lentils 1 can\n5. Italian herbs\n6. Tomato passata 400g\n7. Vegetable broth 1 cup\n8. Celery 2 stalks, diced\n9. Carrot 1, diced\n10. Basil pesto 2 tbsp\n11. Parmesan cheese\n12. Butter 2 tbsp\n13. Olive oil\n14. Onion 1, diced\n15. Garlic 3 cloves minced",
-      "instructions": "1. Peel and cube potatoes. Boil in salted water 15-20 min until tender.\n2. Meanwhile, heat olive oil in large pan.\n3. Sauté onion, carrot, celery 5-7 min until soft.\n4. Add garlic, cook 1 min.\n5. Add cherry tomatoes, cook 5 min until starting to break down.\n6. Add passata, vegetable broth, Italian herbs.\n7. Add lentils (drained and rinsed).\n8. Simmer 15 min. Season with salt and pepper.\n9. Drain potatoes. Mash with butter and milk until smooth.\n10. Season mash with salt and pepper.\n11. Stir basil pesto into lentil mixture.\n12. Serve lentil mixture over or alongside mashed potatoes.\n13. Top with grated parmesan.",
-      "image_description": "Image of creamy mashed potatoes topped with a rich, rustic lentil and vegetable tomato stew, garnished with Parmesan cheese.",
-      "image_filename": "mash_potatoes_lentils.jpg"
     },
     {
       "id": "loaded_eggplants",
       "dish_name": "Loaded Eggplants",
       "cooking_time": {
         "prep_time": 20,
-        "cook_time": 45,
-        "total_time": 65
+        "cook_time": 35,
+        "total_time": 55
       },
       "nutrition": {
         "kcal": 550,
@@ -176,53 +464,179 @@
         "highlights": "Provides a good balance of carbohydrates (rice) and fiber (eggplant). Contains **protein** (cheese) and various vitamins from vegetables. A hearty and satisfying baked dish."
       },
       "ingredients": "1. Eggplants 2 big\n2. Mozzarella 200g, torn or shredded\n3. Rice 1 cup uncooked\n4. Capsicum 1, diced\n5. Cheese (cheddar or mixed) 100g grated\n6. Tomatoes 2 large, diced\n7. Garlic 3 cloves minced\n8. Olive oil\n9. Italian herbs\n10. Salt and pepper",
-      "instructions": "1. Preheat oven 200°C.\n2. Cook rice according to package. Set aside.\n3. Cut eggplants in half lengthwise.\n4. Score flesh in crosshatch pattern. Brush with olive oil, season with salt.\n5. Place cut-side down on baking tray. Bake 25 min until soft.\n6. Meanwhile, heat olive oil in pan.\n7. Sauté capsicum 5 min until soft.\n8. Add garlic, cook 1 min.\n9. Add diced tomatoes, Italian herbs. Cook 5 min.\n10. Add cooked rice, stir. Season with salt and pepper.\n11. Remove eggplants from oven. Flip cut-side up.\n12. Scoop out some flesh, leaving 1cm border. Chop scooped flesh.\n13. Mix chopped eggplant flesh with rice mixture.\n14. Fill eggplant halves with rice mixture.\n15. Top with mozzarella and grated cheese.\n16. Bake 15-20 min until cheese melted and golden.",
+      "instructions": "**Using Ninja Dual Zone Air Fryer + Ninja SmartLid:**\n\n1. **Ninja SmartLid:** Add 1 cup rice and 1.2 cups water. Lock lid, select RICE mode. When done, set aside.\n2. **While rice cooks:** Cut eggplants in half lengthwise. Score flesh in crosshatch pattern.\n3. Brush eggplant with olive oil, season with salt.\n4. **Air Fryer Zone 1 & Zone 2 (sync mode):** Place eggplant halves cut-side up. Air fry at 190\u00b0C for 20 min until soft.\n5. **Meanwhile, prepare filling:** Heat olive oil in pan on stovetop.\n6. Saut\u00e9 capsicum 5 min. Add garlic, cook 1 min.\n7. Add diced tomatoes, Italian herbs. Cook 5 min.\n8. Mix in cooked rice. Season with salt and pepper.\n9. When eggplants are done, scoop out some flesh, leaving 1cm border. Chop scooped flesh.\n10. Mix chopped eggplant flesh with rice mixture.\n11. Fill eggplant halves with rice mixture.\n12. Top with mozzarella and grated cheese.\n13. **Air Fryer (sync mode):** Return to air fryer at 180\u00b0C for 8-10 min until cheese melted and golden.\n\n**Time saved:** 10 minutes; eggplants cook faster in air fryer",
       "image_description": "Image of large eggplant halves baked and stuffed with a savory rice, tomato, and capsicum mixture, topped with golden, melted cheese.",
       "image_filename": "loaded_eggplants.jpg"
     },
     {
-      "id": "baked_potato_barramundi",
-      "dish_name": "Baked Potato with Salad and Barramundi",
+      "id": "lentil_freekeh_pilaf",
+      "dish_name": "Lentil & Freekeh Pilaf",
       "cooking_time": {
-        "prep_time": 15,
-        "cook_time": 50,
-        "total_time": 65
+        "prep_time": 5,
+        "cook_time": 20,
+        "total_time": 25
       },
       "nutrition": {
-        "kcal": 500,
-        "protein_g": 35,
-        "highlights": "High in **protein** (from barramundi). Good source of carbohydrates (potatoes) for energy, and vitamins and fiber from the fresh salad vegetables. Barramundi is also a good source of **Omega-3 fatty acids**."
+        "kcal": 380,
+        "protein_g": 20,
+        "highlights": "High **plant-based protein** from lentils. Freekeh is a whole grain with more protein than rice. Rich in fiber, iron, and B vitamins. Nutty, satisfying texture."
       },
-      "ingredients": "1. Small potatoes 8-10\n2. Cucumber 1, diced\n3. Tomatoes 2, diced\n4. Capsicum 1, diced\n5. Sour cream 1/2 cup\n6. Barramundi fillets 2-3\n7. Olive oil\n8. Lemon 1\n9. Fresh dill or parsley\n10. Salt and pepper",
-      "instructions": "1. Preheat oven 200°C.\n2. Wash potatoes, prick with fork.\n3. Toss with olive oil and salt. Place on baking tray.\n4. Bake 45-50 min until tender.\n5. Meanwhile, dice cucumber, tomatoes, capsicum.\n6. Mix vegetables in bowl. Season with salt, pepper, lemon juice, olive oil.\n7. Season barramundi with salt, pepper, lemon juice.\n8. Heat olive oil in pan.\n9. Cook barramundi 4-5 min per side until cooked through.\n10. Split baked potatoes. Fluff with fork.\n11. Serve barramundi with baked potatoes and vegetable salad.\n12. Dollop sour cream on potatoes.\n13. Garnish with fresh herbs.",
-      "image_description": "Image of a split baked potato with a dollop of sour cream, served alongside a pan-seared barramundi fillet and a fresh vegetable salad.",
-      "image_filename": "baked_potato_barramundi.jpg"
+      "ingredients": "1. Green or brown lentils 3/4 cup\n2. Freekeh (cracked) 3/4 cup (or use bulgur wheat)\n3. Vegetable broth 3 cups\n4. Garlic 3 cloves minced\n5. Cumin 1 tsp\n6. Cinnamon 1/2 tsp\n7. Dried mint 1 tsp\n8. Almonds or pine nuts 1/4 cup\n9. Fresh parsley 1/2 cup chopped\n10. Lemon juice 2 tbsp\n11. Greek yogurt for serving\n12. Olive oil\n13. Salt and pepper",
+      "instructions": "**Using Ninja SmartLid Multi Cooker:**\n\n1. Select SEAR/SAUT\u00c9 mode. Add 2 tbsp olive oil.\n2. Add minced garlic, cook 1 min.\n3. Add cumin, cinnamon, dried mint. Stir 30 seconds.\n4. Add rinsed lentils, freekeh, vegetable broth.\n5. Season with salt and pepper.\n6. Lock lid, select PRESSURE COOK mode, set 12 min.\n7. When done, natural release 5 min, then quick release.\n8. **While cooking:** Toast nuts in dry pan for 2-3 min until golden.\n9. Fluff pilaf with fork.\n10. Stir in lemon juice, half the parsley, half the nuts.\n11. Serve topped with dollop of Greek yogurt, remaining nuts and parsley.\n\n**Effortless tip:** Both grains cook together perfectly hands-free. Traditional method takes 45+ min!\n\n**Time:** 25 minutes total",
+      "image_description": "Image of a textured pilaf with visible lentils and freekeh grains, topped with yogurt, toasted nuts, and fresh parsley.",
+      "image_filename": "lentil_freekeh_pilaf.jpg"
+    },
+    {
+      "id": "pasta_vegs",
+      "dish_name": "Pasta Vegs",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 15,
+        "total_time": 30
+      },
+      "nutrition": {
+        "kcal": 550,
+        "protein_g": 18,
+        "highlights": "Provides carbohydrates for energy. Contains **protein** (from vegan chicken and feta) and a range of vitamins and minerals from the vegetable mix. Quick and easy one-pan meal."
+      },
+      "ingredients": "1. Pasta 400g\n2. Frozen vegetable mix 500g\n3. Feta cheese crumbled\n4. Vegan chicken filet 200g, sliced\n5. Olive oil\n6. Garlic 3 cloves minced\n7. Italian herbs\n8. Salt and pepper",
+      "instructions": "**Using Ninja Dual Zone Air Fryer + Ninja SmartLid:**\n\n1. **Air Fryer Zone 1:** Toss vegan chicken slices with 1 tsp olive oil. Air fry at 200\u00b0C for 8 min, flipping halfway.\n2. **While air frying, use Ninja SmartLid:** Add pasta and enough water to cover by 2 inches.\n3. Lock lid, select PRESSURE COOK mode, set for half the package time minus 2 min (e.g., if package says 10 min, set 3 min).\n4. Quick release when done. Drain pasta, reserve 1 cup pasta water.\n5. Select SEAR/SAUT\u00c9 mode. Add olive oil and garlic, cook 1 min.\n6. Add frozen vegetables, cook 5 min until tender.\n7. Add Italian herbs, season with salt and pepper.\n8. Add cooked pasta and air-fried chicken back to pot.\n9. Toss to combine. Add pasta water if needed.\n10. Top with crumbled feta.\n11. Serve immediately.\n\n**Time saved:** 5 minutes; pasta and chicken cook simultaneously",
+      "image_description": "Image of a one-pan pasta dish with mixed vegetables, vegan chicken slices, and crumbled feta cheese.",
+      "image_filename": "pasta_vegs.jpg"
+    },
+    {
+      "id": "mujadara_lentil_rice",
+      "dish_name": "Quick Mujadara (Lentils & Rice)",
+      "cooking_time": {
+        "prep_time": 5,
+        "cook_time": 22,
+        "total_time": 27
+      },
+      "nutrition": {
+        "kcal": 420,
+        "protein_g": 18,
+        "highlights": "Excellent **plant-based protein** and fiber from lentils. Complete protein when combined with rice. Rich in iron and folate. Whole grains provide sustained energy."
+      },
+      "ingredients": "1. Brown or green lentils 1 cup (dried)\n2. Basmati or brown rice 1 cup\n3. Garlic 4 cloves sliced\n4. Cumin 2 tsp\n5. Cinnamon 1/2 tsp\n6. Vegetable broth 3 cups\n7. Olive oil\n8. Greek yogurt for serving\n9. Fresh parsley 1/2 cup\n10. Lemon wedges\n11. Crispy fried shallots (optional, available pre-made)\n12. Salt and pepper",
+      "instructions": "**Using Ninja SmartLid Multi Cooker:**\n\n1. Select SEAR/SAUT\u00c9 mode. Add 2 tbsp olive oil.\n2. Add sliced garlic, cook 2 min until golden (watch carefully - don't burn).\n3. Add cumin and cinnamon, stir 30 seconds.\n4. Add rinsed lentils, rice, vegetable broth. Stir well.\n5. Season with salt and pepper.\n6. Lock lid, select PRESSURE COOK mode, set 15 min.\n7. When done, natural release 5 min, then quick release remaining pressure.\n8. Fluff with fork. Taste and adjust seasoning.\n9. Serve topped with dollop of Greek yogurt, fresh parsley, lemon wedges.\n10. Optional: Top with crispy fried shallots for traditional touch.\n\n**Effortless tip:** Completely hands-off cooking. Both lentils and rice cook perfectly together in one pot.\n\n**Time:** 27 minutes total (includes natural release)",
+      "image_description": "Image of mujadara in a bowl - dark lentils and rice mixed together, topped with white yogurt, fresh parsley, and crispy shallots.",
+      "image_filename": "mujadara_lentil_rice.jpg"
+    },
+    {
+      "id": "chickpeas_eggplant",
+      "dish_name": "Chickpeas Eggplant",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 20,
+        "total_time": 45
+      },
+      "nutrition": {
+        "kcal": 375,
+        "protein_g": 17,
+        "highlights": "Excellent source of plant-based protein and fiber (from chickpeas). Rich in vitamins and antioxidants from tomatoes and eggplant. Naturally vegan."
+      },
+      "ingredients": "1. Chickpeas 480g (2 cans)\n2. Tinned cherry tomatoes 400g\n3. Sundried tomatoes 1/2 cup chopped\n4. Eggplant 1 big, diced\n5. Garlic 4 cloves minced\n6. Olive oil\n7. Italian herbs\n8. Salt and pepper",
+      "instructions": "**Using Ninja Dual Zone Air Fryer + Ninja SmartLid:**\n\n1. Dice eggplant into 2cm cubes. Sprinkle with salt, let sit 10 min.\n2. Pat eggplant dry with paper towel.\n3. **Air Fryer Zone 1:** Toss eggplant with 1 tbsp olive oil. Air fry at 200\u00b0C for 12 min, shaking halfway.\n4. **While air frying, use Ninja SmartLid:** Select SEAR/SAUT\u00c9 mode.\n5. Add olive oil and garlic, cook 1 min.\n6. Add sundried tomatoes, cook 2 min.\n7. Add tinned cherry tomatoes, chickpeas (drained and rinsed).\n8. Add Italian herbs, season with salt and pepper.\n9. Select SLOW COOK mode, set 10 min.\n10. When eggplant is done, add to pot. Stir gently.\n11. Heat through 2 min on SEAR/SAUT\u00c9.\n12. Serve with rice, couscous, or crusty bread.\n\n**Time saved:** 10 minutes; better texture on eggplant",
+      "image_description": "Image of a hearty, rustic eggplant and chickpea stew in a tomato sauce, garnished with fresh herbs, served in a terracotta bowl.",
+      "image_filename": "chickpeas_eggplant.jpg"
+    },
+    {
+      "id": "mash_potatoes_lentils",
+      "dish_name": "Mash Potatoes Lentils Mix",
+      "cooking_time": {
+        "prep_time": 20,
+        "cook_time": 25,
+        "total_time": 45
+      },
+      "nutrition": {
+        "kcal": 600,
+        "protein_g": 15,
+        "highlights": "High in fiber and **plant-based protein** (from lentils). Excellent source of carbohydrates for energy (from potatoes). Rich in vitamins A and C from carrots and tomatoes, and potassium from potatoes."
+      },
+      "ingredients": "1. Cherry tomatoes 250g halved\n2. Potatoes 6 large\n3. Milk 1/2 cup\n4. Lentils 1 can\n5. Italian herbs\n6. Tomato passata 400g\n7. Vegetable broth 1 cup\n8. Celery 2 stalks, diced\n9. Carrot 1, diced\n10. Basil pesto 2 tbsp\n11. Parmesan cheese\n12. Butter 2 tbsp\n13. Olive oil\n14. Onion 1, diced\n15. Garlic 3 cloves minced",
+      "instructions": "**Using Ninja SmartLid Multi Cooker (Two Batch Method):**\n\n**Batch 1 - Potatoes:**\n1. Peel and cube potatoes. Add to pot with 1 cup water and steamer basket.\n2. Lock lid, select PRESSURE COOK mode, set 8 min.\n3. Quick release when done. Drain well.\n4. **Use Kenwood Titanium Chef:** Transfer potatoes to mixing bowl with butter and milk. Mix on low speed until smooth. Season with salt and pepper. Set aside in warm bowl.\n\n**Batch 2 - Lentils:**\n5. Clean pot. Select SEAR/SAUT\u00c9 mode. Add olive oil.\n6. Saut\u00e9 onion, carrot, celery 5 min until soft.\n7. Add garlic, cook 1 min.\n8. Add cherry tomatoes, cook 3 min.\n9. Add passata, vegetable broth, Italian herbs.\n10. Add lentils (drained and rinsed).\n11. Lock lid, select PRESSURE COOK mode, set 5 min.\n12. Quick release when done.\n13. Stir in basil pesto. Season with salt and pepper.\n14. Serve lentil mixture over mashed potatoes.\n15. Top with grated parmesan.\n\n**Time saved:** 10 minutes; both components cook faster",
+      "image_description": "Image of creamy mashed potatoes topped with a rich, rustic lentil and vegetable tomato stew, garnished with Parmesan cheese.",
+      "image_filename": "mash_potatoes_lentils.jpg"
     },
     {
       "id": "risotto_mushroom",
       "dish_name": "Risotto Mushroom",
       "cooking_time": {
         "prep_time": 20,
-        "cook_time": 45,
-        "total_time": 65
+        "cook_time": 25,
+        "total_time": 45
       },
       "nutrition": {
         "kcal": 600,
         "protein_g": 15,
         "highlights": "Rich and creamy carbohydrate source. Provides fiber and B vitamins from mushrooms. Contains calcium and **protein** from Parmesan cheese."
       },
-      "ingredients": "1. Arborio rice 1.5 cups\n2. Mushrooms 400g, sliced\n3. Celery 2 stalks, diced\n4. Sundried tomatoes 1/2 cup chopped\n5. Cooking cream 200ml\n6. Vegetable broth 1.5L warm\n7. Onion 1, diced\n8. Garlic 3 cloves minced\n9. Parmesan cheese\n10. Butter 2 tbsp\n11. Olive oil\n12. White wine 1/2 cup (optional)\n13. Salt and pepper",
-      "instructions": "1. Keep broth warm in pot on low heat.\n2. Heat olive oil and butter in large pan.\n3. Sauté mushrooms 8-10 min until browned. Remove, set aside.\n4. Add more oil if needed. Sauté onion and celery 5 min until soft.\n5. Add garlic, cook 1 min.\n6. Add rice, stir 2 min until slightly toasted.\n7. Add wine if using, stir until absorbed.\n8. Add sundried tomatoes.\n9. Add broth 1 ladle at a time, stirring frequently. Wait until absorbed before adding more.\n10. Continue 20-25 min until rice creamy and al dente.\n11. Stir in cooked mushrooms and cooking cream.\n12. Add parmesan, stir until melted.\n13. Season with salt and pepper.\n14. Serve immediately with extra parmesan.",
+      "ingredients": "1. Arborio rice 1.5 cups\n2. Mushrooms 400g, sliced\n3. Celery 2 stalks, diced\n4. Sundried tomatoes 1/2 cup chopped\n5. Cooking cream 200ml\n6. Vegetable broth 3 cups warm\n7. Onion 1, diced\n8. Garlic 3 cloves minced\n9. Parmesan cheese\n10. Butter 2 tbsp\n11. Olive oil\n12. White wine 1/2 cup (optional)\n13. Salt and pepper",
+      "instructions": "**Using Ninja SmartLid Multi Cooker:**\n\n1. Select SEAR/SAUT\u00c9 mode. Add olive oil and butter.\n2. Saut\u00e9 mushrooms 8-10 min until browned. Remove, set aside.\n3. Add more oil if needed. Saut\u00e9 onion and celery 5 min until soft.\n4. Add garlic, cook 1 min.\n5. Add rice, stir 2 min until slightly toasted.\n6. Add wine if using, stir until absorbed.\n7. Add sundried tomatoes and all the broth at once.\n8. Lock lid, select PRESSURE COOK mode, set 6 min.\n9. When done, quick release pressure.\n10. Select SEAR/SAUT\u00c9 mode.\n11. Stir in cooked mushrooms and cooking cream.\n12. Stir constantly for 3-5 min until creamy consistency.\n13. Add parmesan, stir until melted.\n14. Season with salt and pepper.\n15. Serve immediately with extra parmesan.\n\n**Time saved:** 20 minutes; no constant stirring required during pressure cooking phase",
       "image_description": "Image of a creamy mushroom risotto in a wide bowl, garnished with Parmesan cheese and fresh herbs.",
       "image_filename": "risotto_mushroom.jpg"
+    },
+    {
+      "id": "one_pot_rice",
+      "dish_name": "One Pot Rice",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 20,
+        "total_time": 35
+      },
+      "nutrition": {
+        "kcal": 500,
+        "protein_g": 12,
+        "highlights": "High in Carbohydrates for energy. Contains fiber from beans and spinach. Offers Vitamin K and minerals from the various vegetables and healthy fats from coconut milk and olives."
+      },
+      "ingredients": "1. Rice 1.5 cups\n2. Butter beans 1 tin\n3. Sliced olives 1/2 cup\n4. Cherry tomatoes 250g halved\n5. Sundried tomatoes 1/2 cup chopped\n6. Spinach 2 cups\n7. Artichoke hearts 1 tin, quartered\n8. Lemon juice 2 tbsp\n9. Garlic 4 cloves minced\n10. Coconut milk 400ml\n11. Feta cheese crumbles\n12. Olive oil\n13. Vegetable broth 1 cup\n14. Italian herbs",
+      "instructions": "**Using Ninja SmartLid Multi Cooker:**\n\n1. Select SEAR/SAUT\u00c9 mode. Add olive oil.\n2. Add garlic, cook 1 min.\n3. Add rice, stir 2 min to coat.\n4. Add sundried tomatoes, cherry tomatoes, olives, artichokes.\n5. Add coconut milk, vegetable broth, Italian herbs.\n6. Lock lid, select PRESSURE COOK mode, set 8 min.\n7. When done, natural release 5 min, then quick release.\n8. Remove lid, add butter beans (drained and rinsed) and spinach on top.\n9. Select KEEP WARM mode, cover with glass lid, let sit 3 min until spinach wilted.\n10. Stir in lemon juice.\n11. Season with salt and pepper.\n12. Top with feta crumbles before serving.\n\n**Time saved:** 5 minutes; perfectly cooked rice every time",
+      "image_description": "Image of a colorful one-pot rice dish with visible cherry tomatoes, olives, artichoke hearts, spinach, and feta crumbles on top.",
+      "image_filename": "one_pot_rice.jpg"
+    },
+    {
+      "id": "tomato_soup",
+      "dish_name": "Tomato Soup",
+      "cooking_time": {
+        "prep_time": 15,
+        "cook_time": 25,
+        "total_time": 40
+      },
+      "nutrition": {
+        "kcal": 400,
+        "protein_g": 8,
+        "highlights": "Good source of Vitamin A and Vitamin C from the vegetables. Contains healthy fats from olive oil and richness from cooking cream. High in fiber if using wholemeal bread."
+      },
+      "ingredients": "1. Tomatoes 1 kg\n2. Capsicum 1\n3. Onion 1\n4. Garlic 4 cloves\n5. Olive oil\n6. Cooking cream 200ml\n7. Italian herbs\n8. Grated cheese\n9. Bread for serving",
+      "instructions": "**Using Ninja SmartLid Multi Cooker:**\n\n1. Dice onion and capsicum. Mince garlic. Roughly chop tomatoes.\n2. Select SEAR/SAUT\u00c9 mode. Add olive oil to pot.\n3. Saut\u00e9 onion and capsicum 5 min until soft.\n4. Add garlic, cook 1 min.\n5. Add tomatoes, herbs, salt and pepper.\n6. Lock lid, select PRESSURE COOK mode, set 10 min.\n7. When done, quick release pressure.\n8. Use immersion blender directly in pot. Blend until smooth.\n9. Select SEAR/SAUT\u00c9 mode again.\n10. Stir in cooking cream, heat through 2-3 min.\n11. Serve topped with grated cheese and bread.\n\n**Time saved:** 5 minutes compared to stovetop method",
+      "image_description": "Image of a bowl of creamy red tomato soup topped with grated cheese, served with a slice of crusty bread on the side.",
+      "image_filename": "tomato_soup.jpg"
+    },
+    {
+      "id": "mushroom_soup",
+      "dish_name": "Mushroom Soup",
+      "cooking_time": {
+        "prep_time": 20,
+        "cook_time": 30,
+        "total_time": 50
+      },
+      "nutrition": {
+        "kcal": 350,
+        "protein_g": 6,
+        "highlights": "Low in calories and fat (if using less oil/butter). Good source of potassium and B vitamins from mushrooms and potatoes. Provides a comforting and creamy texture."
+      },
+      "ingredients": "1. Mushrooms 500g sliced\n2. Potatoes 8 medium, diced\n3. Cooking cream 200ml\n4. Cheese spread 2-3 tbsp\n5. Mushroom broth 1.5L (or vegetable broth)\n6. Onion 1, diced\n7. Garlic 3 cloves minced\n8. Olive oil or butter\n9. Salt and pepper\n10. Fresh herbs (thyme or parsley)",
+      "instructions": "**Using Ninja SmartLid Multi Cooker:**\n\n1. Dice onion and potatoes. Slice mushrooms. Mince garlic.\n2. Select SEAR/SAUT\u00c9 mode. Add oil or butter.\n3. Saut\u00e9 onion 5 min until soft.\n4. Add mushrooms, cook 8-10 min until browned.\n5. Add garlic, cook 1 min.\n6. Add diced potatoes, stir.\n7. Add broth.\n8. Lock lid, select PRESSURE COOK mode, set 8 min.\n9. When done, quick release pressure.\n10. Use immersion blender to partially blend (leave some chunks).\n11. Select SEAR/SAUT\u00c9 mode.\n12. Stir in cooking cream and cheese spread.\n13. Heat through 5 min, stirring until cheese melted.\n14. Season with salt and pepper.\n15. Garnish with fresh herbs.\n\n**Time saved:** 10 minutes; potatoes cook faster under pressure",
+      "image_description": "Image of a rustic bowl of creamy mushroom soup with fresh herbs, showing some visible mushroom and potato chunks.",
+      "image_filename": "mushroom_soup.jpg"
     },
     {
       "id": "pumpkin_soup",
       "dish_name": "Pumpkin Soup",
       "cooking_time": {
         "prep_time": 20,
-        "cook_time": 45,
-        "total_time": 65
+        "cook_time": 25,
+        "total_time": 45
       },
       "nutrition": {
         "kcal": 300,
@@ -230,225 +644,64 @@
         "highlights": "High in Vitamin A (from butternut squash and carrots) and Vitamin C (from tomatoes). Good source of fiber. Naturally creamy and comforting, with healthy fats from olive oil and optional nuts/seeds."
       },
       "ingredients": "1. Large tomatoes 3\n2. Carrots 3, chopped\n3. Onion 1, diced\n4. Garlic 4 cloves\n5. Butternut squash 1 medium (about 1kg), peeled and cubed\n6. Vegetable broth 1.5L\n7. Olive oil\n8. Cooking cream or coconut milk 200ml\n9. Nuts and seeds for topping (pumpkin seeds, sunflower seeds)\n10. Salt and pepper\n11. Cumin 1 tsp (optional)",
-      "instructions": "1. Dice onion, chop carrots, cube squash, mince garlic, chop tomatoes.\n2. Heat olive oil in large pot.\n3. Sauté onion 5 min until soft.\n4. Add garlic, cook 1 min.\n5. Add carrots and squash, stir 3 min.\n6. Add tomatoes, cook 5 min.\n7. Add vegetable broth, bring to boil.\n8. Reduce heat, simmer 25-30 min until squash and carrots very soft.\n9. Use immersion blender or transfer to blender. Blend until smooth.\n10. Return to pot, stir in cream or coconut milk.\n11. Heat through 3-5 min.\n12. Season with salt, pepper, and cumin if using.\n13. Toast nuts and seeds in dry pan 2-3 min.\n14. Serve soup topped with toasted nuts and seeds.",
-      "image_description": "Image of a creamy orange pumpkin soup in a bowl, topped with toasted nuts and seeds.",
+      "instructions": "**Using Ninja SmartLid Multi Cooker:**\n\n1. Dice onion, chop carrots and tomatoes, cube squash, mince garlic.\n2. Select SEAR/SAUT\u00c9 mode. Add olive oil.\n3. Saut\u00e9 onion 5 min until soft.\n4. Add garlic, cook 1 min.\n5. Add carrots, squash, tomatoes, stir 2 min.\n6. Add vegetable broth and cumin if using.\n7. Lock lid, select PRESSURE COOK mode, set 10 min.\n8. When done, natural release 5 min, then quick release.\n9. Use immersion blender directly in pot. Blend until smooth.\n10. Select SEAR/SAUT\u00c9 mode.\n11. Stir in cream or coconut milk.\n12. Heat through 3-5 min.\n13. Season with salt and pepper.\n14. Toast nuts and seeds in dry pan.\n15. Serve soup topped with toasted nuts and seeds.\n\n**Time saved:** 20 minutes; vegetables cook much faster under pressure",
+      "image_description": "Image of a rustic bowl of creamy pumpkin soup garnished with toasted seeds and fresh herbs.",
       "image_filename": "pumpkin_soup.jpg"
-    },
-    {
-      "id": "buckwheat_tuna",
-      "dish_name": "Buckwheat Tuna",
-      "cooking_time": {
-        "prep_time": 15,
-        "cook_time": 15,
-        "total_time": 30
-      },
-      "nutrition": {
-        "kcal": 400,
-        "protein_g": 25,
-        "highlights": "Excellent source of **protein** (tuna) and complex carbohydrates/fiber (buckwheat). Packed with vitamins and minerals from fresh vegetables. Buckwheat is naturally gluten-free."
-      },
-      "ingredients": "1. Buckwheat 1 cup\n2. Tuna 1 can, drained\n3. Mixed salad leaves\n4. Cucumber 1, diced\n5. Cherry tomatoes 1 cup, halved\n6. Capsicum 1, diced\n7. Sour cream 3 tbsp\n8. Lemon juice 2 tbsp\n9. Olive oil\n10. Salt and pepper\n11. Fresh dill or parsley (optional)",
-      "instructions": "1. Cook buckwheat according to package (usually 15-20 min). Drain, let cool.\n2. Dice cucumber, capsicum. Halve cherry tomatoes.\n3. In large bowl, combine cooked buckwheat, tuna (broken into chunks), cucumber, tomatoes, capsicum.\n4. In small bowl, mix sour cream with lemon juice, olive oil, salt, pepper.\n5. Arrange salad leaves on plates.\n6. Top with buckwheat-tuna mixture.\n7. Drizzle with sour cream dressing.\n8. Garnish with fresh herbs if using.\n9. Toss before eating.",
-      "image_description": "Image of a fresh salad with cooked buckwheat, tuna, and various diced vegetables, drizzled with a creamy sour cream dressing.",
-      "image_filename": "buckwheat_tuna.jpg"
-    },
-    {
-      "id": "pineapple_stew",
-      "dish_name": "Hello Fresh Pineapple Stew",
-      "cooking_time": {
-        "prep_time": 20,
-        "cook_time": 35,
-        "total_time": 55
-      },
-      "nutrition": {
-        "kcal": 500,
-        "protein_g": 18,
-        "highlights": "Good source of **plant-based protein** and fiber (lentils, spinach). Rich in Vitamin C (pineapple, spinach) and Vitamin A (carrots). Offers complex carbohydrates from rice for sustained energy. Flavorful and naturally vegan."
-      },
-      "ingredients": "1. Rice 1.5 cups\n2. Coconut milk 400ml\n3. Pineapple 1 tin, chunks\n4. Spinach 2 cups\n5. Carrots 2, diced\n6. Sweet corn 1 can, drained\n7. Lentils 1 can, drained\n8. Tomato paste 2 tbsp\n9. Fresh mint handful, chopped\n10. Garlic 4 cloves minced\n11. Onion 1, diced\n12. Olive oil\n13. Vegetable broth 1 cup\n14. Curry powder 1 tsp (optional)\n15. Salt and pepper",
-      "instructions": "1. Cook rice according to package. Set aside.\n2. Heat olive oil in large pot.\n3. Sauté onion and carrots 5-7 min until softening.\n4. Add garlic, cook 1 min.\n5. Add tomato paste, stir 1 min.\n6. Add curry powder if using, stir.\n7. Add coconut milk, vegetable broth, bring to simmer.\n8. Add lentils, corn, pineapple with juice.\n9. Simmer 15 min until carrots tender and flavors combined.\n10. Add spinach, cook until wilted.\n11. Season with salt and pepper.\n12. Stir in chopped mint.\n13. Serve over rice.\n14. Garnish with extra mint.",
-      "image_description": "Image of a yellow curry stew with pineapple chunks, lentils, and corn, served over a bed of white rice.",
-      "image_filename": "pineapple_stew.jpg"
-    },
-    {
-      "id": "white_bean_kale",
-      "dish_name": "White Bean & Kale Soup",
-      "cooking_time": {
-        "prep_time": 15,
-        "cook_time": 30,
-        "total_time": 45
-      },
-      "nutrition": {
-        "kcal": 350,
-        "protein_g": 18,
-        "highlights": "High in **fiber** and **plant-based protein** (from cannellini beans). Excellent source of Vitamin A and Vitamin K (from kale/spinach). Low-fat and hearty."
-      },
-      "ingredients": "1. Cannellini beans 2 cans\n2. Kale or spinach\n3. Carrots 2\n4. Celery 2 stalks\n5. Onion 1\n6. Garlic 4 cloves\n7. Tomato paste 2 tbsp\n8. Vegetable broth 1L\n9. Parmesan cheese\n10. Olive oil\n11. Italian herbs\n12. Crusty bread",
-      "instructions": "1. Dice onion, carrots, celery. Mince garlic.\n2. Heat olive oil in large pot. Sauté onion, carrots, celery for 5 min.\n3. Add garlic, cook 1 min.\n4. Add tomato paste, stir for 1 min.\n5. Add broth, beans (drained and rinsed), Italian herbs.\n6. Simmer 20 min until vegetables tender.\n7. Add chopped kale, cook 5 min until wilted.\n8. Season with salt and pepper.\n9. Serve with grated parmesan and bread.",
-      "image_description": "Image of a rustic bowl of white bean and kale soup, garnished with a sprinkle of grated Parmesan and a side of crusty bread.",
-      "image_filename": "white_bean_kale.jpg"
-    },
-    {
-      "id": "shakshuka",
-      "dish_name": "Shakshuka",
-      "cooking_time": {
-        "prep_time": 15,
-        "cook_time": 25,
-        "total_time": 40
-      },
-      "nutrition": {
-        "kcal": 400,
-        "protein_g": 20,
-        "highlights": "High in **protein** (from eggs and feta). Excellent source of Vitamin C and antioxidants (tomatoes and capsicum). Spices like cumin and paprika add flavor and potential health benefits."
-      },
-      "ingredients": "1. Tomatoes canned 800g or fresh 6 large\n2. Red capsicum 1\n3. Onion 1\n4. Garlic 4 cloves\n5. Eggs 6\n6. Feta cheese crumbles\n7. Cumin 1 tsp\n8. Paprika 1 tsp\n9. Chili flakes pinch\n10. Fresh parsley\n11. Olive oil\n12. Bread for serving",
-      "instructions": "1. Dice onion and capsicum. Mince garlic.\n2. Heat olive oil in large skillet with lid.\n3. Sauté onion and capsicum 5 min until soft.\n4. Add garlic, cumin, paprika, chili flakes. Cook 1 min.\n5. Add tomatoes, break up if whole. Simmer 10-15 min until thickened.\n6. Season with salt and pepper.\n7. Make 6 wells in sauce. Crack egg into each well.\n8. Cover and cook 5-8 min until eggs set to your liking.\n9. Top with feta and parsley.\n10. Serve with bread for dipping.",
-      "image_description": "Image of a bubbling red Shakshuka sauce with six perfectly poached eggs nestled in wells, topped with crumbled feta cheese and fresh parsley.",
-      "image_filename": "shakshuka.jpg"
-    },
-    {
-      "id": "greek_stuffed_capsicums",
-      "dish_name": "Greek-Style Stuffed Capsicums",
-      "cooking_time": {
-        "prep_time": 25,
-        "cook_time": 45,
-        "total_time": 70
-      },
-      "nutrition": {
-        "kcal": 500,
-        "protein_g": 20,
-        "highlights": "Balanced meal with carbohydrates (rice), **plant-based protein** and fiber (chickpeas, spinach), and a range of vitamins and healthy fats (olives, feta)."
-      },
-      "ingredients": "1. Large capsicums 4\n2. Rice 1 cup uncooked\n3. Chickpeas 1 can\n4. Sundried tomatoes 1/2 cup chopped\n5. Spinach 2 cups\n6. Feta cheese 150g crumbled\n7. Cherry tomatoes 1 cup halved\n8. Olives 1/2 cup sliced\n9. Garlic 3 cloves minced\n10. Italian herbs\n11. Olive oil\n12. Tomato passata 1 cup",
-      "instructions": "1. Preheat oven 180°C.\n2. Cook rice according to package. Set aside.\n3. Cut tops off capsicums, remove seeds.\n4. Heat olive oil in pan. Sauté garlic 1 min.\n5. Add spinach, cook until wilted.\n6. In bowl mix cooked rice, chickpeas (drained), sundried tomatoes, spinach-garlic, half the feta, cherry tomatoes, olives, herbs.\n7. Season with salt and pepper.\n8. Stuff capsicums with mixture.\n9. Pour passata in baking dish. Place capsicums in dish.\n10. Top with remaining feta.\n11. Cover with foil. Bake 35 min.\n12. Remove foil. Bake 10 min more until capsicums tender.",
-      "image_description": "Image of four brightly colored stuffed capsicums baked in a tomato sauce, topped with melted feta, sitting in a baking dish.",
-      "image_filename": "greek_stuffed_capsicums.jpg"
-    },
-    {
-      "id": "mediterranean_baked_fish",
-      "dish_name": "Mediterranean Baked Fish with Vegetables",
-      "cooking_time": {
-        "prep_time": 15,
-        "cook_time": 30,
-        "total_time": 45
-      },
-      "nutrition": {
-        "kcal": 450,
-        "protein_g": 35,
-        "highlights": "High in lean **protein** (fish) and healthy Omega-3 fats. Packed with antioxidants and fiber from the vegetables. Very low-carb meal before adding a grain base."
-      },
-      "ingredients": "1. White fish fillets 4 (barramundi, cod, or salmon)\n2. Cherry tomatoes 2 cups\n3. Zucchini 2 sliced\n4. Red onion 1 sliced\n5. Kalamata olives 1/2 cup\n6. Capers 2 tbsp\n7. Lemon 1 sliced\n8. Garlic 4 cloves sliced\n9. Olive oil\n10. Oregano\n11. Couscous or quinoa for serving",
-      "instructions": "1. Preheat oven 200°C.\n2. In baking dish arrange zucchini, tomatoes, onion, olives, capers, garlic.\n3. Drizzle with olive oil, sprinkle oregano, salt, pepper. Toss to coat.\n4. Bake 15 min.\n5. Remove from oven. Place fish fillets on top of vegetables.\n6. Top fish with lemon slices, drizzle olive oil, season with salt, pepper, oregano.\n7. Bake 12-15 min until fish cooked through.\n8. Meanwhile cook couscous or quinoa according to package.\n9. Serve fish and vegetables over couscous.",
-      "image_description": "Image of baked white fish fillets topped with lemon slices, surrounded by roasted Mediterranean vegetables like cherry tomatoes, zucchini, red onion, and olives, served over a bed of fluffy couscous.",
-      "image_filename": "mediterranean_baked_fish.jpg"
-    },
-    {
-      "id": "tuscan_white_bean",
-      "dish_name": "Tuscan White Bean Pasta",
-      "cooking_time": {
-        "prep_time": 10,
-        "cook_time": 25,
-        "total_time": 35
-      },
-      "nutrition": {
-        "kcal": 550,
-        "protein_g": 18,
-        "highlights": "Excellent source of complex carbohydrates and fiber (especially if using whole wheat pasta and beans). Contains **plant-based protein** (beans) and various vitamins from the vegetables."
-      },
-      "ingredients": "1. Pasta 400g (whole wheat preferred)\n2. Cannellini beans 1 can\n3. Spinach or kale large handful\n4. Sundried tomatoes 1/2 cup chopped\n5. Cherry tomatoes 1 cup halved\n6. Garlic 6 cloves minced\n7. Vegetable broth 1 cup\n8. Parmesan cheese\n9. Olive oil\n10. Italian herbs\n11. Red pepper flakes",
-      "instructions": "1. Cook pasta according to package. Reserve 1 cup pasta water. Drain.\n2. Heat olive oil in large pan.\n3. Add garlic, cook 1 min until fragrant.\n4. Add sundried tomatoes, cherry tomatoes, cook 3 min.\n5. Add beans (drained and rinsed), vegetable broth, Italian herbs, red pepper flakes.\n6. Simmer 5 min.\n7. Add spinach, cook until wilted.\n8. Add cooked pasta, toss to combine.\n9. Add pasta water if needed for sauce consistency.\n10. Season with salt and pepper.\n11. Serve with grated parmesan.",
-      "image_description": "Image of a creamy Tuscan white bean pasta dish in a large skillet, mixed with sundried tomatoes, spinach, and cherry tomatoes, topped with grated Parmesan.",
-      "image_filename": "tuscan_white_bean.jpg"
-    },
-    {
-      "id": "baked_sweet_potato",
-      "dish_name": "Baked Sweet Potato with Mediterranean Toppings",
-      "cooking_time": {
-        "prep_time": 15,
-        "cook_time": 55,
-        "total_time": 70
-      },
-      "nutrition": {
-        "kcal": 400,
-        "protein_g": 11,
-        "highlights": "Excellent source of Vitamin A and **fiber** (sweet potatoes, chickpeas). Provides **plant-based protein** (chickpeas) and probiotics (Greek yogurt). Naturally gluten-free."
-      },
-      "ingredients": "1. Sweet potatoes 4 large\n2. Chickpeas 1 can\n3. Cucumber 1 diced\n4. Cherry tomatoes 1 cup diced\n5. Red onion 1/2 small diced\n6. Feta cheese crumbles\n7. Greek yogurt\n8. Fresh parsley or mint\n9. Lemon 1\n10. Cumin 1 tsp\n11. Paprika 1 tsp\n12. Olive oil",
-      "instructions": "1. Preheat oven 200°C.\n2. Pierce sweet potatoes with fork. Place on baking tray.\n3. Bake 45-60 min until tender.\n4. Meanwhile drain and rinse chickpeas. Pat dry.\n5. Toss chickpeas with olive oil, cumin, paprika, salt, pepper.\n6. Spread on baking tray. Roast last 20 min of potato cooking time until crispy.\n7. Dice cucumber, tomatoes, onion. Mix in bowl.\n8. Add lemon juice, olive oil, salt, pepper, fresh herbs.\n9. Split baked sweet potatoes. Fluff insides with fork.\n10. Top with roasted chickpeas, cucumber-tomato salad, feta, dollop of yogurt.\n11. Garnish with herbs.",
-      "image_description": "Image of a split baked sweet potato overflowing with Mediterranean toppings: crispy spiced chickpeas, diced cucumber and tomato salad, crumbled feta, and a dollop of white Greek yogurt, garnished with fresh mint.",
-      "image_filename": "baked_sweet_potato.jpg"
-    },
-    {
-      "id": "creamy_tomato_basil",
-      "dish_name": "Creamy Tomato Basil Risotto with Peas",
-      "cooking_time": {
-        "prep_time": 20,
-        "cook_time": 45,
-        "total_time": 65
-      },
-      "nutrition": {
-        "kcal": 600,
-        "protein_g": 13,
-        "highlights": "High in carbohydrates for energy. Contains Vitamin C and antioxidants (tomatoes, basil) and fiber and **protein** (peas). Creamy and comforting texture."
-      },
-      "ingredients": "1. Arborio rice 1.5 cups\n2. Cherry tomatoes 2 cups\n3. Frozen peas 1 cup\n4. Vegetable broth 1.5L warm\n5. Onion 1 diced\n6. Garlic 4 cloves minced\n7. White wine 1/2 cup (optional) or extra broth\n8. Light cooking cream 100ml or mascarpone 2 tbsp\n9. Fresh basil large bunch\n10. Parmesan cheese\n11. Olive oil\n12. Butter 2 tbsp",
-      "instructions": "1. Preheat oven 200°C.\n2. Toss cherry tomatoes with olive oil, salt, pepper on baking tray.\n3. Roast 20 min until blistered. Set aside.\n4. Keep broth warm in pot on low heat.\n5. Heat olive oil and butter in large pan.\n6. Sauté onion 5 min until soft.\n7. Add garlic, cook 1 min.\n8. Add rice, stir 2 min until slightly toasted.\n9. Add wine if using, stir until absorbed.\n10. Add broth 1 ladle at a time, stirring frequently. Wait until absorbed before adding more.\n11. Continue 20-25 min until rice creamy and al dente.\n12. Stir in roasted tomatoes, peas, cream, chopped basil, parmesan.\n13. Season with salt and pepper.\n14. Serve immediately with extra parmesan and basil.",
-      "image_description": "Image of a creamy pink risotto studded with bright green peas, visible roasted cherry tomatoes, and large pieces of fresh basil, served in a wide bowl and topped with grated Parmesan.",
-      "image_filename": "creamy_tomato_basil.jpg"
-    },
-    {
-      "id": "creamy_tuscan_salmon",
-      "dish_name": "Creamy Tuscan Salmon Pasta",
-      "cooking_time": {
-        "prep_time": 15,
-        "cook_time": 25,
-        "total_time": 40
-      },
-      "nutrition": {
-        "kcal": 675,
-        "protein_g": 45,
-        "highlights": "High in **protein** (salmon) and **Omega-3 fatty acids**. Contains Vitamin K and iron (spinach). A rich, balanced meal with carbohydrates and healthy fats."
-      },
-      "ingredients": "1. Pasta 400g (penne or fettuccine)\n2. Salmon fillets 3 medium\n3. Spinach 2 cups\n4. Sundried tomatoes 1/2 cup chopped\n5. Cherry tomatoes 1 cup halved\n6. Garlic 6 cloves minced\n7. Light cooking cream 200ml\n8. Parmesan cheese\n9. Italian herbs (basil, oregano)\n10. Olive oil\n11. Lemon 1",
-      "instructions": "1. Cook pasta according to package. Reserve 1 cup pasta water. Drain.\n2. Season salmon with salt, pepper, Italian herbs.\n3. Heat olive oil in large pan.\n4. Cook salmon 4-5 min per side until cooked through. Remove, set aside.\n5. In same pan add more oil if needed. Add garlic, cook 1 min.\n6. Add sundried tomatoes, cherry tomatoes, cook 3 min.\n7. Add cream, bring to simmer.\n8. Add spinach, cook until wilted.\n9. Break salmon into chunks, add to sauce.\n10. Add cooked pasta, toss to combine.\n11. Add pasta water if needed for consistency.\n12. Stir in parmesan, lemon juice.\n13. Season with salt and pepper.\n14. Garnish with fresh basil and extra parmesan.",
-      "image_description": "Image of salmon fillets broken into chunks and mixed into a creamy Tuscan sauce with pasta, sun-dried tomatoes, cherry tomatoes, and wilted spinach, garnished with fresh basil.",
-      "image_filename": "creamy_tuscan_salmon.jpg"
-    },
-    {
-      "id": "baked_feta_pasta",
-      "dish_name": "Baked Feta Pasta with Olives",
-      "cooking_time": {
-        "prep_time": 10,
-        "cook_time": 35,
-        "total_time": 45
-      },
-      "nutrition": {
-        "kcal": 600,
-        "protein_g": 18,
-        "highlights": "High in carbohydrates (pasta) and **healthy monounsaturated fats** (olive oil, olives). Provides calcium (feta) and antioxidants (tomatoes). This viral dish is simple and flavourful."
-      },
-      "ingredients": "1. Pasta 400g any shape\n2. Feta cheese block 200g\n3. Cherry tomatoes 500g\n4. Kalamata olives 1 cup sliced\n5. Garlic 6-8 cloves whole\n6. Olive oil\n7. Fresh basil\n8. Red pepper flakes\n9. Spinach 2 cups (optional)",
-      "instructions": "1. Preheat oven 200°C.\n2. Place feta block in center of baking dish.\n3. Arrange cherry tomatoes and garlic cloves around feta.\n4. Add olives around dish.\n5. Drizzle everything generously with olive oil.\n6. Sprinkle with salt, pepper, red pepper flakes.\n7. Bake 30-35 min until tomatoes burst and feta soft.\n8. Meanwhile cook pasta according to package. Reserve 1 cup pasta water. Drain.\n9. Remove dish from oven.\n10. Add spinach if using, let wilt from heat.\n11. Mash feta and tomatoes together with fork.\n12. Add cooked pasta, toss to coat.\n13. Add pasta water if needed for creamier sauce.\n14. Tear fresh basil on top.\n15. Serve immediately with extra olive oil if desired.",
-      "image_description": "Image of a baking dish with a block of feta cheese surrounded by cherry tomatoes, whole garlic cloves, and Kalamata olives, all roasted until golden, ready to be mixed with cooked pasta.",
-      "image_filename": "baked_feta_pasta.jpg"
-    },
-    {
-      "id": "mediterranean_tuna_white",
-      "dish_name": "Mediterranean Tuna & White Bean Bake",
-      "cooking_time": {
-        "prep_time": 15,
-        "cook_time": 25,
-        "total_time": 40
-      },
-      "nutrition": {
-        "kcal": 450,
-        "protein_g": 25,
-        "highlights": "Excellent source of **protein** (tuna) and **fiber** (beans). Provides Omega-3s (tuna) and healthy fats (olives, olive oil). A quick, nutritious, and hearty one-pan meal."
-      },
-      "ingredients": "1. Cannellini beans 2 cans\n2. Tuna 2 cans\n3. Cherry tomatoes 400g halved\n4. Red capsicum 1 diced\n5. Red onion 1 diced\n6. Garlic 4 cloves minced\n7. Olives 1/2 cup sliced (optional)\n8. Mozzarella or feta cheese 150g\n9. Fresh parsley\n10. Fresh basil\n11. Olive oil\n12. Italian herbs\n13. Rice or crusty bread for serving",
-      "instructions": "1. Preheat oven 180°C.\n2. Heat olive oil in oven-safe skillet or pan.\n3. Sauté onion and capsicum 5 min until soft.\n4. Add garlic, cook 1 min.\n5. Add beans (drained and rinsed), tomatoes, drained tuna (broken into chunks), olives, Italian herbs.\n6. Stir gently to combine.\n7. Season with salt and pepper.\n8. Simmer 5 min.\n9. Top with cheese (torn mozzarella or crumbled feta).\n10. Transfer to oven.\n11. Bake 15-20 min until cheese melted and golden.\n12. Garnish with fresh parsley and basil.\n13. Serve with rice or crusty bread.",
-      "image_description": "Image of a rustic Mediterranean bake in a skillet or casserole dish, showing tuna chunks, white beans, halved cherry tomatoes, and olives, topped with melted, golden mozzarella or feta cheese.",
-      "image_filename": "mediterranean_tuna_white.jpg"
     }
+  ],
+  "appliance_notes": {
+    "ninja_smartlid_multi_cooker": {
+      "best_for": [
+        "Soups",
+        "Rice dishes",
+        "Pressure cooking",
+        "One-pot meals",
+        "Risotto"
+      ],
+      "tips": [
+        "Use SEAR/SAUT\u00c9 mode for initial browning",
+        "PRESSURE COOK mode significantly reduces cooking time",
+        "Natural release = let pressure drop naturally; Quick release = manual valve release",
+        "For rice: use RICE mode for perfectly cooked grains",
+        "Clean pot between batches if cooking multiple components"
+      ]
+    },
+    "kenwood_titanium_chef": {
+      "best_for": [
+        "Mashing potatoes",
+        "Mixing dough",
+        "Whipping cream",
+        "Blending smooth mixtures"
+      ],
+      "tips": [
+        "Use low speed for mashing to avoid gluey texture",
+        "Perfect for achieving restaurant-quality mashed potatoes",
+        "Can also be used for making fresh pasta dough or bread"
+      ]
+    },
+    "ninja_dual_zone_air_fryer": {
+      "best_for": [
+        "Proteins (fish, chicken)",
+        "Vegetables",
+        "Potatoes",
+        "Eggplant",
+        "Simultaneous cooking"
+      ],
+      "tips": [
+        "Use SYNC FINISH to time two zones to finish together",
+        "MATCH COOK copies settings from one zone to the other",
+        "Shake or flip food halfway through for even cooking",
+        "Preheat for 2-3 min for best results with proteins",
+        "Don't overcrowd baskets - air needs to circulate"
+      ]
+    }
+  },
+  "general_conversion_notes": [
+    "Pressure cooking typically reduces cook time by 60-70% for soups and stews",
+    "Air fryer cooks 20-30% faster than conventional oven and gives crispier results",
+    "Always quick release pressure for vegetables to prevent overcooking",
+    "Natural release better for rice, beans, and large cuts of protein",
+    "SmartLid's SEAR/SAUT\u00c9 mode replaces stovetop pan cooking",
+    "Dual Zone allows cooking proteins and sides simultaneously - plan timing accordingly"
   ]
 }
