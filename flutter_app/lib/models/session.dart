@@ -47,7 +47,6 @@ class Session {
           final decoded = jsonDecode(data) as Map<String, dynamic>;
           return decoded.map((k, v) => MapEntry(k.toString(), v.toString()));
         } catch (e) {
-          print('Error parsing string map: $e');
           return {};
         }
       }
@@ -62,7 +61,6 @@ class Session {
           final decoded = jsonDecode(data) as Map<String, dynamic>;
           return decoded.map((k, v) => MapEntry(k.toString(), v == true));
         } catch (e) {
-          print('Error parsing bool map: $e');
           return {};
         }
       }

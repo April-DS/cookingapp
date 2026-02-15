@@ -187,8 +187,6 @@ class DatabaseService {
   Future<int> insertSession(Session session) async {
     final db = await database;
     
-    print('DEBUG: Inserting session with shopping list: ${session.shoppingList}');
-    
     final result = await db.insert(
       'sessions',
       {
@@ -203,14 +201,11 @@ class DatabaseService {
       },
     );
     
-    print('DEBUG: Session inserted with ID: $result');
     return result;
   }
 
   Future<void> updateSession(Session session) async {
     final db = await database;
-    
-    print('DEBUG: Updating session ${session.id} with shopping list: ${session.shoppingList}');
     
     await db.update(
       'sessions',
@@ -228,7 +223,6 @@ class DatabaseService {
       whereArgs: [session.id],
     );
     
-    print('DEBUG: Session updated successfully');
   }
 
   Future<List<Session>> getAllSessions() async {
@@ -251,7 +245,6 @@ class DatabaseService {
         );
         sessions.add(session);
       } catch (e) {
-        print('Error parsing session: $e');
       }
     }
 
@@ -269,7 +262,6 @@ class DatabaseService {
         return jsonData.map((k, v) => MapEntry(k as K, v as V));
       }
     } catch (e) {
-      print('Error parsing JSON map: $e');
     }
     return {};
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import '../models/recipe.dart';
 import '../services/app_state.dart';
 import '../theme/theme.dart';
@@ -19,6 +20,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   final TextEditingController _sessionNameController = TextEditingController();
   final Map<String, String> _ingredients = {};
   final Map<String, bool> _checked = {};
+  bool _saved = false;
 
   @override
   void initState() {
@@ -37,22 +39,17 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   void _loadIngredients() {
     final appState = Provider.of<AppState>(context, listen: false);
     
-    print('DEBUG: Loading ingredients for ${appState.currentSessionRecipes.length} recipes');
-    
     // Aggregate ingredients from all selected recipes
     final allIngredientLists = <List<String>>[];
     for (var recipe in appState.currentSessionRecipes) {
       if (recipe.ingredients.isNotEmpty) {
         final parsed = recipe.ingredients.parseIngredients();
-        print('DEBUG: Recipe ${recipe.dishName} has ingredients: $parsed');
         allIngredientLists.add(parsed);
       }
     }
 
     final aggregated = ListExtensions.aggregateIngredients(allIngredientLists);
-    
-    print('DEBUG: Aggregated ingredients: $aggregated');
-    
+
     setState(() {
       _ingredients.clear();
       _ingredients.addAll(aggregated);
@@ -136,6 +133,34 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     );
   }
 
+  Future<void> _shareCurrentSession(AppState appState) async {
+    final buffer = StringBuffer();
+    buffer.writeln('🍽 Cooking Swipe Session');
+    buffer.writeln();
+
+    buffer.writeln('📋 Recipes (${appState.currentSessionRecipes.length}):');
+    for (var recipe in appState.currentSessionRecipes) {
+      buffer.writeln('• ${recipe.dishName} — ${StringExtensions.formatDuration(recipe.totalTime)}, ${recipe.kcal} kcal');
+    }
+
+    if (_ingredients.isNotEmpty) {
+      buffer.writeln();
+      buffer.writeln('🛒 Shopping List:');
+      final sortedKeys = _ingredients.keys.toList()..sort();
+      for (var key in sortedKeys) {
+        final checked = _checked[key] ?? false;
+        final quantity = _ingredients[key] ?? '';
+        final mark = checked ? '☑' : '☐';
+        buffer.writeln('$mark $key${quantity.isNotEmpty ? ' ($quantity)' : ''}');
+      }
+    }
+
+    buffer.writeln();
+    buffer.writeln('Shared from Cooking Swipe');
+
+    await Share.share(buffer.toString());
+  }
+
   void _copyToClipboard() {
     final sortedKeys = _ingredients.keys.toList()..sort();
     final list = sortedKeys.map((key) {
@@ -159,16 +184,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   Future<void> _saveSession() async {
     final appState = Provider.of<AppState>(context, listen: false);
     
-    print('DEBUG: Saving session with ${_ingredients.length} items');
-    print('DEBUG: Shopping list data: $_ingredients');
-    print('DEBUG: Checked states: $_checked');
-    
     try {
       await appState.saveSession(
         _sessionNameController.text.trim(),
         _ingredients,
         ingredientChecked: _checked,
       );
+
+      _saved = true;
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -183,7 +206,6 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
     } catch (e) {
-      print('DEBUG: Error saving session: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error saving session: $e'),
@@ -213,15 +235,163 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     });
   }
 
+  void _showEditRecipesSheet(AppState appState) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppTheme.darkBgSecondary,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (sheetContext, setSheetState) {
+            final recipes = List<Recipe>.from(appState.currentSessionRecipes);
+            return SafeArea(
+              child: Padding(
+                padding: EdgeInsets.all(AppConstants.defaultPadding),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Recipes (${recipes.length}/${appState.targetDishCount})',
+                          style: Theme.of(sheetContext).textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(sheetContext);
+                            if (recipes.length < appState.targetDishCount) {
+                              // Go back to swiping to fill remaining slots
+                              Navigator.pop(context);
+                            } else {
+                              // Reload ingredients with current recipes
+                              _loadIngredients();
+                            }
+                          },
+                          child: Text('Done'),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: AppConstants.smallPadding),
+                    if (recipes.length < appState.targetDishCount)
+                      Padding(
+                        padding: EdgeInsets.only(bottom: AppConstants.smallPadding),
+                        child: Text(
+                          'Remove recipes and tap Done to go back and choose new ones',
+                          style: TextStyle(color: AppTheme.pastelPeach, fontSize: 12),
+                        ),
+                      ),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(sheetContext).size.height * 0.4,
+                      ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: recipes.length,
+                        itemBuilder: (ctx, index) {
+                          final recipe = recipes[index];
+                          return Card(
+                            color: AppTheme.darkBg,
+                            child: ListTile(
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: SizedBox(
+                                  width: 48,
+                                  height: 48,
+                                  child: Image.asset(
+                                    'assets/recipe_images/${recipe.imageFilename}',
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) => Container(
+                                      color: AppTheme.pastelMint,
+                                      child: Icon(Icons.restaurant, color: AppTheme.darkBg),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              title: Text(
+                                recipe.dishName,
+                                style: TextStyle(color: AppTheme.textLight),
+                              ),
+                              subtitle: Text(
+                                '${recipe.kcal} kcal • ${StringExtensions.formatDuration(recipe.totalTime)}',
+                                style: TextStyle(color: AppTheme.textMuted, fontSize: 12),
+                              ),
+                              trailing: IconButton(
+                                icon: Icon(Icons.remove_circle, color: AppTheme.error),
+                                onPressed: () {
+                                  appState.removeFromSession(recipe);
+                                  setSheetState(() {});
+                                  setState(() {});
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<bool> _confirmDiscard() async {
+    if (_saved || _ingredients.isEmpty) return true;
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppTheme.darkBgSecondary,
+        title: Text('Discard session?'),
+        content: Text(
+          'You haven\'t saved this session yet. Your recipes and shopping list will be lost.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text('Stay'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text('Discard', style: TextStyle(color: AppTheme.error)),
+          ),
+        ],
+      ),
+    );
+    return result ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
     final sortedKeys = _ingredients.keys.toList()..sort();
 
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final shouldPop = await _confirmDiscard();
+        if (shouldPop && mounted) {
+          Navigator.of(context).pop();
+        }
+      },
+      child: Scaffold(
       appBar: AppBar(
         title: Text('Shopping List'),
         actions: [
+          IconButton(
+            icon: Icon(Icons.share),
+            onPressed: () => _shareCurrentSession(appState),
+            tooltip: 'Share',
+          ),
           IconButton(
             icon: Icon(Icons.copy),
             onPressed: _copyToClipboard,
@@ -256,7 +426,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
 
           Divider(color: AppTheme.textMuted, height: 1),
 
-          // Recipe count
+          // Recipe count with edit button
           Padding(
             padding: EdgeInsets.all(AppConstants.defaultPadding),
             child: Row(
@@ -268,11 +438,27 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                 ),
-                Text(
-                  '${_ingredients.length} Ingredients',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppTheme.pastelMint,
+                Row(
+                  children: [
+                    Text(
+                      '${_ingredients.length} Items',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: AppTheme.pastelMint,
+                          ),
+                    ),
+                    SizedBox(width: AppConstants.smallPadding),
+                    SizedBox(
+                      height: 32,
+                      child: OutlinedButton.icon(
+                        icon: Icon(Icons.edit, size: 14),
+                        label: Text('Edit', style: TextStyle(fontSize: 12)),
+                        onPressed: () => _showEditRecipesSheet(appState),
+                        style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                        ),
                       ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -359,6 +545,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           ),
         ],
       ),
+    ),
     );
   }
 }

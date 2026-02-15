@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import '../models/recipe.dart';
 import '../models/session.dart';
 import 'database_service.dart';
+import 'import_service.dart';
 
 class AppState extends ChangeNotifier {
   final DatabaseService _dbService = DatabaseService();
@@ -33,9 +35,21 @@ class AppState extends ChangeNotifier {
 
   // Initialize app
   Future<void> _initialize() async {
+    // Always sync bundled recipes into DB (uses REPLACE on conflict,
+    // so updated or new recipes from the JSON are picked up automatically)
+    await _loadBundledRecipes();
     await loadAllRecipes();
     await loadPastSessions();
     _applyFilters();
+  }
+
+  Future<void> _loadBundledRecipes() async {
+    try {
+      final jsonText = await rootBundle.loadString('assets/dishes_json.json');
+      await ImportService().importFromJsonText(jsonText);
+    } catch (e) {
+      debugPrint('Failed to load bundled recipes: $e');
+    }
   }
 
   // Load all recipes from database
@@ -104,6 +118,16 @@ class AppState extends ChangeNotifier {
     return wasLike;
   }
 
+  // Remove a recipe from the current session (for editing selections)
+  void removeFromSession(Recipe recipe) {
+    currentSessionRecipes.removeWhere((r) => r.id == recipe.id);
+    // Add back to filtered list so it can be swiped again
+    if (!filteredRecipes.any((r) => r.id == recipe.id)) {
+      filteredRecipes.insert(0, recipe);
+    }
+    notifyListeners();
+  }
+
   // Apply filters and randomize order
   void _applyFilters({Set<String>? excludeIds}) {
     filteredRecipes = allRecipes.where((recipe) {
@@ -169,9 +193,6 @@ class AppState extends ChangeNotifier {
 
   // Save current session with shopping list
 Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {Map<String, bool>? ingredientChecked, Map<String, String>? ingredientQuantities}) async {
-  print('DEBUG AppState: saveSession called with ${shoppingList.length} items');
-  print('DEBUG AppState: shoppingList data: $shoppingList');
-  
   // Auto-generate name if empty
   final finalName = sessionName.isEmpty
       ? _formatDateTime(DateTime.now())
@@ -189,7 +210,6 @@ Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {
 
   try {
     final id = await _dbService.insertSession(session);
-    print('DEBUG AppState: Session saved with ID: $id');
     currentSession = session.copyWith(id: id);
     
     // Keep only last 4 sessions
@@ -202,7 +222,6 @@ Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {
 
     notifyListeners();
   } catch (e) {
-    print('DEBUG AppState: Error saving session: $e');
     rethrow;
   }
 }

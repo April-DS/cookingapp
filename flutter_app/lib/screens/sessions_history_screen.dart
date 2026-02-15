@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import '../models/session.dart';
 import '../models/recipe.dart';
 import '../services/app_state.dart';
 import '../theme/theme.dart';
 import '../utils/constants.dart';
+import '../utils/extensions.dart';
 import '../widgets/flip_recipe_card.dart';
 import '../widgets/ingredient_list_item.dart';
 
@@ -91,10 +93,16 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
       title: Text(session.sessionName),
       subtitle: Text(formattedDate),
       trailing: SizedBox(
-        width: 100,
+        width: 136,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            IconButton(
+              icon: Icon(Icons.share, color: AppTheme.pastelLavender),
+              onPressed: () => _shareSession(session, appState),
+              constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+              padding: EdgeInsets.zero,
+            ),
             IconButton(
               icon: Icon(Icons.shopping_cart, color: AppTheme.pastelMint),
               onPressed: () {
@@ -174,6 +182,35 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
         ),
       ],
     );
+  }
+
+  Future<void> _shareSession(Session session, AppState appState) async {
+    final recipes = await appState.getSessionRecipes(session);
+
+    final buffer = StringBuffer();
+    buffer.writeln('🍽 ${session.sessionName}');
+    buffer.writeln('${DateFormat('MMM d, yyyy').format(session.dateCreated)}');
+    buffer.writeln();
+
+    buffer.writeln('📋 Recipes (${recipes.length}):');
+    for (var recipe in recipes) {
+      buffer.writeln('• ${recipe.dishName} — ${StringExtensions.formatDuration(recipe.totalTime)}, ${recipe.kcal} kcal');
+    }
+
+    if (session.shoppingList.isNotEmpty) {
+      buffer.writeln();
+      buffer.writeln('🛒 Shopping List:');
+      final sortedKeys = session.shoppingList.keys.toList()..sort();
+      for (var key in sortedKeys) {
+        final quantity = session.shoppingList[key] ?? '';
+        buffer.writeln('☐ $key${quantity.isNotEmpty ? ' ($quantity)' : ''}');
+      }
+    }
+
+    buffer.writeln();
+    buffer.writeln('Shared from Cooking Swipe');
+
+    await Share.share(buffer.toString());
   }
 
   void _showShoppingList(
@@ -369,56 +406,6 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
         );
       },
     );
-  }
-
-  List<Widget> _buildShoppingListItems(Session session) {
-    print('DEBUG: Shopping list has ${session.shoppingList.length} items');
-    
-    if (session.shoppingList.isEmpty) {
-      return [
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: AppConstants.smallPadding),
-          child: Text(
-            'No items saved',
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ),
-      ];
-    }
-
-    final sortedKeys = session.shoppingList.keys.toList()..sort();
-    return [
-      for (var key in sortedKeys)
-        Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: AppConstants.smallPadding,
-          ),
-          child: Row(
-            children: [
-              Checkbox(
-                value: false,
-                onChanged: (_) {},
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      key,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    if (session.shoppingList[key]!.isNotEmpty)
-                      Text(
-                        session.shoppingList[key]!,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-    ];
   }
 
   void _copyShoppingListToClipboard(Session session) {

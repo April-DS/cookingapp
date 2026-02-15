@@ -88,8 +88,9 @@ extension ListExtensions on List<String> {
         final quantity = data['quantity'];
         final unit = data['unit'] as String;
         
-        if (quantity != null && (quantity as double) > 0) {
-          final quantityStr = (quantity as double).toStringAsFixed(quantity % 1 == 0 ? 0 : 1);
+        if (quantity != null && quantity > 0) {
+          final q = quantity as double;
+          final quantityStr = q.toStringAsFixed(q % 1 == 0 ? 0 : 1);
           return MapEntry(name, '$quantityStr${unit.isNotEmpty ? ' $unit' : ''}');
         }
       }
