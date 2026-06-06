@@ -90,9 +90,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       if (text.isEmpty) return;
                       try {
                         await _importService.importFromJsonText(text);
+                        // Refresh the recipe list so the new recipes appear.
+                        if (!mounted) return;
+                        await Provider.of<AppState>(context, listen: false)
+                            .loadAllRecipes();
+                        if (!context.mounted) return;
                         Navigator.pop(context);
                         _showSnackBar('Imported recipes');
                       } catch (e) {
+                        if (!mounted) return;
                         _showSnackBar('Import failed: ${e.toString()}',
                             isError: true);
                       }
@@ -251,9 +257,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         try {
                           await Provider.of<AppState>(context, listen: false)
                               .addRecipe(recipe);
+                          if (!context.mounted) return;
                           Navigator.pop(context);
                           _showSnackBar('Recipe added');
                         } catch (e) {
+                          if (!mounted) return;
                           _showSnackBar('Add failed: ${e.toString()}',
                               isError: true);
                         }
@@ -267,7 +275,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
       ),
-    );
+    ).then((_) {
+      // Dispose the dialog's controllers when it closes to avoid leaks.
+      nameController.dispose();
+      prepTimeController.dispose();
+      cookTimeController.dispose();
+      kcalController.dispose();
+      proteinController.dispose();
+      highlightsController.dispose();
+      ingredientsController.dispose();
+      instructionsController.dispose();
+    });
   }
 
   void _showLastSessionShoppingList(BuildContext parentContext, Session initialSession) {
@@ -358,10 +376,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               icon: const Icon(Icons.add),
                               label: const Text('Add Item'),
                               onPressed: () async {
-                                final result = await showDialog<String>(
+                                final controller = TextEditingController();
+                                final String? result;
+                                try {
+                                  result = await showDialog<String>(
                                   context: context,
                                   builder: (addContext) {
-                                    final controller = TextEditingController();
                                     return Dialog(
                                       backgroundColor: AppTheme.darkBgSecondary,
                                       child: Padding(
@@ -411,6 +431,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     );
                                   },
                                 );
+                                } finally {
+                                  controller.dispose();
+                                }
 
                                 if (result != null && result.isNotEmpty) {
                                   final updatedSession = session.copyWith(
@@ -423,6 +446,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       result: false,
                                     },
                                   );
+                                  if (!context.mounted) return;
                                   await Provider.of<AppState>(context, listen: false)
                                       .updateSession(updatedSession);
                                   setDialogState(() => session = updatedSession);
@@ -477,8 +501,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       final appState = Provider.of<AppState>(context, listen: false);
       final sessionName = await appState.importSharedSession(json);
 
+      if (!mounted) return;
       _showSnackBar('Imported session: $sessionName');
     } catch (e) {
+      if (!mounted) return;
       _showSnackBar('Import failed: ${e.toString()}', isError: true);
     }
   }
