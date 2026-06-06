@@ -11,7 +11,6 @@ class AppConstants {
   static const String sessionsTable = 'sessions';
 
   // Image assets
-  static const String placeholderImage = 'assets/images/placeholder.png';
   static const String recipeImagesPath = 'assets/recipe_images/';
 
   // Default settings
