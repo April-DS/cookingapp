@@ -114,7 +114,7 @@ class _IngredientListItemState extends State<IngredientListItem> {
       background: Container(
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: AppConstants.defaultPadding),
-        color: AppTheme.error.withOpacity(0.8),
+        color: AppTheme.error.withValues(alpha:0.8),
         child: const Icon(Icons.delete, color: Colors.white),
       ),
       child: Card(

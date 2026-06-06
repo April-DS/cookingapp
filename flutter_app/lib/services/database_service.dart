@@ -206,7 +206,21 @@ class DatabaseService {
     final db = await database;
     await db.update(
       'recipes',
-      recipe.toJson(),
+      {
+        'dish_name': recipe.dishName,
+        'prep_time': recipe.prepTime,
+        'cook_time': recipe.cookTime,
+        'total_time': recipe.totalTime,
+        'kcal': recipe.kcal,
+        'protein_g': recipe.proteinG,
+        'highlights': recipe.highlights,
+        'ingredients': recipe.ingredients,
+        'instructions': recipe.instructions,
+        'image_description': recipe.imageDescription,
+        'image_filename': recipe.imageFilename,
+        'pick_count': recipe.pickCount,
+        'skip_count': recipe.skipCount,
+      },
       where: 'id = ?',
       whereArgs: [recipe.id],
     );
@@ -233,6 +247,22 @@ class DatabaseService {
     final db = await database;
     await db.rawUpdate(
       'UPDATE recipes SET skip_count = COALESCE(skip_count, 0) + 1 WHERE id = ?',
+      [recipeId],
+    );
+  }
+
+  Future<void> decrementPickCount(String recipeId) async {
+    final db = await database;
+    await db.rawUpdate(
+      'UPDATE recipes SET pick_count = MAX(COALESCE(pick_count, 0) - 1, 0) WHERE id = ?',
+      [recipeId],
+    );
+  }
+
+  Future<void> decrementSkipCount(String recipeId) async {
+    final db = await database;
+    await db.rawUpdate(
+      'UPDATE recipes SET skip_count = MAX(COALESCE(skip_count, 0) - 1, 0) WHERE id = ?',
       [recipeId],
     );
   }

@@ -26,7 +26,7 @@ class RecipeDetailScreen extends StatelessWidget {
               icon: Container(
                 padding: EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.4),
+                  color: Colors.black.withValues(alpha:0.4),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -47,7 +47,7 @@ class RecipeDetailScreen extends StatelessWidget {
                         colors: [
                           Colors.transparent,
                           Colors.transparent,
-                          AppTheme.darkBg.withOpacity(0.8),
+                          AppTheme.darkBg.withValues(alpha:0.8),
                         ],
                         stops: [0.0, 0.5, 1.0],
                       ),
@@ -70,7 +70,7 @@ class RecipeDetailScreen extends StatelessWidget {
                             shadows: [
                               Shadow(
                                 blurRadius: 8,
-                                color: Colors.black.withOpacity(0.5),
+                                color: Colors.black.withValues(alpha:0.5),
                               ),
                             ],
                           ),
@@ -164,7 +164,7 @@ class RecipeDetailScreen extends StatelessWidget {
                               width: 28,
                               height: 28,
                               decoration: BoxDecoration(
-                                color: AppTheme.pastelMint.withOpacity(0.2),
+                                color: AppTheme.pastelMint.withValues(alpha:0.2),
                                 borderRadius: BorderRadius.circular(14),
                               ),
                               child: Center(
@@ -234,7 +234,7 @@ class RecipeDetailScreen extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.9),
+        color: color.withValues(alpha:0.9),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
@@ -303,7 +303,7 @@ class RecipeDetailScreen extends StatelessWidget {
     return Container(
       width: 1,
       height: 36,
-      color: AppTheme.textMuted.withOpacity(0.3),
+      color: AppTheme.textMuted.withValues(alpha:0.3),
     );
   }
 

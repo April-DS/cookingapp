@@ -23,12 +23,6 @@ class SessionsHistoryScreen extends StatefulWidget {
 }
 
 class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
-  late Map<String, bool> cookedRecipes = {};
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -253,112 +247,116 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
   }
 
   void _showShoppingList(
-    BuildContext context,
-    Session session,
+    BuildContext parentContext,
+    Session initialSession,
     AppState appState,
   ) {
     showDialog(
-      context: context,
-      builder: (context) {
-        // Local mutable copy of checked state for the dialog
-        final localChecked = Map<String, bool>.fromEntries(
-          session.shoppingList.keys.map((k) => MapEntry(k, session.ingredientChecked[k] ?? false)),
-        );
+      context: parentContext,
+      builder: (dialogContext) {
+        // Use a mutable local session so edits (delete, add, check) are reflected
+        // without closing/reopening the dialog.
+        var session = initialSession;
 
-        return Dialog(
-          backgroundColor: AppTheme.darkBgSecondary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppConstants.cardCornerRadius),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(AppConstants.defaultPadding),
-            child: StatefulBuilder(
-              builder: (context, setState) => Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Shopping List',
-                    style: Theme.of(context).textTheme.displayMedium,
-                  ),
-                  SizedBox(height: AppConstants.smallPadding),
-                  Text(
-                    session.sessionName,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  SizedBox(height: AppConstants.defaultPadding),
-                  Divider(color: AppTheme.textMuted, height: 1),
-                  SizedBox(height: AppConstants.defaultPadding),
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: 360),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          for (var key in session.shoppingList.keys.toList()..sort())
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: AppConstants.smallPadding / 2),
-                              child: IngredientListItem(
-                                ingredient: key,
-                                quantity: session.shoppingList[key] ?? '',
-                                checked: localChecked[key] ?? false,
-                                onCheckChanged: (value) async {
-                                  setState(() => localChecked[key] = value);
-                                  // Persist change immediately
-                                  final updatedSession = session.copyWith(
-                                    ingredientChecked: {...session.ingredientChecked, ...localChecked},
-                                  );
-                                  await appState.updateSession(updatedSession);
-                                },
-                                onDelete: () async {
-                                  // Remove item from shopping list
-                                  final updatedSession = session.copyWith(
-                                    shoppingList: Map.from(session.shoppingList)..remove(key),
-                                    ingredientChecked: Map.from(session.ingredientChecked)..remove(key),
-                                  );
-                                  await appState.updateSession(updatedSession);
-                                  Navigator.pop(context);
-                                },
-                                onEdit: (newQuantity) async {
-                                  // Update quantity
-                                  final updatedSession = session.copyWith(
-                                    shoppingList: {
-                                      ...session.shoppingList,
-                                      key: newQuantity,
-                                    },
-                                  );
-                                  await appState.updateSession(updatedSession);
-                                },
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return Dialog(
+              backgroundColor: AppTheme.darkBgSecondary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppConstants.cardCornerRadius),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(AppConstants.defaultPadding),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Shopping List',
+                      style: Theme.of(context).textTheme.displayMedium,
+                    ),
+                    SizedBox(height: AppConstants.smallPadding),
+                    Text(
+                      session.sessionName,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    SizedBox(height: AppConstants.defaultPadding),
+                    Divider(color: AppTheme.textMuted, height: 1),
+                    SizedBox(height: AppConstants.defaultPadding),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxHeight: 360),
+                      child: session.shoppingList.isEmpty
+                          ? Center(
+                              child: Text('No items',
+                                  style: Theme.of(context).textTheme.bodyMedium),
+                            )
+                          : SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  for (var key in session.shoppingList.keys.toList()..sort())
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(vertical: AppConstants.smallPadding / 2),
+                                      child: IngredientListItem(
+                                        ingredient: key,
+                                        quantity: session.shoppingList[key] ?? '',
+                                        checked: session.ingredientChecked[key] ?? false,
+                                        onCheckChanged: (value) async {
+                                          final updatedChecked = Map<String, bool>.from(session.ingredientChecked);
+                                          updatedChecked[key] = value;
+                                          final updatedSession = session.copyWith(
+                                            ingredientChecked: updatedChecked,
+                                          );
+                                          await appState.updateSession(updatedSession);
+                                          setDialogState(() => session = updatedSession);
+                                        },
+                                        onDelete: () async {
+                                          final updatedShopping = Map<String, String>.from(session.shoppingList)..remove(key);
+                                          final updatedChecked = Map<String, bool>.from(session.ingredientChecked)..remove(key);
+                                          final updatedSession = session.copyWith(
+                                            shoppingList: updatedShopping,
+                                            ingredientChecked: updatedChecked,
+                                          );
+                                          await appState.updateSession(updatedSession);
+                                          setDialogState(() => session = updatedSession);
+                                        },
+                                        onEdit: (newQuantity) async {
+                                          final updatedSession = session.copyWith(
+                                            shoppingList: {
+                                              ...session.shoppingList,
+                                              key: newQuantity,
+                                            },
+                                          );
+                                          await appState.updateSession(updatedSession);
+                                          setDialogState(() => session = updatedSession);
+                                        },
+                                      ),
+                                    ),
+                                ],
                               ),
                             ),
-                        ],
-                      ),
                     ),
-                  ),
-                  SizedBox(height: AppConstants.defaultPadding),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          icon: Icon(Icons.add),
-                          label: Text('Add Item'),
-                          onPressed: () async {
-                            late final TextEditingController controller;
-                            final result = await showDialog<String>(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (dialogContext) {
-                                controller = TextEditingController();
-                                return Dialog(
-                                  backgroundColor: AppTheme.darkBgSecondary,
-                                  child: Padding(
-                                    padding: EdgeInsets.all(AppConstants.defaultPadding),
-                                    child: SingleChildScrollView(
+                    SizedBox(height: AppConstants.defaultPadding),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            icon: Icon(Icons.add),
+                            label: Text('Add Item'),
+                            onPressed: () async {
+                              final result = await showDialog<String>(
+                                context: context,
+                                builder: (addContext) {
+                                  final controller = TextEditingController();
+                                  return Dialog(
+                                    backgroundColor: AppTheme.darkBgSecondary,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(AppConstants.defaultPadding),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Text(
                                             'Add Item',
-                                            style: Theme.of(dialogContext).textTheme.displayMedium,
+                                            style: Theme.of(addContext).textTheme.displayMedium,
                                           ),
                                           SizedBox(height: AppConstants.defaultPadding),
                                           TextField(
@@ -374,11 +372,7 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
                                             children: [
                                               Expanded(
                                                 child: OutlinedButton(
-                                                  onPressed: () {
-                                                    final ctrl = controller;
-                                                    Navigator.pop(dialogContext);
-                                                    ctrl.dispose();
-                                                  },
+                                                  onPressed: () => Navigator.pop(addContext),
                                                   child: Text('Cancel'),
                                                 ),
                                               ),
@@ -386,12 +380,10 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
                                               Expanded(
                                                 child: ElevatedButton(
                                                   onPressed: () {
-                                                    final text = controller.text;
-                                                    final ctrl = controller;
+                                                    final text = controller.text.trim();
                                                     if (text.isNotEmpty) {
-                                                      Navigator.pop(dialogContext, text);
+                                                      Navigator.pop(addContext, text);
                                                     }
-                                                    ctrl.dispose();
                                                   },
                                                   child: Text('Add'),
                                                 ),
@@ -401,47 +393,51 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
                                         ],
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
-                            );
-
-                            if (result != null && result.isNotEmpty) {
-                              // Add new item
-                              final updatedSession = session.copyWith(
-                                shoppingList: {
-                                  ...session.shoppingList,
-                                  result: '', // Empty quantity by default
+                                  );
                                 },
                               );
-                              await appState.updateSession(updatedSession);
-                            }
-                          },
+
+                              if (result != null && result.isNotEmpty) {
+                                final updatedSession = session.copyWith(
+                                  shoppingList: {
+                                    ...session.shoppingList,
+                                    result: '',
+                                  },
+                                  ingredientChecked: {
+                                    ...session.ingredientChecked,
+                                    result: false,
+                                  },
+                                );
+                                await appState.updateSession(updatedSession);
+                                setDialogState(() => session = updatedSession);
+                              }
+                            },
+                          ),
                         ),
-                      ),
-                      SizedBox(width: AppConstants.smallPadding),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          icon: Icon(Icons.copy),
-                          label: Text('Copy List'),
-                          onPressed: () {
-                            _copyShoppingListToClipboard(session);
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Copied to clipboard!'),
-                                backgroundColor: AppTheme.success,
-                              ),
-                            );
-                          },
+                        SizedBox(width: AppConstants.smallPadding),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            icon: Icon(Icons.copy),
+                            label: Text('Copy List'),
+                            onPressed: () {
+                              _copyShoppingListToClipboard(session);
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(parentContext).showSnackBar(
+                                SnackBar(
+                                  content: Text('Copied to clipboard!'),
+                                  backgroundColor: AppTheme.success,
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );

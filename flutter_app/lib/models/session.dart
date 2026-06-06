@@ -36,6 +36,18 @@ class Session {
     'shopping_list': shoppingList,
   };
 
+  /// Parse recipe_ids from either a comma-separated string (DB) or a List (JSON import).
+  static List<String> _parseRecipeIds(dynamic data) {
+    if (data == null) return [];
+    if (data is List) {
+      return data.map((e) => e.toString()).where((id) => id.isNotEmpty).toList();
+    }
+    if (data is String) {
+      return data.split(',').where((id) => id.isNotEmpty).toList();
+    }
+    return [];
+  }
+
   // Create from JSON
   factory Session.fromJson(Map<String, dynamic> json) {
     // Helper function to parse map fields
@@ -70,9 +82,9 @@ class Session {
     return Session(
       id: json['id'],
       sessionName: json['session_name'] ?? 'Unnamed Session',
-      dateCreated: DateTime.parse(json['date_created']),
+      dateCreated: DateTime.tryParse(json['date_created'] ?? '') ?? DateTime.now(),
       targetCount: json['target_count'] ?? 5,
-      recipeIds: (json['recipe_ids'] as String).split(',').where((id) => id.isNotEmpty).toList(),
+      recipeIds: _parseRecipeIds(json['recipe_ids']),
       ingredientQuantities: parseStringMap(json['ingredient_quantities']),
       ingredientChecked: parseBoolMap(json['ingredient_checked']),
       recipesCooked: parseBoolMap(json['recipes_cooked']),

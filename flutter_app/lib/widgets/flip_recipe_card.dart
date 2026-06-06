@@ -108,7 +108,7 @@ class _FlipRecipeCardState extends State<FlipRecipeCard>
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.transparent, Colors.black.withOpacity(0.3)],
+                colors: [Colors.transparent, Colors.black.withValues(alpha:0.3)],
               ),
             ),
           ),
@@ -212,7 +212,7 @@ class _FlipRecipeCardState extends State<FlipRecipeCard>
                 onChanged: (value) {
                   widget.onCookedChanged(value ?? false);
                 },
-                fillColor: MaterialStateProperty.all(AppTheme.pastelMint),
+                fillColor: WidgetStateProperty.all(AppTheme.pastelMint),
               ),
             ],
           ),
