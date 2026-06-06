@@ -133,7 +133,11 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           ),
         ),
       ),
-    );
+    ).then((_) {
+      // Dispose the dialog's controllers when it closes to avoid leaks.
+      nameController.dispose();
+      quantityController.dispose();
+    });
   }
 
   /// Build full exportable JSON for the current session (before saving).
@@ -222,6 +226,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error saving session: $e'),

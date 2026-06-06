@@ -137,7 +137,22 @@ class AppState extends ChangeNotifier {
 
   // Remove a recipe from the current session (for editing selections)
   void removeFromSession(Recipe recipe) {
+    final wasInSession = currentSessionRecipes.any((r) => r.id == recipe.id);
     currentSessionRecipes.removeWhere((r) => r.id == recipe.id);
+
+    if (wasInSession) {
+      // Reverse the pick count that was added when the recipe was liked/added.
+      _dbService.decrementPickCount(recipe.id);
+
+      // Drop any matching 'like' entry from the undo history so a later undo
+      // doesn't try to remove/decrement this recipe a second time.
+      final historyIndex = swipeHistory.lastIndexWhere((r) => r.id == recipe.id);
+      if (historyIndex != -1 && swipeWasLike[historyIndex]) {
+        swipeHistory.removeAt(historyIndex);
+        swipeWasLike.removeAt(historyIndex);
+      }
+    }
+
     // Add back to filtered list so it can be swiped again
     if (!filteredRecipes.any((r) => r.id == recipe.id)) {
       filteredRecipes.insert(0, recipe);

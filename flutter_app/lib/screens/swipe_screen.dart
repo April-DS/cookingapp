@@ -29,9 +29,25 @@ class _SwipeScreenState extends State<SwipeScreen> {
     });
   }
 
+  // Resolve the index of the card currently shown. The build() method clamps
+  // a stale/out-of-bounds _currentIndex into a `safeIndex` for display, so the
+  // swipe handlers must act on that SAME clamped index — otherwise a swipe can
+  // like/skip the wrong recipe (or be silently ignored) when the two diverge.
+  int _visibleIndex(AppState appState) {
+    if (appState.filteredRecipes.isEmpty) return -1;
+    var index = _currentIndex;
+    if (index >= appState.filteredRecipes.length) {
+      index = appState.filteredRecipes.length - 1;
+    }
+    if (index < 0) index = 0;
+    return index;
+  }
+
   void _handleSwipeRight(AppState appState) {
-    if (_currentIndex < appState.filteredRecipes.length) {
-      appState.likeRecipe(appState.filteredRecipes[_currentIndex]);
+    final index = _visibleIndex(appState);
+    if (index >= 0) {
+      _currentIndex = index;
+      appState.likeRecipe(appState.filteredRecipes[index]);
 
       if (appState.sessionComplete) {
         _showSessionCompleteDialog(appState);
@@ -51,8 +67,10 @@ class _SwipeScreenState extends State<SwipeScreen> {
   }
 
   void _handleSwipeLeft(AppState appState) {
-    if (_currentIndex < appState.filteredRecipes.length) {
-      appState.skipRecipe(appState.filteredRecipes[_currentIndex]);
+    final index = _visibleIndex(appState);
+    if (index >= 0) {
+      _currentIndex = index;
+      appState.skipRecipe(appState.filteredRecipes[index]);
       setState(() {
         // skipRecipe removes the recipe from filteredRecipes, so the list
         // shrinks and _currentIndex now points to the next recipe already.
@@ -256,6 +274,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
             icon: Icon(Icons.bar_chart),
             onPressed: () => Navigator.pushNamed(context, '/statistics').then((_) {
               // Reload recipes to get updated stats
+              if (!mounted) return;
               Provider.of<AppState>(context, listen: false).loadAllRecipes();
             }),
             tooltip: 'Statistics',
