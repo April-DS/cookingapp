@@ -5,20 +5,36 @@ import 'database_service.dart';
 class ImportService {
   final DatabaseService _dbService = DatabaseService();
 
-  // Import recipes from JSON text
+  // Import recipes from JSON text (replaces existing — used for manual imports)
   Future<List<Recipe>> importFromJsonText(String jsonText) async {
     try {
       final decoded = jsonDecode(jsonText);
       final recipes = _parseRecipes(decoded);
-      
+
       // Save to database
       for (var recipe in recipes) {
         await _dbService.insertRecipe(recipe);
       }
-      
+
       return recipes;
     } catch (e) {
       throw Exception('Failed to parse JSON: $e');
+    }
+  }
+
+  // Import bundled recipes — only inserts NEW recipes, preserves existing stats
+  Future<List<Recipe>> importBundledRecipes(String jsonText) async {
+    try {
+      final decoded = jsonDecode(jsonText);
+      final recipes = _parseRecipes(decoded);
+
+      for (var recipe in recipes) {
+        await _dbService.insertRecipeIfNew(recipe);
+      }
+
+      return recipes;
+    } catch (e) {
+      throw Exception('Failed to parse bundled JSON: $e');
     }
   }
 

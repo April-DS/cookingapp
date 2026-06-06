@@ -37,9 +37,10 @@ class _SwipeScreenState extends State<SwipeScreen> {
         _showSessionCompleteDialog(appState);
       } else {
         setState(() {
-          if (_currentIndex < appState.filteredRecipes.length - 1) {
-            _currentIndex++;
-          } else {
+          // likeRecipe removes the recipe from filteredRecipes, so the list
+          // shrinks and _currentIndex now points to the next recipe already.
+          // Just clamp to stay in bounds.
+          if (_currentIndex >= appState.filteredRecipes.length) {
             _currentIndex = appState.filteredRecipes.length - 1;
           }
         });
@@ -51,9 +52,10 @@ class _SwipeScreenState extends State<SwipeScreen> {
     if (_currentIndex < appState.filteredRecipes.length) {
       appState.skipRecipe(appState.filteredRecipes[_currentIndex]);
       setState(() {
-        if (_currentIndex < appState.filteredRecipes.length - 1) {
-          _currentIndex++;
-        } else {
+        // skipRecipe removes the recipe from filteredRecipes, so the list
+        // shrinks and _currentIndex now points to the next recipe already.
+        // Just clamp to stay in bounds.
+        if (_currentIndex >= appState.filteredRecipes.length) {
           _currentIndex = appState.filteredRecipes.length - 1;
         }
       });
@@ -63,18 +65,10 @@ class _SwipeScreenState extends State<SwipeScreen> {
   void _handleUndo(AppState appState) {
     if (appState.swipeHistory.isEmpty) return;
 
-    final wasLike = appState.undoLastSwipe();
-
-    if (wasLike) {
-      if (_currentIndex > 0) {
-        setState(() => _currentIndex--);
-      }
-    } else {
-      // For a skipped recipe being restored, keep the index so the restored
-      // card appears next (we insert it at position 0 in AppState), so set
-      // index to 0 to show the restored recipe.
-      setState(() => _currentIndex = 0);
-    }
+    appState.undoLastSwipe();
+    // undoLastSwipe() inserts the restored recipe at index 0 of filteredRecipes,
+    // so always jump to index 0 to show the restored card.
+    setState(() => _currentIndex = 0);
   }
 
   void _showSessionCompleteDialog(AppState appState) {
@@ -232,6 +226,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
         initialLight: appState.filterByLight,
         initialFast: appState.filterByFast,
         initialLong: appState.filterByLong,
+        allRecipes: appState.allRecipes,
         onApply: (light, fast, long) {
           appState.setLightFilter(light);
           appState.setFastFilter(fast);
@@ -246,8 +241,21 @@ class _SwipeScreenState extends State<SwipeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cooking Swipe'),
+        title: Text('Pickish'),
         actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () => Navigator.pushNamed(context, '/browse'),
+            tooltip: 'Browse Recipes',
+          ),
+          IconButton(
+            icon: Icon(Icons.bar_chart),
+            onPressed: () => Navigator.pushNamed(context, '/statistics').then((_) {
+              // Reload recipes to get updated stats
+              Provider.of<AppState>(context, listen: false).loadAllRecipes();
+            }),
+            tooltip: 'Statistics',
+          ),
           IconButton(
             icon: Icon(Icons.settings),
             onPressed: () => Navigator.pushNamed(context, '/settings'),
@@ -320,7 +328,12 @@ class _SwipeScreenState extends State<SwipeScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: AppConstants.defaultPadding),
+                // Swipe progress indicator
+                Text(
+                  'Card ${_currentIndex + 1} of ${appState.filteredRecipes.length}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                SizedBox(height: AppConstants.smallPadding),
 
                 // Recipe card
                 Expanded(

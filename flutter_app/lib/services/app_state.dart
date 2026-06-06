@@ -35,8 +35,7 @@ class AppState extends ChangeNotifier {
 
   // Initialize app
   Future<void> _initialize() async {
-    // Always sync bundled recipes into DB (uses REPLACE on conflict,
-    // so updated or new recipes from the JSON are picked up automatically)
+    // Load bundled recipes (only inserts new ones, preserves existing stats)
     await _loadBundledRecipes();
     await loadAllRecipes();
     await loadPastSessions();
@@ -46,7 +45,8 @@ class AppState extends ChangeNotifier {
   Future<void> _loadBundledRecipes() async {
     try {
       final jsonText = await rootBundle.loadString('assets/dishes_json.json');
-      await ImportService().importFromJsonText(jsonText);
+      // Use importBundledRecipes to only insert NEW recipes — preserves pick/skip stats
+      await ImportService().importBundledRecipes(jsonText);
     } catch (e) {
       debugPrint('Failed to load bundled recipes: $e');
     }
@@ -85,15 +85,16 @@ class AppState extends ChangeNotifier {
     swipeWasLike.add(true);
     currentSessionRecipes.add(recipe);
     filteredRecipes.removeWhere((r) => r.id == recipe.id);
+    _dbService.incrementPickCount(recipe.id);
     notifyListeners();
   }
 
   // Skip recipe (swipe left)
   void skipRecipe(Recipe recipe) {
-    // Record skip in history so undo can restore it
     swipeHistory.add(recipe);
     swipeWasLike.add(false);
     filteredRecipes.removeWhere((r) => r.id == recipe.id);
+    _dbService.incrementSkipCount(recipe.id);
     notifyListeners();
   }
 
@@ -116,6 +117,17 @@ class AppState extends ChangeNotifier {
 
     notifyListeners();
     return wasLike;
+  }
+
+  // Add a recipe to the current session directly (from browse screen)
+  bool addToSession(Recipe recipe) {
+    if (sessionComplete) return false;
+    if (currentSessionRecipes.any((r) => r.id == recipe.id)) return false;
+    currentSessionRecipes.add(recipe);
+    filteredRecipes.removeWhere((r) => r.id == recipe.id);
+    _dbService.incrementPickCount(recipe.id);
+    notifyListeners();
+    return true;
   }
 
   // Remove a recipe from the current session (for editing selections)
@@ -264,5 +276,47 @@ Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {
   Future<void> deleteRecipe(String recipeId) async {
     await _dbService.deleteRecipe(recipeId);
     await loadAllRecipes();
+  }
+
+  // Import a shared Pickish session from JSON
+  Future<String> importSharedSession(Map<String, dynamic> json) async {
+    if (json['app'] != 'pickish' || json['type'] != 'session') {
+      throw Exception('Not a valid Pickish session file');
+    }
+
+    final sessionData = json['session'] as Map<String, dynamic>;
+    final recipesData = json['recipes'] as List<dynamic>? ?? [];
+
+    // Import the recipes (use insertRecipeIfNew to avoid overwriting stats)
+    for (var r in recipesData) {
+      final recipe = Recipe.fromJson(r as Map<String, dynamic>);
+      await _dbService.insertRecipeIfNew(recipe);
+    }
+
+    // Parse shopping list and checked maps
+    final shoppingList = (sessionData['shopping_list'] as Map<String, dynamic>?)
+        ?.map((k, v) => MapEntry(k, v.toString())) ?? {};
+    final ingredientChecked = (sessionData['ingredient_checked'] as Map<String, dynamic>?)
+        ?.map((k, v) => MapEntry(k, v == true)) ?? {};
+    final ingredientQuantities = (sessionData['ingredient_quantities'] as Map<String, dynamic>?)
+        ?.map((k, v) => MapEntry(k, v.toString())) ?? {};
+
+    // Create the session
+    final session = Session(
+      sessionName: sessionData['session_name'] ?? 'Imported Session',
+      dateCreated: DateTime.tryParse(sessionData['date_created'] ?? '') ?? DateTime.now(),
+      targetCount: sessionData['target_count'] ?? 5,
+      recipeIds: List<String>.from(sessionData['recipe_ids'] ?? []),
+      shoppingList: shoppingList,
+      ingredientChecked: ingredientChecked,
+      ingredientQuantities: ingredientQuantities,
+    );
+
+    await _dbService.insertSession(session);
+    await loadAllRecipes();
+    await loadPastSessions();
+    notifyListeners();
+
+    return session.sessionName;
   }
 }

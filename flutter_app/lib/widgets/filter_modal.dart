@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/recipe.dart';
 import '../theme/theme.dart';
 import '../utils/constants.dart';
 
@@ -6,12 +7,14 @@ class FilterModal extends StatefulWidget {
   final bool initialLight;
   final bool initialFast;
   final bool initialLong;
+  final List<Recipe> allRecipes;
   final Function(bool light, bool fast, bool long) onApply;
 
   const FilterModal({
     required this.initialLight,
     required this.initialFast,
     required this.initialLong,
+    required this.allRecipes,
     required this.onApply,
     Key? key,
   }) : super(key: key);
@@ -33,8 +36,21 @@ class _FilterModalState extends State<FilterModal> {
     filterLong = widget.initialLong;
   }
 
+  int _countMatchingRecipes() {
+    return widget.allRecipes.where((recipe) {
+      if (filterLight && !recipe.isLight) return false;
+      if (filterFast && !recipe.isFast) return false;
+      if (filterLong && !recipe.isLong) return false;
+      return true;
+    }).length;
+  }
+
+  bool get _hasActiveFilters => filterLight || filterFast || filterLong;
+
   @override
   Widget build(BuildContext context) {
+    final matchCount = _countMatchingRecipes();
+
     return Dialog(
       backgroundColor: AppTheme.darkBgSecondary,
       shape: RoundedRectangleBorder(
@@ -104,7 +120,30 @@ class _FilterModalState extends State<FilterModal> {
                 });
               },
             ),
-            SizedBox(height: AppConstants.defaultPadding * 1.5),
+            SizedBox(height: AppConstants.defaultPadding),
+
+            // Match count
+            if (_hasActiveFilters)
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppConstants.defaultPadding,
+                  vertical: AppConstants.smallPadding,
+                ),
+                decoration: BoxDecoration(
+                  color: AppTheme.darkBg,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '$matchCount recipe${matchCount == 1 ? '' : 's'} match',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: matchCount > 0
+                            ? AppTheme.pastelMint
+                            : AppTheme.error,
+                      ),
+                ),
+              ),
+
+            SizedBox(height: AppConstants.defaultPadding),
 
             // Buttons
             Row(

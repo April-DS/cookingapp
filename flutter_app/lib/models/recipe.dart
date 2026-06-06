@@ -11,6 +11,8 @@ class Recipe {
   final String instructions;
   final String imageDescription;
   final String imageFilename;
+  final int pickCount;
+  final int skipCount;
 
   Recipe({
     required this.id,
@@ -25,6 +27,8 @@ class Recipe {
     required this.instructions,
     required this.imageDescription,
     required this.imageFilename,
+    this.pickCount = 0,
+    this.skipCount = 0,
   });
 
   // Convert from JSON
@@ -45,6 +49,8 @@ class Recipe {
       instructions: json['instructions'] as String? ?? '',
       imageDescription: json['image_description'] as String? ?? '',
       imageFilename: json['image_filename'] as String? ?? '',
+      pickCount: (json['pick_count'] as int?) ?? 0,
+      skipCount: (json['skip_count'] as int?) ?? 0,
     );
   }
 
@@ -66,6 +72,8 @@ class Recipe {
     'instructions': instructions,
     'image_description': imageDescription,
     'image_filename': imageFilename,
+    'pick_count': pickCount,
+    'skip_count': skipCount,
   };
 
   // Check if "light" (<=500 kcal)
@@ -76,4 +84,8 @@ class Recipe {
 
   // Check if "long" (>=60 min)
   bool get isLong => totalTime >= 60;
+
+  int get totalSwipes => pickCount + skipCount;
+
+  double get pickRate => totalSwipes > 0 ? pickCount / totalSwipes : 0;
 }

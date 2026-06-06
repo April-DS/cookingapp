@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +9,7 @@ import '../services/app_state.dart';
 import '../theme/theme.dart';
 import '../utils/constants.dart';
 import '../utils/extensions.dart';
+import '../utils/ingredient_categories.dart';
 import '../widgets/ingredient_list_item.dart';
 
 class ShoppingListScreen extends StatefulWidget {
@@ -133,32 +136,45 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     );
   }
 
+  /// Build full exportable JSON for the current session (before saving).
+  Map<String, dynamic> _buildSessionExportJson(AppState appState) {
+    final sessionName = _sessionNameController.text.trim().isEmpty
+        ? 'Pickish Session'
+        : _sessionNameController.text.trim();
+    return {
+      'app': 'pickish',
+      'version': 1,
+      'type': 'session',
+      'session': {
+        'session_name': sessionName,
+        'date_created': DateTime.now().toIso8601String(),
+        'target_count': appState.targetDishCount,
+        'recipe_ids': appState.currentSessionRecipes.map((r) => r.id).toList(),
+        'shopping_list': _ingredients,
+        'ingredient_checked': _checked,
+        'ingredient_quantities': <String, String>{},
+      },
+      'recipes': appState.currentSessionRecipes.map((r) => r.toJson()).toList(),
+    };
+  }
+
   Future<void> _shareCurrentSession(AppState appState) async {
-    final buffer = StringBuffer();
-    buffer.writeln('🍽 Cooking Swipe Session');
-    buffer.writeln();
+    final exportData = _buildSessionExportJson(appState);
+    final jsonString = const JsonEncoder.withIndent('  ').convert(exportData);
 
-    buffer.writeln('📋 Recipes (${appState.currentSessionRecipes.length}):');
-    for (var recipe in appState.currentSessionRecipes) {
-      buffer.writeln('• ${recipe.dishName} — ${StringExtensions.formatDuration(recipe.totalTime)}, ${recipe.kcal} kcal');
-    }
+    final sessionName = _sessionNameController.text.trim().isEmpty
+        ? 'pickish_session'
+        : _sessionNameController.text.trim().replaceAll(RegExp(r'[^\w\s-]'), '').replaceAll(' ', '_');
 
-    if (_ingredients.isNotEmpty) {
-      buffer.writeln();
-      buffer.writeln('🛒 Shopping List:');
-      final sortedKeys = _ingredients.keys.toList()..sort();
-      for (var key in sortedKeys) {
-        final checked = _checked[key] ?? false;
-        final quantity = _ingredients[key] ?? '';
-        final mark = checked ? '☑' : '☐';
-        buffer.writeln('$mark $key${quantity.isNotEmpty ? ' ($quantity)' : ''}');
-      }
-    }
+    final dir = await Directory.systemTemp.createTemp('pickish_');
+    final file = File('${dir.path}/$sessionName.pickish.json');
+    await file.writeAsString(jsonString);
 
-    buffer.writeln();
-    buffer.writeln('Shared from Cooking Swipe');
-
-    await Share.share(buffer.toString());
+    await Share.shareXFiles(
+      [XFile(file.path, mimeType: 'application/json')],
+      subject: 'Pickish Session: ${_sessionNameController.text.trim().isEmpty ? "My Session" : _sessionNameController.text.trim()}',
+      text: 'Import this file into Pickish to get the same recipes and shopping list.',
+    );
   }
 
   void _copyToClipboard() {
@@ -372,7 +388,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
-    final sortedKeys = _ingredients.keys.toList()..sort();
+    final grouped = IngredientCategories.groupByCategory(_ingredients.keys.toList());
 
     return PopScope(
       canPop: false,
@@ -487,22 +503,34 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                       ],
                     ),
                   )
-                : ListView.builder(
+                : ListView(
                     padding: EdgeInsets.symmetric(
                       horizontal: AppConstants.defaultPadding,
                     ),
-                    itemCount: sortedKeys.length,
-                    itemBuilder: (context, index) {
-                      final key = sortedKeys[index];
-                      return IngredientListItem(
-                        ingredient: key,
-                        quantity: _ingredients[key] ?? '',
-                        checked: _checked[key] ?? false,
-                        onCheckChanged: (value) => _handleCheckChanged(key, value),
-                        onDelete: () => _handleDelete(key),
-                        onEdit: (newQuantity) => _handleEdit(key, newQuantity),
-                      );
-                    },
+                    children: [
+                      for (final entry in grouped.entries) ...[
+                        Padding(
+                          padding: EdgeInsets.only(top: AppConstants.defaultPadding, bottom: 4),
+                          child: Text(
+                            entry.key,
+                            style: TextStyle(
+                              color: AppTheme.pastelPeach,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        for (final key in entry.value)
+                          IngredientListItem(
+                            ingredient: key,
+                            quantity: _ingredients[key] ?? '',
+                            checked: _checked[key] ?? false,
+                            onCheckChanged: (value) => _handleCheckChanged(key, value),
+                            onDelete: () => _handleDelete(key),
+                            onEdit: (newQuantity) => _handleEdit(key, newQuantity),
+                          ),
+                      ],
+                    ],
                   ),
           ),
 

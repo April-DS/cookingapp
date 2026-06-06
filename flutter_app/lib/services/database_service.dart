@@ -26,7 +26,7 @@ class DatabaseService {
 
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -47,6 +47,14 @@ class DatabaseService {
         await db.execute('ALTER TABLE sessions ADD COLUMN shopping_list TEXT');
       } catch (_) {}
     }
+    if (oldVersion < 3) {
+      try {
+        await db.execute('ALTER TABLE recipes ADD COLUMN pick_count INTEGER DEFAULT 0');
+      } catch (_) {}
+      try {
+        await db.execute('ALTER TABLE recipes ADD COLUMN skip_count INTEGER DEFAULT 0');
+      } catch (_) {}
+    }
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -64,7 +72,9 @@ class DatabaseService {
         ingredients TEXT,
         instructions TEXT,
         image_description TEXT,
-        image_filename TEXT
+        image_filename TEXT,
+        pick_count INTEGER DEFAULT 0,
+        skip_count INTEGER DEFAULT 0
       )
     ''');
 
@@ -108,6 +118,31 @@ class DatabaseService {
     );
   }
 
+  /// Insert a recipe only if it doesn't already exist (preserves pick/skip counts).
+  Future<void> insertRecipeIfNew(Recipe recipe) async {
+    final db = await database;
+    await db.insert(
+      'recipes',
+      {
+        'id': recipe.id,
+        'dish_name': recipe.dishName,
+        'prep_time': recipe.prepTime,
+        'cook_time': recipe.cookTime,
+        'total_time': recipe.totalTime,
+        'kcal': recipe.kcal,
+        'protein_g': recipe.proteinG,
+        'highlights': recipe.highlights,
+        'ingredients': recipe.ingredients,
+        'instructions': recipe.instructions,
+        'image_description': recipe.imageDescription,
+        'image_filename': recipe.imageFilename,
+        'pick_count': 0,
+        'skip_count': 0,
+      },
+      conflictAlgorithm: ConflictAlgorithm.ignore,
+    );
+  }
+
   Future<List<Recipe>> getAllRecipes() async {
     final db = await database;
     final maps = await db.query('recipes');
@@ -130,6 +165,8 @@ class DatabaseService {
           'instructions': m['instructions'] ?? '',
           'image_description': m['image_description'] ?? '',
           'image_filename': m['image_filename'] ?? '',
+          'pick_count': m['pick_count'] ?? 0,
+          'skip_count': m['skip_count'] ?? 0,
         })
     ];
   }
@@ -160,6 +197,8 @@ class DatabaseService {
       'instructions': m['instructions'] ?? '',
       'image_description': m['image_description'] ?? '',
       'image_filename': m['image_filename'] ?? '',
+      'pick_count': m['pick_count'] ?? 0,
+      'skip_count': m['skip_count'] ?? 0,
     });
   }
 
@@ -179,6 +218,22 @@ class DatabaseService {
       'recipes',
       where: 'id = ?',
       whereArgs: [id],
+    );
+  }
+
+  Future<void> incrementPickCount(String recipeId) async {
+    final db = await database;
+    await db.rawUpdate(
+      'UPDATE recipes SET pick_count = COALESCE(pick_count, 0) + 1 WHERE id = ?',
+      [recipeId],
+    );
+  }
+
+  Future<void> incrementSkipCount(String recipeId) async {
+    final db = await database;
+    await db.rawUpdate(
+      'UPDATE recipes SET skip_count = COALESCE(skip_count, 0) + 1 WHERE id = ?',
+      [recipeId],
     );
   }
 

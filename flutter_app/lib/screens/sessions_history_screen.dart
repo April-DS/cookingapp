@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -9,7 +11,7 @@ import '../services/app_state.dart';
 import '../theme/theme.dart';
 import '../utils/constants.dart';
 import '../utils/extensions.dart';
-import '../widgets/flip_recipe_card.dart';
+import 'recipe_detail_screen.dart';
 import '../widgets/ingredient_list_item.dart';
 
 class SessionsHistoryScreen extends StatefulWidget {
@@ -38,7 +40,8 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Consumer<AppState>(
+      body: SafeArea(
+        child: Consumer<AppState>(
         builder: (context, appState, _) {
           if (appState.pastSessions.isEmpty) {
             return Center(
@@ -77,6 +80,7 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
           );
         },
       ),
+      ),
     );
   }
 
@@ -102,6 +106,7 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
               onPressed: () => _shareSession(session, appState),
               constraints: BoxConstraints(minWidth: 32, minHeight: 32),
               padding: EdgeInsets.zero,
+              tooltip: 'Share JSON',
             ),
             IconButton(
               icon: Icon(Icons.shopping_cart, color: AppTheme.pastelMint),
@@ -154,25 +159,51 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
             return ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.all(AppConstants.defaultPadding),
+              padding: EdgeInsets.symmetric(
+                horizontal: AppConstants.defaultPadding,
+                vertical: AppConstants.smallPadding,
+              ),
               itemCount: recipes.length,
               itemBuilder: (context, index) {
                 final recipe = recipes[index];
-                final key = '${session.id}_${recipe.id}';
-                return Padding(
-                  padding: EdgeInsets.only(
-                    bottom: AppConstants.defaultPadding,
-                  ),
-          child: SizedBox(
-            height: 380,
-            child: FlipRecipeCard(
-                      recipe: recipe,
-                      isCooked: cookedRecipes[key] ?? false,
-                      onCookedChanged: (value) {
-                        setState(() {
-                          cookedRecipes[key] = value;
-                        });
-                      },
+                return Card(
+                  color: AppTheme.darkBg,
+                  margin: EdgeInsets.only(bottom: AppConstants.smallPadding),
+                  child: ListTile(
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: SizedBox(
+                        width: 56,
+                        height: 56,
+                        child: recipe.imageFilename.isNotEmpty
+                            ? Image.asset(
+                                'assets/recipe_images/${recipe.imageFilename}',
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => Container(
+                                  color: AppTheme.pastelMint.withValues(alpha: 0.3),
+                                  child: Icon(Icons.restaurant, color: AppTheme.pastelMint),
+                                ),
+                              )
+                            : Container(
+                                color: AppTheme.pastelMint.withValues(alpha: 0.3),
+                                child: Icon(Icons.restaurant, color: AppTheme.pastelMint),
+                              ),
+                      ),
+                    ),
+                    title: Text(
+                      recipe.dishName,
+                      style: TextStyle(color: AppTheme.textLight, fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: Text(
+                      '${StringExtensions.formatDuration(recipe.totalTime)} • ${recipe.kcal} kcal',
+                      style: TextStyle(color: AppTheme.textMuted, fontSize: 12),
+                    ),
+                    trailing: Icon(Icons.chevron_right, color: AppTheme.textMuted),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => RecipeDetailScreen(recipe: recipe),
+                      ),
                     ),
                   ),
                 );
@@ -184,33 +215,41 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
     );
   }
 
-  Future<void> _shareSession(Session session, AppState appState) async {
+  /// Build full exportable JSON for a session (includes full recipe data).
+  Future<Map<String, dynamic>> _buildSessionExportJson(Session session, AppState appState) async {
     final recipes = await appState.getSessionRecipes(session);
+    return {
+      'app': 'pickish',
+      'version': 1,
+      'type': 'session',
+      'session': {
+        'session_name': session.sessionName,
+        'date_created': session.dateCreated.toIso8601String(),
+        'target_count': session.targetCount,
+        'recipe_ids': session.recipeIds,
+        'shopping_list': session.shoppingList,
+        'ingredient_checked': session.ingredientChecked,
+        'ingredient_quantities': session.ingredientQuantities,
+      },
+      'recipes': recipes.map((r) => r.toJson()).toList(),
+    };
+  }
 
-    final buffer = StringBuffer();
-    buffer.writeln('🍽 ${session.sessionName}');
-    buffer.writeln('${DateFormat('MMM d, yyyy').format(session.dateCreated)}');
-    buffer.writeln();
+  Future<void> _shareSession(Session session, AppState appState) async {
+    final exportData = await _buildSessionExportJson(session, appState);
+    final jsonString = const JsonEncoder.withIndent('  ').convert(exportData);
 
-    buffer.writeln('📋 Recipes (${recipes.length}):');
-    for (var recipe in recipes) {
-      buffer.writeln('• ${recipe.dishName} — ${StringExtensions.formatDuration(recipe.totalTime)}, ${recipe.kcal} kcal');
-    }
+    // Write to a temp file and share as .json
+    final dir = await Directory.systemTemp.createTemp('pickish_');
+    final fileName = '${session.sessionName.replaceAll(RegExp(r'[^\w\s-]'), '').replaceAll(' ', '_')}.pickish.json';
+    final file = File('${dir.path}/$fileName');
+    await file.writeAsString(jsonString);
 
-    if (session.shoppingList.isNotEmpty) {
-      buffer.writeln();
-      buffer.writeln('🛒 Shopping List:');
-      final sortedKeys = session.shoppingList.keys.toList()..sort();
-      for (var key in sortedKeys) {
-        final quantity = session.shoppingList[key] ?? '';
-        buffer.writeln('☐ $key${quantity.isNotEmpty ? ' ($quantity)' : ''}');
-      }
-    }
-
-    buffer.writeln();
-    buffer.writeln('Shared from Cooking Swipe');
-
-    await Share.share(buffer.toString());
+    await Share.shareXFiles(
+      [XFile(file.path, mimeType: 'application/json')],
+      subject: 'Pickish Session: ${session.sessionName}',
+      text: 'Pickish session "${session.sessionName}" — import this file into Pickish to get the same recipes and shopping list.',
+    );
   }
 
   void _showShoppingList(
