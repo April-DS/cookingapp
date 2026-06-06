@@ -11,6 +11,7 @@ class Recipe {
   final String instructions;
   final String imageDescription;
   final String imageFilename;
+  final int servings; // default number of portions this recipe makes
   final int pickCount;
   final int skipCount;
 
@@ -27,6 +28,7 @@ class Recipe {
     required this.instructions,
     required this.imageDescription,
     required this.imageFilename,
+    this.servings = 2,
     this.pickCount = 0,
     this.skipCount = 0,
   });
@@ -49,6 +51,7 @@ class Recipe {
       instructions: json['instructions'] as String? ?? '',
       imageDescription: json['image_description'] as String? ?? '',
       imageFilename: json['image_filename'] as String? ?? '',
+      servings: (json['servings'] as int?) ?? 2,
       pickCount: (json['pick_count'] as int?) ?? 0,
       skipCount: (json['skip_count'] as int?) ?? 0,
     );
@@ -72,6 +75,7 @@ class Recipe {
     'instructions': instructions,
     'image_description': imageDescription,
     'image_filename': imageFilename,
+    'servings': servings,
     'pick_count': pickCount,
     'skip_count': skipCount,
   };

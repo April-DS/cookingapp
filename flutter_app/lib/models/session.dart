@@ -10,6 +10,7 @@ class Session {
   final Map<String, bool> ingredientChecked;
   final Map<String, bool> recipesCooked;
   final Map<String, String> shoppingList;
+  final Map<String, int> recipePortions; // recipeId -> chosen portions
 
   Session({
     this.id,
@@ -21,6 +22,7 @@ class Session {
     this.ingredientChecked = const {},
     this.recipesCooked = const {},
     this.shoppingList = const {},
+    this.recipePortions = const {},
   });
 
   // Convert to JSON for storage
@@ -34,6 +36,7 @@ class Session {
     'ingredient_checked': ingredientChecked,
     'recipes_cooked': recipesCooked,
     'shopping_list': shoppingList,
+    'recipe_portions': recipePortions,
   };
 
   /// Parse recipe_ids from either a comma-separated string (DB) or a List (JSON import).
@@ -79,6 +82,24 @@ class Session {
       return {};
     }
 
+    Map<String, int> parseIntMap(dynamic data) {
+      if (data == null) return {};
+      if (data is Map) {
+        return data.map((k, v) =>
+            MapEntry(k.toString(), (v is int) ? v : int.tryParse('$v') ?? 0));
+      }
+      if (data is String && data.isNotEmpty) {
+        try {
+          final decoded = jsonDecode(data) as Map<String, dynamic>;
+          return decoded.map((k, v) =>
+              MapEntry(k.toString(), (v is int) ? v : int.tryParse('$v') ?? 0));
+        } catch (e) {
+          return {};
+        }
+      }
+      return {};
+    }
+
     return Session(
       id: json['id'],
       sessionName: json['session_name'] ?? 'Unnamed Session',
@@ -89,6 +110,7 @@ class Session {
       ingredientChecked: parseBoolMap(json['ingredient_checked']),
       recipesCooked: parseBoolMap(json['recipes_cooked']),
       shoppingList: parseStringMap(json['shopping_list']),
+      recipePortions: parseIntMap(json['recipe_portions']),
     );
   }
 
@@ -102,6 +124,7 @@ class Session {
     Map<String, bool>? ingredientChecked,
     Map<String, bool>? recipesCooked,
     Map<String, String>? shoppingList,
+    Map<String, int>? recipePortions,
   }) {
     return Session(
       id: id ?? this.id,
@@ -113,6 +136,7 @@ class Session {
       ingredientChecked: ingredientChecked ?? this.ingredientChecked,
       recipesCooked: recipesCooked ?? this.recipesCooked,
       shoppingList: shoppingList ?? this.shoppingList,
+      recipePortions: recipePortions ?? this.recipePortions,
     );
   }
 }

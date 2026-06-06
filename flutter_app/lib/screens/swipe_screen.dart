@@ -20,6 +20,24 @@ class SwipeScreen extends StatefulWidget {
 class _SwipeScreenState extends State<SwipeScreen> {
   int _currentIndex = 0;
 
+  // Pending portion choice for the card currently shown (before it's swiped).
+  // Tied to a recipe id so a new card falls back to that recipe's default servings.
+  String? _portionRecipeId;
+  int? _portionValue;
+
+  int _currentPortions(Recipe recipe) =>
+      (_portionRecipeId == recipe.id && _portionValue != null)
+          ? _portionValue!
+          : recipe.servings;
+
+  void _changePortions(Recipe recipe, int delta) {
+    final next = (_currentPortions(recipe) + delta).clamp(1, 99);
+    setState(() {
+      _portionRecipeId = recipe.id;
+      _portionValue = next;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -47,7 +65,8 @@ class _SwipeScreenState extends State<SwipeScreen> {
     final index = _visibleIndex(appState);
     if (index >= 0) {
       _currentIndex = index;
-      appState.likeRecipe(appState.filteredRecipes[index]);
+      final recipe = appState.filteredRecipes[index];
+      appState.likeRecipe(recipe, portions: _currentPortions(recipe));
 
       if (appState.sessionComplete) {
         _showSessionCompleteDialog(appState);
@@ -367,6 +386,10 @@ class _SwipeScreenState extends State<SwipeScreen> {
                 ),
                 SizedBox(height: AppConstants.smallPadding),
 
+                // Portion selector (adjust before swiping right to add)
+                _buildPortionSelector(currentRecipe),
+                SizedBox(height: AppConstants.smallPadding),
+
                 // Recipe card
                 Expanded(
                   child: Padding(
@@ -465,6 +488,58 @@ class _SwipeScreenState extends State<SwipeScreen> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildPortionSelector(Recipe recipe) {
+    final portions = _currentPortions(recipe);
+    final isCustom = portions != recipe.servings;
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: AppConstants.smallPadding, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppTheme.darkBgSecondary,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.people_outline, size: 18, color: AppTheme.pastelMint),
+          SizedBox(width: 6),
+          Text('Portions', style: TextStyle(color: AppTheme.textLight, fontSize: 13)),
+          SizedBox(width: AppConstants.smallPadding),
+          IconButton(
+            icon: Icon(Icons.remove_circle_outline, color: AppTheme.pastelBlush),
+            iconSize: 26,
+            visualDensity: VisualDensity.compact,
+            constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+            padding: EdgeInsets.zero,
+            onPressed: portions > 1 ? () => _changePortions(recipe, -1) : null,
+          ),
+          SizedBox(
+            width: 28,
+            child: Text(
+              '$portions',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppTheme.pastelMint,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.add_circle_outline, color: AppTheme.pastelMint),
+            iconSize: 26,
+            visualDensity: VisualDensity.compact,
+            constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+            padding: EdgeInsets.zero,
+            onPressed: () => _changePortions(recipe, 1),
+          ),
+          if (isCustom)
+            Text('(default ${recipe.servings})',
+                style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
+        ],
       ),
     );
   }

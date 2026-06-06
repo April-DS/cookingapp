@@ -42,11 +42,17 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   void _loadIngredients() {
     final appState = Provider.of<AppState>(context, listen: false);
     
-    // Aggregate ingredients from all selected recipes
+    // Aggregate ingredients from all selected recipes, scaled to chosen portions.
     final allIngredientLists = <List<String>>[];
     for (var recipe in appState.currentSessionRecipes) {
       if (recipe.ingredients.isNotEmpty) {
-        final parsed = recipe.ingredients.parseIngredients();
+        final factor = recipe.servings > 0
+            ? appState.portionsFor(recipe) / recipe.servings
+            : 1.0;
+        final parsed = recipe.ingredients
+            .parseIngredients()
+            .map((line) => line.scaleFirstQuantity(factor))
+            .toList();
         allIngredientLists.add(parsed);
       }
     }

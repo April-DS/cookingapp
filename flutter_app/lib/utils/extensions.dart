@@ -19,6 +19,35 @@ extension StringExtensions on String {
         .toList();
   }
 
+  /// Scale the first numeric quantity in an ingredient line by [factor].
+  /// e.g. "Tuna 350g" * 2 -> "Tuna 700g"; "Garlic 4 cloves" * 1.5 -> "Garlic 6 cloves".
+  /// Handles integers, decimals, and simple fractions (e.g. "1/2 cup").
+  /// Lines with no number (e.g. "Salt and pepper") are returned unchanged.
+  String scaleFirstQuantity(double factor) {
+    if ((factor - 1.0).abs() < 1e-9) return this;
+    final reg = RegExp(r'(\d+)\s*/\s*(\d+)|(\d+(?:\.\d+)?)');
+    final m = reg.firstMatch(this);
+    if (m == null) return this;
+    double value;
+    if (m.group(1) != null && m.group(2) != null) {
+      final denom = int.parse(m.group(2)!);
+      if (denom == 0) return this;
+      value = int.parse(m.group(1)!) / denom;
+    } else {
+      value = double.parse(m.group(3)!);
+    }
+    final scaled = value * factor;
+    return replaceRange(m.start, m.end, _formatQuantity(scaled));
+  }
+
+  static String _formatQuantity(double v) {
+    if ((v - v.roundToDouble()).abs() < 1e-9) return v.round().toString();
+    // up to 2 decimals, strip trailing zeros
+    var s = v.toStringAsFixed(2);
+    s = s.replaceFirst(RegExp(r'0+$'), '').replaceFirst(RegExp(r'\.$'), '');
+    return s;
+  }
+
   /// Format duration in minutes to readable format
   /// 45 -> "45 min"
   /// 120 -> "2h"

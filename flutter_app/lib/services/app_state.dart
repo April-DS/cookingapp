@@ -17,6 +17,12 @@ class AppState extends ChangeNotifier {
   Session? currentSession;
   List<Session> pastSessions = [];
 
+  // Chosen number of portions per recipe in the current session (recipeId -> portions).
+  Map<String, int> sessionPortions = {};
+
+  /// Portions chosen for a recipe in this session, defaulting to its base servings.
+  int portionsFor(Recipe recipe) => sessionPortions[recipe.id] ?? recipe.servings;
+
   // Settings
   int targetDishCount = 5;
   bool filterByLight = false;
@@ -76,17 +82,19 @@ class AppState extends ChangeNotifier {
     currentSessionRecipes = [];
     swipeHistory = [];
     swipeWasLike = [];
+    sessionPortions = {};
     currentSession = null;
-    
+
     _applyFilters(excludeIds: excludeIds);
     notifyListeners();
   }
 
   // Add recipe to current session (swipe right)
-  void likeRecipe(Recipe recipe) {
+  void likeRecipe(Recipe recipe, {int? portions}) {
     swipeHistory.add(recipe);
     swipeWasLike.add(true);
     currentSessionRecipes.add(recipe);
+    sessionPortions[recipe.id] = portions ?? recipe.servings;
     filteredRecipes.removeWhere((r) => r.id == recipe.id);
     _dbService.incrementPickCount(recipe.id);
     notifyListeners();
@@ -111,6 +119,7 @@ class AppState extends ChangeNotifier {
     if (wasLike) {
       // Remove from liked recipes and reverse the pick count
       currentSessionRecipes.removeWhere((r) => r.id == lastRecipe.id);
+      sessionPortions.remove(lastRecipe.id);
       _dbService.decrementPickCount(lastRecipe.id);
     } else {
       // Reverse the skip count
@@ -127,20 +136,29 @@ class AppState extends ChangeNotifier {
   }
 
   // Add a recipe to the current session directly (from browse screen)
-  bool addToSession(Recipe recipe) {
+  bool addToSession(Recipe recipe, {int? portions}) {
     if (sessionComplete) return false;
     if (currentSessionRecipes.any((r) => r.id == recipe.id)) return false;
     currentSessionRecipes.add(recipe);
+    sessionPortions[recipe.id] = portions ?? recipe.servings;
     filteredRecipes.removeWhere((r) => r.id == recipe.id);
     _dbService.incrementPickCount(recipe.id);
     notifyListeners();
     return true;
   }
 
+  /// Update the chosen portions for a recipe already in the session.
+  void setPortions(String recipeId, int portions) {
+    if (portions < 1) portions = 1;
+    sessionPortions[recipeId] = portions;
+    notifyListeners();
+  }
+
   // Remove a recipe from the current session (for editing selections)
   void removeFromSession(Recipe recipe) {
     final wasInSession = currentSessionRecipes.any((r) => r.id == recipe.id);
     currentSessionRecipes.removeWhere((r) => r.id == recipe.id);
+    sessionPortions.remove(recipe.id);
 
     if (wasInSession) {
       // Reverse the pick count that was added when the recipe was liked/added.
@@ -248,6 +266,7 @@ Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {
     shoppingList: shoppingList,
     ingredientChecked: ingredientChecked ?? {},
     ingredientQuantities: ingredientQuantities ?? {},
+    recipePortions: Map<String, int>.from(sessionPortions),
   );
 
   try {
@@ -278,20 +297,24 @@ Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {
   Future<void> mergeCurrentIntoSession(Session target) async {
     final mergedIds = List<String>.from(target.recipeIds);
     final mergedShopping = Map<String, String>.from(target.shoppingList);
+    final mergedPortions = Map<String, int>.from(target.recipePortions);
 
     for (final recipe in currentSessionRecipes) {
       if (!mergedIds.contains(recipe.id)) {
         mergedIds.add(recipe.id);
       }
+      mergedPortions[recipe.id] = portionsFor(recipe);
+      final factor = portionsFor(recipe) / recipe.servings;
       for (final ingredient in recipe.ingredients.parseIngredients()) {
         // Match the existing shopping-list key format (full ingredient line).
-        mergedShopping.putIfAbsent(ingredient, () => '');
+        mergedShopping.putIfAbsent(ingredient.scaleFirstQuantity(factor), () => '');
       }
     }
 
     final updated = target.copyWith(
       recipeIds: mergedIds,
       shoppingList: mergedShopping,
+      recipePortions: mergedPortions,
     );
     await _dbService.updateSession(updated);
     await loadPastSessions();
