@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/recipe.dart';
+import '../models/session.dart';
 import '../services/app_state.dart';
 import '../theme/theme.dart';
 import '../utils/constants.dart';
 import '../utils/extensions.dart';
 import 'recipe_detail_screen.dart';
+import 'shopping_list_screen.dart';
 
 class BrowseRecipesScreen extends StatefulWidget {
   const BrowseRecipesScreen({Key? key}) : super(key: key);
@@ -39,6 +41,45 @@ class _BrowseRecipesScreenState extends State<BrowseRecipesScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Browse Recipes'),
+      ),
+      bottomNavigationBar: Consumer<AppState>(
+        builder: (context, appState, _) {
+          final count = appState.currentSessionRecipes.length;
+          if (count == 0) return const SizedBox.shrink();
+          return SafeArea(
+            child: Container(
+              padding: EdgeInsets.all(AppConstants.defaultPadding),
+              decoration: BoxDecoration(
+                color: AppTheme.darkBgSecondary,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    blurRadius: 8,
+                    offset: const Offset(0, -2),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '$count recipe${count == 1 ? '' : 's'} selected',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: AppTheme.pastelMint,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.shopping_cart),
+                    label: const Text('Review & Save'),
+                    onPressed: () => _reviewAndSave(context, appState),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
       body: SafeArea(
         child: Consumer<AppState>(
@@ -118,6 +159,100 @@ class _BrowseRecipesScreenState extends State<BrowseRecipesScreen> {
           );
         },
       ),
+      ),
+    );
+  }
+
+  Future<void> _reviewAndSave(BuildContext context, AppState appState) async {
+    final choice = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: AppTheme.darkBgSecondary,
+        title: const Text('Save selection'),
+        content: const Text(
+          'Add these recipes to a new session, or merge them into an existing saved session?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, 'existing'),
+            child: const Text('Existing session'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(dialogContext, 'new'),
+            child: const Text('New session'),
+          ),
+        ],
+      ),
+    );
+
+    if (choice == 'new') {
+      if (!context.mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const ShoppingListScreen()),
+      );
+    } else if (choice == 'existing') {
+      if (!context.mounted) return;
+      await _addToExistingSession(context, appState);
+    }
+  }
+
+  Future<void> _addToExistingSession(
+      BuildContext context, AppState appState) async {
+    if (appState.pastSessions.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No saved sessions yet — create a new one first')),
+      );
+      return;
+    }
+
+    final selected = await showModalBottomSheet<Session>(
+      context: context,
+      backgroundColor: AppTheme.darkBgSecondary,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(AppConstants.defaultPadding),
+                child: Text('Add to which session?',
+                    style: Theme.of(sheetContext).textTheme.titleMedium),
+              ),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: appState.pastSessions
+                      .map((s) => ListTile(
+                            leading: Icon(Icons.folder, color: AppTheme.pastelMint),
+                            title: Text(s.sessionName,
+                                style: TextStyle(color: AppTheme.textLight)),
+                            subtitle: Text('${s.recipeIds.length} recipes',
+                                style: TextStyle(color: AppTheme.textMuted)),
+                            onTap: () => Navigator.pop(sheetContext, s),
+                          ))
+                      .toList(),
+                ),
+              ),
+              SizedBox(height: AppConstants.smallPadding),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (selected == null) return;
+
+    final addedCount = appState.currentSessionRecipes.length;
+    await appState.mergeCurrentIntoSession(selected);
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Added $addedCount recipe${addedCount == 1 ? '' : 's'} to "${selected.sessionName}"'),
+        backgroundColor: AppTheme.success,
       ),
     );
   }

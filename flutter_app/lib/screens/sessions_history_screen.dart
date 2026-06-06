@@ -23,6 +23,9 @@ class SessionsHistoryScreen extends StatefulWidget {
 }
 
 class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
+  // Cache the per-session recipe lookups so toggling "cooked" doesn't re-run
+  // the FutureBuilder and flash a spinner on every rebuild.
+  final Map<int, Future<List<Recipe>>> _recipesCache = {};
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +91,7 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
         dateFormatter.format(session.dateCreated);
 
     return ExpansionTile(
+      key: PageStorageKey('session_${session.id}'),
       title: Text(session.sessionName),
       subtitle: Text(formattedDate),
       trailing: SizedBox(
@@ -143,7 +147,10 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
       ),
       children: [
         FutureBuilder<List<Recipe>>(
-          future: appState.getSessionRecipes(session),
+          future: _recipesCache.putIfAbsent(
+            session.id ?? -1,
+            () => appState.getSessionRecipes(session),
+          ),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
@@ -160,6 +167,7 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
               itemCount: recipes.length,
               itemBuilder: (context, index) {
                 final recipe = recipes[index];
+                final isCooked = session.recipesCooked[recipe.id] ?? false;
                 return Card(
                   color: AppTheme.darkBg,
                   margin: EdgeInsets.only(bottom: AppConstants.smallPadding),
@@ -173,6 +181,8 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
                             ? Image.asset(
                                 'assets/recipe_images/${recipe.imageFilename}',
                                 fit: BoxFit.cover,
+                                color: isCooked ? AppTheme.darkBg.withValues(alpha: 0.5) : null,
+                                colorBlendMode: isCooked ? BlendMode.darken : null,
                                 errorBuilder: (_, __, ___) => Container(
                                   color: AppTheme.pastelMint.withValues(alpha: 0.3),
                                   child: Icon(Icons.restaurant, color: AppTheme.pastelMint),
@@ -186,13 +196,31 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
                     ),
                     title: Text(
                       recipe.dishName,
-                      style: TextStyle(color: AppTheme.textLight, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        color: isCooked ? AppTheme.textMuted : AppTheme.textLight,
+                        fontWeight: FontWeight.w600,
+                        decoration: isCooked ? TextDecoration.lineThrough : null,
+                        decorationColor: AppTheme.textMuted,
+                      ),
                     ),
                     subtitle: Text(
                       '${StringExtensions.formatDuration(recipe.totalTime)} • ${recipe.kcal} kcal',
                       style: TextStyle(color: AppTheme.textMuted, fontSize: 12),
                     ),
-                    trailing: Icon(Icons.chevron_right, color: AppTheme.textMuted),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            isCooked ? Icons.check_circle : Icons.check_circle_outline,
+                            color: isCooked ? AppTheme.pastelMint : AppTheme.textMuted,
+                          ),
+                          tooltip: isCooked ? 'Mark as not cooked' : 'Mark as cooked',
+                          onPressed: () => _toggleCooked(appState, session, recipe.id, !isCooked),
+                        ),
+                        Icon(Icons.chevron_right, color: AppTheme.textMuted),
+                      ],
+                    ),
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -207,6 +235,17 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
         ),
       ],
     );
+  }
+
+  Future<void> _toggleCooked(
+    AppState appState,
+    Session session,
+    String recipeId,
+    bool cooked,
+  ) async {
+    final updatedCooked = Map<String, bool>.from(session.recipesCooked);
+    updatedCooked[recipeId] = cooked;
+    await appState.updateSession(session.copyWith(recipesCooked: updatedCooked));
   }
 
   /// Build full exportable JSON for a session (includes full recipe data).

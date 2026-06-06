@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../models/recipe.dart';
 import '../models/session.dart';
+import '../utils/extensions.dart';
 import 'database_service.dart';
 import 'import_service.dart';
 
@@ -268,6 +269,38 @@ Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {
 
   String _formatDateTime(DateTime dt) {
     return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+  }
+
+  // Merge the current session's recipes into an existing saved session.
+  // Adds any new recipe ids and folds their ingredients into the shopping list
+  // (preserving the existing list's items and manual edits), then persists.
+  Future<void> mergeCurrentIntoSession(Session target) async {
+    final mergedIds = List<String>.from(target.recipeIds);
+    final mergedShopping = Map<String, String>.from(target.shoppingList);
+
+    for (final recipe in currentSessionRecipes) {
+      if (!mergedIds.contains(recipe.id)) {
+        mergedIds.add(recipe.id);
+      }
+      for (final ingredient in recipe.ingredients.parseIngredients()) {
+        // Match the existing shopping-list key format (full ingredient line).
+        mergedShopping.putIfAbsent(ingredient, () => '');
+      }
+    }
+
+    final updated = target.copyWith(
+      recipeIds: mergedIds,
+      shoppingList: mergedShopping,
+    );
+    await _dbService.updateSession(updated);
+    await loadPastSessions();
+
+    // Clear the in-progress selection now that it's been folded in.
+    currentSessionRecipes = [];
+    swipeHistory = [];
+    swipeWasLike = [];
+    _applyFilters();
+    notifyListeners();
   }
 
   // Delete session
