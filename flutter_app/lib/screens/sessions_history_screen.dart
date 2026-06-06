@@ -343,59 +343,64 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
                             icon: Icon(Icons.add),
                             label: Text('Add Item'),
                             onPressed: () async {
-                              final result = await showDialog<String>(
-                                context: context,
-                                builder: (addContext) {
-                                  final controller = TextEditingController();
-                                  return Dialog(
-                                    backgroundColor: AppTheme.darkBgSecondary,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(AppConstants.defaultPadding),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            'Add Item',
-                                            style: Theme.of(addContext).textTheme.displayMedium,
-                                          ),
-                                          SizedBox(height: AppConstants.defaultPadding),
-                                          TextField(
-                                            controller: controller,
-                                            style: TextStyle(color: AppTheme.textLight),
-                                            decoration: InputDecoration(
-                                              hintText: 'e.g., 2 cups flour',
+                              final controller = TextEditingController();
+                              final String? result;
+                              try {
+                                result = await showDialog<String>(
+                                  context: context,
+                                  builder: (addContext) {
+                                    return Dialog(
+                                      backgroundColor: AppTheme.darkBgSecondary,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(AppConstants.defaultPadding),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'Add Item',
+                                              style: Theme.of(addContext).textTheme.displayMedium,
                                             ),
-                                            autofocus: true,
-                                          ),
-                                          SizedBox(height: AppConstants.defaultPadding),
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: OutlinedButton(
-                                                  onPressed: () => Navigator.pop(addContext),
-                                                  child: Text('Cancel'),
-                                                ),
+                                            SizedBox(height: AppConstants.defaultPadding),
+                                            TextField(
+                                              controller: controller,
+                                              style: TextStyle(color: AppTheme.textLight),
+                                              decoration: InputDecoration(
+                                                hintText: 'e.g., 2 cups flour',
                                               ),
-                                              SizedBox(width: AppConstants.smallPadding),
-                                              Expanded(
-                                                child: ElevatedButton(
-                                                  onPressed: () {
-                                                    final text = controller.text.trim();
-                                                    if (text.isNotEmpty) {
-                                                      Navigator.pop(addContext, text);
-                                                    }
-                                                  },
-                                                  child: Text('Add'),
+                                              autofocus: true,
+                                            ),
+                                            SizedBox(height: AppConstants.defaultPadding),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: OutlinedButton(
+                                                    onPressed: () => Navigator.pop(addContext),
+                                                    child: Text('Cancel'),
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                                SizedBox(width: AppConstants.smallPadding),
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    onPressed: () {
+                                                      final text = controller.text.trim();
+                                                      if (text.isNotEmpty) {
+                                                        Navigator.pop(addContext, text);
+                                                      }
+                                                    },
+                                                    child: Text('Add'),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              );
+                                    );
+                                  },
+                                );
+                              } finally {
+                                controller.dispose();
+                              }
 
                               if (result != null && result.isNotEmpty) {
                                 final updatedSession = session.copyWith(

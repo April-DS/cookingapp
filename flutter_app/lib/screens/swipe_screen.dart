@@ -41,8 +41,9 @@ class _SwipeScreenState extends State<SwipeScreen> {
           // shrinks and _currentIndex now points to the next recipe already.
           // Clamp to stay in bounds (min 0 to avoid negative index).
           if (_currentIndex >= appState.filteredRecipes.length) {
-            _currentIndex = appState.filteredRecipes.length.clamp(0, appState.filteredRecipes.length) - 1;
-            if (_currentIndex < 0) _currentIndex = 0;
+            _currentIndex = appState.filteredRecipes.isEmpty
+                ? 0
+                : appState.filteredRecipes.length - 1;
           }
         });
       }
@@ -57,8 +58,9 @@ class _SwipeScreenState extends State<SwipeScreen> {
         // shrinks and _currentIndex now points to the next recipe already.
         // Clamp to stay in bounds (min 0 to avoid negative index).
         if (_currentIndex >= appState.filteredRecipes.length) {
-          _currentIndex = appState.filteredRecipes.length.clamp(0, appState.filteredRecipes.length) - 1;
-          if (_currentIndex < 0) _currentIndex = 0;
+          _currentIndex = appState.filteredRecipes.isEmpty
+              ? 0
+              : appState.filteredRecipes.length - 1;
         }
       });
     }
