@@ -73,6 +73,7 @@ class AppState extends ChangeNotifier {
     // Filter out recipes from previous session
     currentSessionRecipes = [];
     swipeHistory = [];
+    swipeWasLike = [];
     currentSession = null;
     
     _applyFilters(excludeIds: excludeIds);
@@ -106,8 +107,12 @@ class AppState extends ChangeNotifier {
     final lastRecipe = swipeHistory.removeLast();
 
     if (wasLike) {
-      // Remove from liked recipes
+      // Remove from liked recipes and reverse the pick count
       currentSessionRecipes.removeWhere((r) => r.id == lastRecipe.id);
+      _dbService.decrementPickCount(lastRecipe.id);
+    } else {
+      // Reverse the skip count
+      _dbService.decrementSkipCount(lastRecipe.id);
     }
 
     // Re-add to filtered list if not already present. Insert at front so it appears next.
@@ -142,6 +147,9 @@ class AppState extends ChangeNotifier {
 
   // Apply filters and randomize order
   void _applyFilters({Set<String>? excludeIds}) {
+    // Build set of all swiped recipe IDs (both liked and skipped) to exclude
+    final swipedIds = swipeHistory.map((r) => r.id).toSet();
+
     filteredRecipes = allRecipes.where((recipe) {
       // Exclude recipes from previous session
       if (excludeIds != null && excludeIds.contains(recipe.id)) {
@@ -150,6 +158,11 @@ class AppState extends ChangeNotifier {
 
       // Exclude recipes already liked in current session
       if (currentSessionRecipes.any((r) => r.id == recipe.id)) {
+        return false;
+      }
+
+      // Exclude recipes already swiped (liked or skipped) in current session
+      if (swipedIds.contains(recipe.id)) {
         return false;
       }
 

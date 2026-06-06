@@ -110,7 +110,7 @@ class AppTheme {
         hintStyle: TextStyle(color: textMuted),
       ),
       checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.all(pastelMint),
+        fillColor: WidgetStateProperty.all(pastelMint),
         side: BorderSide(color: pastelMint),
       ),
     );

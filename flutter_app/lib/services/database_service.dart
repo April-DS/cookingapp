@@ -206,7 +206,21 @@ class DatabaseService {
     final db = await database;
     await db.update(
       'recipes',
-      recipe.toJson(),
+      {
+        'dish_name': recipe.dishName,
+        'prep_time': recipe.prepTime,
+        'cook_time': recipe.cookTime,
+        'total_time': recipe.totalTime,
+        'kcal': recipe.kcal,
+        'protein_g': recipe.proteinG,
+        'highlights': recipe.highlights,
+        'ingredients': recipe.ingredients,
+        'instructions': recipe.instructions,
+        'image_description': recipe.imageDescription,
+        'image_filename': recipe.imageFilename,
+        'pick_count': recipe.pickCount,
+        'skip_count': recipe.skipCount,
+      },
       where: 'id = ?',
       whereArgs: [recipe.id],
     );
@@ -233,6 +247,22 @@ class DatabaseService {
     final db = await database;
     await db.rawUpdate(
       'UPDATE recipes SET skip_count = COALESCE(skip_count, 0) + 1 WHERE id = ?',
+      [recipeId],
+    );
+  }
+
+  Future<void> decrementPickCount(String recipeId) async {
+    final db = await database;
+    await db.rawUpdate(
+      'UPDATE recipes SET pick_count = MAX(COALESCE(pick_count, 0) - 1, 0) WHERE id = ?',
+      [recipeId],
+    );
+  }
+
+  Future<void> decrementSkipCount(String recipeId) async {
+    final db = await database;
+    await db.rawUpdate(
+      'UPDATE recipes SET skip_count = MAX(COALESCE(skip_count, 0) - 1, 0) WHERE id = ?',
       [recipeId],
     );
   }
@@ -287,23 +317,31 @@ class DatabaseService {
     final sessions = <Session>[];
     for (var m in maps) {
       try {
-        final session = Session(
-          id: m['id'] as int?,
-          sessionName: m['session_name'] as String? ?? 'Unnamed Session',
-          dateCreated: DateTime.parse(m['date_created'] as String),
-          targetCount: m['target_count'] as int? ?? 5,
-          recipeIds: (m['recipe_ids'] as String).split(',').where((id) => id.isNotEmpty).toList(),
-          ingredientQuantities: _parseJsonMap<String, String>(m['ingredient_quantities']),
-          ingredientChecked: _parseJsonMap<String, bool>(m['ingredient_checked']),
-          recipesCooked: _parseJsonMap<String, bool>(m['recipes_cooked']),
-          shoppingList: _parseJsonMap<String, String>(m['shopping_list']),
-        );
-        sessions.add(session);
+        sessions.add(_sessionFromRow(m));
       } catch (e) {
       }
     }
 
     return sessions;
+  }
+
+  /// Build a Session from a DB row with null-safe parsing of every field.
+  Session _sessionFromRow(Map<String, dynamic> m) {
+    final rawIds = m['recipe_ids'];
+    final recipeIds = (rawIds is String)
+        ? rawIds.split(',').where((id) => id.isNotEmpty).toList()
+        : <String>[];
+    return Session(
+      id: m['id'] as int?,
+      sessionName: m['session_name'] as String? ?? 'Unnamed Session',
+      dateCreated: DateTime.tryParse(m['date_created']?.toString() ?? '') ?? DateTime.now(),
+      targetCount: m['target_count'] as int? ?? 5,
+      recipeIds: recipeIds,
+      ingredientQuantities: _parseJsonMap<String, String>(m['ingredient_quantities']),
+      ingredientChecked: _parseJsonMap<String, bool>(m['ingredient_checked']),
+      recipesCooked: _parseJsonMap<String, bool>(m['recipes_cooked']),
+      shoppingList: _parseJsonMap<String, String>(m['shopping_list']),
+    );
   }
 
   Map<K, V> _parseJsonMap<K, V>(dynamic jsonData) {
@@ -329,19 +367,7 @@ class DatabaseService {
       whereArgs: [id],
     );
     if (maps.isEmpty) return null;
-    final m = maps.first;
-    
-    return Session(
-      id: m['id'] as int?,
-      sessionName: m['session_name'] as String? ?? 'Unnamed Session',
-      dateCreated: DateTime.parse(m['date_created'] as String),
-      targetCount: m['target_count'] as int? ?? 5,
-      recipeIds: (m['recipe_ids'] as String).split(',').where((id) => id.isNotEmpty).toList(),
-      ingredientQuantities: _parseJsonMap<String, String>(m['ingredient_quantities']),
-      ingredientChecked: _parseJsonMap<String, bool>(m['ingredient_checked']),
-      recipesCooked: _parseJsonMap<String, bool>(m['recipes_cooked']),
-      shoppingList: _parseJsonMap<String, String>(m['shopping_list']),
-    );
+    return _sessionFromRow(maps.first);
   }
 
   Future<void> deleteSession(int id) async {

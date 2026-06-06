@@ -39,9 +39,11 @@ class _SwipeScreenState extends State<SwipeScreen> {
         setState(() {
           // likeRecipe removes the recipe from filteredRecipes, so the list
           // shrinks and _currentIndex now points to the next recipe already.
-          // Just clamp to stay in bounds.
+          // Clamp to stay in bounds (min 0 to avoid negative index).
           if (_currentIndex >= appState.filteredRecipes.length) {
-            _currentIndex = appState.filteredRecipes.length - 1;
+            _currentIndex = appState.filteredRecipes.isEmpty
+                ? 0
+                : appState.filteredRecipes.length - 1;
           }
         });
       }
@@ -54,9 +56,11 @@ class _SwipeScreenState extends State<SwipeScreen> {
       setState(() {
         // skipRecipe removes the recipe from filteredRecipes, so the list
         // shrinks and _currentIndex now points to the next recipe already.
-        // Just clamp to stay in bounds.
+        // Clamp to stay in bounds (min 0 to avoid negative index).
         if (_currentIndex >= appState.filteredRecipes.length) {
-          _currentIndex = appState.filteredRecipes.length - 1;
+          _currentIndex = appState.filteredRecipes.isEmpty
+              ? 0
+              : appState.filteredRecipes.length - 1;
         }
       });
     }
@@ -268,11 +272,20 @@ class _SwipeScreenState extends State<SwipeScreen> {
             return _buildEmptyState(context, appState);
           }
 
-          if (_currentIndex >= appState.filteredRecipes.length) {
-            _currentIndex = appState.filteredRecipes.length - 1;
+          // Clamp index safely (avoid side-effect assignment during build by
+          // using a local variable; schedule a post-frame correction if needed).
+          var safeIndex = _currentIndex;
+          if (safeIndex >= appState.filteredRecipes.length) {
+            safeIndex = appState.filteredRecipes.length - 1;
+          }
+          if (safeIndex < 0) safeIndex = 0;
+          if (safeIndex != _currentIndex) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) setState(() => _currentIndex = safeIndex);
+            });
           }
 
-          final currentRecipe = appState.filteredRecipes[_currentIndex];
+          final currentRecipe = appState.filteredRecipes[safeIndex];
 
           return SafeArea(
             top: false,
@@ -330,7 +343,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                 ),
                 // Swipe progress indicator
                 Text(
-                  'Card ${_currentIndex + 1} of ${appState.filteredRecipes.length}',
+                  'Card ${safeIndex + 1} of ${appState.filteredRecipes.length}',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 SizedBox(height: AppConstants.smallPadding),
@@ -343,7 +356,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                     ),
                     child: RecipeCard(
                       recipe: currentRecipe,
-                      currentIndex: _currentIndex,
+                      currentIndex: safeIndex,
                       totalCards: appState.filteredRecipes.length,
                       onSwipeRight: () => _handleSwipeRight(appState),
                       onSwipeLeft: () => _handleSwipeLeft(appState),
@@ -400,7 +413,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                 : () => _handleUndo(appState),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: appState.swipeHistory.isEmpty
-                                  ? AppTheme.textMuted.withOpacity(0.5)
+                                  ? AppTheme.textMuted.withValues(alpha: 0.5)
                                   : AppTheme.pastelBlush,
                               foregroundColor: AppTheme.darkBg,
                               disabledForegroundColor: AppTheme.textMuted,

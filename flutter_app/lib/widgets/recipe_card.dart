@@ -177,7 +177,7 @@ class _RecipeCardState extends State<RecipeCard>
                         bottom: 0,
                         child: Container(
                           width: 4,
-                          color: AppTheme.error.withOpacity(swipeProgress),
+                          color: AppTheme.error.withValues(alpha:swipeProgress),
                         ),
                       ),
                     // Right green indicator (like)
@@ -188,7 +188,7 @@ class _RecipeCardState extends State<RecipeCard>
                         bottom: 0,
                         child: Container(
                           width: 4,
-                          color: AppTheme.success.withOpacity(swipeProgress),
+                          color: AppTheme.success.withValues(alpha:swipeProgress),
                         ),
                       ),
                     // Swipe label overlay
@@ -269,7 +269,7 @@ class _RecipeCardState extends State<RecipeCard>
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.transparent, Colors.black.withOpacity(0.3)],
+                colors: [Colors.transparent, Colors.black.withValues(alpha:0.3)],
               ),
             ),
           ),

@@ -2,7 +2,7 @@
 
 class AppConstants {
   // App info
-  static const String appName = 'Cooking Swipe';
+  static const String appName = 'Pickish';
   static const String appVersion = '1.0.0';
 
   // Database
