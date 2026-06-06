@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../models/recipe.dart';
@@ -375,6 +376,63 @@ Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {
 
     await _dbService.insertSession(session);
     await loadAllRecipes();
+    await loadPastSessions();
+    notifyListeners();
+
+    return session.sessionName;
+  }
+
+  // ===== Compact QR sharing =====
+  // A QR code can only hold ~2-3KB, so we DON'T embed full recipe text.
+  // Both phones share the same built-in recipe database, so we only encode
+  // the recipe IDs + shopping list; the receiver resolves IDs locally.
+
+  /// Build a compact string payload for a QR code from a session.
+  String buildCompactSessionPayload(Session session) {
+    return jsonEncode({
+      'app': 'pickish',
+      't': 's', // type: session
+      'n': session.sessionName,
+      'r': session.recipeIds,
+      'sl': session.shoppingList,
+      'c': session.ingredientChecked,
+    });
+  }
+
+  /// Import a session from a scanned compact QR payload.
+  /// Returns the imported session name, or throws if the payload is invalid.
+  Future<String> importCompactSession(String raw) async {
+    final dynamic decoded;
+    try {
+      decoded = jsonDecode(raw);
+    } catch (_) {
+      throw Exception('Not a valid Pickish QR code');
+    }
+    if (decoded is! Map || decoded['app'] != 'pickish' || decoded['t'] != 's') {
+      throw Exception('Not a valid Pickish session QR');
+    }
+
+    final recipeIds = List<String>.from(decoded['r'] as List? ?? []);
+    final shoppingList = (decoded['sl'] as Map?)
+            ?.map((k, v) => MapEntry(k.toString(), v.toString())) ??
+        <String, String>{};
+    final ingredientChecked = (decoded['c'] as Map?)
+            ?.map((k, v) => MapEntry(k.toString(), v == true)) ??
+        <String, bool>{};
+
+    final session = Session(
+      sessionName: (decoded['n'] as String?)?.isNotEmpty == true
+          ? decoded['n'] as String
+          : 'Shared Session',
+      dateCreated: DateTime.now(),
+      targetCount: recipeIds.length,
+      recipeIds: recipeIds,
+      shoppingList: shoppingList,
+      ingredientChecked: ingredientChecked,
+    );
+
+    await _dbService.insertSession(session);
+    await _dbService.deleteOldSessions(maxSessions: 4);
     await loadPastSessions();
     notifyListeners();
 

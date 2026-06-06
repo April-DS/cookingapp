@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import '../models/session.dart';
 import '../models/recipe.dart';
 import '../services/app_state.dart';
@@ -12,6 +13,7 @@ import '../theme/theme.dart';
 import '../utils/constants.dart';
 import '../utils/extensions.dart';
 import 'recipe_detail_screen.dart';
+import 'scan_session_screen.dart';
 import '../widgets/ingredient_list_item.dart';
 
 class SessionsHistoryScreen extends StatefulWidget {
@@ -36,6 +38,13 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.qr_code_scanner, color: AppTheme.pastelYellow),
+            tooltip: 'Scan a shared session',
+            onPressed: () => _scanSession(context),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Consumer<AppState>(
@@ -95,16 +104,23 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
       title: Text(session.sessionName),
       subtitle: Text(formattedDate),
       trailing: SizedBox(
-        width: 136,
+        width: 168,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            IconButton(
+              icon: Icon(Icons.qr_code, color: AppTheme.pastelYellow),
+              onPressed: () => _showQrCode(context, session, appState),
+              constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+              padding: EdgeInsets.zero,
+              tooltip: 'Share via QR',
+            ),
             IconButton(
               icon: Icon(Icons.share, color: AppTheme.pastelLavender),
               onPressed: () => _shareSession(session, appState),
               constraints: BoxConstraints(minWidth: 32, minHeight: 32),
               padding: EdgeInsets.zero,
-              tooltip: 'Share JSON',
+              tooltip: 'Share file',
             ),
             IconButton(
               icon: Icon(Icons.shopping_cart, color: AppTheme.pastelMint),
@@ -246,6 +262,84 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
     final updatedCooked = Map<String, bool>.from(session.recipesCooked);
     updatedCooked[recipeId] = cooked;
     await appState.updateSession(session.copyWith(recipesCooked: updatedCooked));
+  }
+
+  Future<void> _scanSession(BuildContext context) async {
+    final name = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(builder: (_) => const ScanSessionScreen()),
+    );
+    if (name != null && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Imported session: $name'),
+          backgroundColor: AppTheme.success,
+        ),
+      );
+    }
+  }
+
+  void _showQrCode(BuildContext context, Session session, AppState appState) {
+    final payload = appState.buildCompactSessionPayload(session);
+    showDialog(
+      context: context,
+      builder: (dialogContext) => Dialog(
+        backgroundColor: AppTheme.darkBgSecondary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppConstants.cardCornerRadius),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(AppConstants.defaultPadding),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Share via QR',
+                  style: Theme.of(dialogContext).textTheme.titleMedium),
+              SizedBox(height: AppConstants.smallPadding),
+              Text(session.sessionName,
+                  style: Theme.of(dialogContext).textTheme.bodySmall,
+                  textAlign: TextAlign.center),
+              SizedBox(height: AppConstants.defaultPadding),
+              Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: QrImageView(
+                  data: payload,
+                  version: QrVersions.auto,
+                  size: 240,
+                  backgroundColor: Colors.white,
+                  errorStateBuilder: (context, error) => SizedBox(
+                    width: 240,
+                    height: 240,
+                    child: Center(
+                      child: Text(
+                        'Session too large for a QR.\nUse file share instead.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: AppConstants.defaultPadding),
+              Text(
+                'Have the other person open Past Sessions → Scan',
+                style: Theme.of(dialogContext).textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: AppConstants.smallPadding),
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: Text('Close'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   /// Build full exportable JSON for a session (includes full recipe data).
