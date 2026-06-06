@@ -679,6 +679,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
             ),
+
+            const SizedBox(height: AppConstants.defaultPadding * 2),
+            Center(
+              child: Text(
+                'Pickish v${AppConstants.appVersion}',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: AppTheme.textMuted),
+              ),
+            ),
+            const SizedBox(height: AppConstants.defaultPadding),
           ],
         ),
       ),

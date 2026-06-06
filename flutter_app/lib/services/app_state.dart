@@ -406,9 +406,10 @@ Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {
   }
 
   // ===== Compact QR sharing =====
-  // A QR code can only hold ~2-3KB, so we DON'T embed full recipe text.
-  // Both phones share the same built-in recipe database, so we only encode
-  // the recipe IDs + shopping list; the receiver resolves IDs locally.
+  // A QR code holds only ~2-3KB and gets unscannable when dense, so we keep
+  // the payload TINY: just the session name, recipe IDs, and chosen portions.
+  // Both phones share the same built-in recipe database, so the receiver
+  // looks up the recipes by ID and regenerates the (scaled) shopping list.
 
   /// Build a compact string payload for a QR code from a session.
   String buildCompactSessionPayload(Session session) {
@@ -417,8 +418,7 @@ Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {
       't': 's', // type: session
       'n': session.sessionName,
       'r': session.recipeIds,
-      'sl': session.shoppingList,
-      'c': session.ingredientChecked,
+      'p': session.recipePortions,
     });
   }
 
@@ -436,12 +436,29 @@ Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {
     }
 
     final recipeIds = List<String>.from(decoded['r'] as List? ?? []);
-    final shoppingList = (decoded['sl'] as Map?)
-            ?.map((k, v) => MapEntry(k.toString(), v.toString())) ??
-        <String, String>{};
-    final ingredientChecked = (decoded['c'] as Map?)
-            ?.map((k, v) => MapEntry(k.toString(), v == true)) ??
-        <String, bool>{};
+    if (recipeIds.isEmpty) {
+      throw Exception('QR has no recipes');
+    }
+    final portions = (decoded['p'] as Map?)?.map((k, v) =>
+            MapEntry(k.toString(), (v is int) ? v : int.tryParse('$v') ?? 0)) ??
+        <String, int>{};
+
+    // Look up the recipes locally and regenerate a scaled shopping list.
+    final recipes = <Recipe>[];
+    for (final id in recipeIds) {
+      final r = await _dbService.getRecipeById(id);
+      if (r != null) recipes.add(r);
+    }
+    final lists = <List<String>>[];
+    for (final r in recipes) {
+      final chosen = portions[r.id] ?? r.servings;
+      final factor = r.servings > 0 ? chosen / r.servings : 1.0;
+      lists.add(r.ingredients
+          .parseIngredients()
+          .map((line) => line.scaleFirstQuantity(factor))
+          .toList());
+    }
+    final shoppingList = ListExtensions.aggregateIngredients(lists);
 
     final session = Session(
       sessionName: (decoded['n'] as String?)?.isNotEmpty == true
@@ -451,7 +468,7 @@ Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {
       targetCount: recipeIds.length,
       recipeIds: recipeIds,
       shoppingList: shoppingList,
-      ingredientChecked: ingredientChecked,
+      recipePortions: portions,
     );
 
     await _dbService.insertSession(session);
