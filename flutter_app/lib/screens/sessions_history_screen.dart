@@ -168,88 +168,108 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
             () => appState.getSessionRecipes(session),
           ),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(child: CircularProgressIndicator());
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Padding(
+                padding: EdgeInsets.all(AppConstants.defaultPadding),
+                child: Center(child: CircularProgressIndicator()),
+              );
             }
-
-            final recipes = snapshot.data!;
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.symmetric(
+            if (snapshot.hasError) {
+              return Padding(
+                padding: const EdgeInsets.all(AppConstants.defaultPadding),
+                child: Text('Could not load recipes',
+                    style: TextStyle(color: AppTheme.textMuted)),
+              );
+            }
+            final recipes = snapshot.data ?? const <Recipe>[];
+            if (recipes.isEmpty) {
+              return Padding(
+                padding: const EdgeInsets.all(AppConstants.defaultPadding),
+                child: Text('No recipes in this session',
+                    style: TextStyle(color: AppTheme.textMuted)),
+              );
+            }
+            // Plain Column (not a nested ListView) to avoid unbounded-height
+            // render failures inside the ExpansionTile.
+            return Padding(
+              padding: const EdgeInsets.symmetric(
                 horizontal: AppConstants.defaultPadding,
                 vertical: AppConstants.smallPadding,
               ),
-              itemCount: recipes.length,
-              itemBuilder: (context, index) {
-                final recipe = recipes[index];
-                final isCooked = session.recipesCooked[recipe.id] ?? false;
-                return Card(
-                  color: AppTheme.darkBg,
-                  margin: EdgeInsets.only(bottom: AppConstants.smallPadding),
-                  child: ListTile(
-                    leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: SizedBox(
-                        width: 56,
-                        height: 56,
-                        child: recipe.imageFilename.isNotEmpty
-                            ? Image.asset(
-                                'assets/recipe_images/${recipe.imageFilename}',
-                                fit: BoxFit.cover,
-                                color: isCooked ? AppTheme.darkBg.withValues(alpha: 0.5) : null,
-                                colorBlendMode: isCooked ? BlendMode.darken : null,
-                                errorBuilder: (_, __, ___) => Container(
-                                  color: AppTheme.pastelMint.withValues(alpha: 0.3),
-                                  child: Icon(Icons.restaurant, color: AppTheme.pastelMint),
-                                ),
-                              )
-                            : Container(
-                                color: AppTheme.pastelMint.withValues(alpha: 0.3),
-                                child: Icon(Icons.restaurant, color: AppTheme.pastelMint),
-                              ),
-                      ),
-                    ),
-                    title: Text(
-                      recipe.dishName,
-                      style: TextStyle(
-                        color: isCooked ? AppTheme.textMuted : AppTheme.textLight,
-                        fontWeight: FontWeight.w600,
-                        decoration: isCooked ? TextDecoration.lineThrough : null,
-                        decorationColor: AppTheme.textMuted,
-                      ),
-                    ),
-                    subtitle: Text(
-                      '${StringExtensions.formatDuration(recipe.totalTime)} • ${recipe.kcal} kcal',
-                      style: TextStyle(color: AppTheme.textMuted, fontSize: 12),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: Icon(
-                            isCooked ? Icons.check_circle : Icons.check_circle_outline,
-                            color: isCooked ? AppTheme.pastelMint : AppTheme.textMuted,
-                          ),
-                          tooltip: isCooked ? 'Mark as not cooked' : 'Mark as cooked',
-                          onPressed: () => _toggleCooked(appState, session, recipe.id, !isCooked),
-                        ),
-                        Icon(Icons.chevron_right, color: AppTheme.textMuted),
-                      ],
-                    ),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => RecipeDetailScreen(recipe: recipe),
-                      ),
-                    ),
-                  ),
-                );
-              },
+              child: Column(
+                children: [
+                  for (final recipe in recipes)
+                    _buildSessionRecipeTile(context, appState, session, recipe),
+                ],
+              ),
             );
           },
         ),
       ],
+    );
+  }
+
+  Widget _buildSessionRecipeTile(
+    BuildContext context,
+    AppState appState,
+    Session session,
+    Recipe recipe,
+  ) {
+    final isCooked = session.recipesCooked[recipe.id] ?? false;
+    return Card(
+      color: AppTheme.darkBg,
+      margin: const EdgeInsets.only(bottom: AppConstants.smallPadding),
+      child: ListTile(
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: SizedBox(
+            width: 56,
+            height: 56,
+            child: recipe.imageFilename.isNotEmpty
+                ? Image.asset(
+                    'assets/recipe_images/${recipe.imageFilename}',
+                    fit: BoxFit.cover,
+                    color: isCooked ? AppTheme.darkBg.withValues(alpha: 0.5) : null,
+                    colorBlendMode: isCooked ? BlendMode.darken : null,
+                    errorBuilder: (_, __, ___) => Container(
+                      color: AppTheme.pastelMint.withValues(alpha: 0.3),
+                      child: Icon(Icons.restaurant, color: AppTheme.pastelMint),
+                    ),
+                  )
+                : Container(
+                    color: AppTheme.pastelMint.withValues(alpha: 0.3),
+                    child: Icon(Icons.restaurant, color: AppTheme.pastelMint),
+                  ),
+          ),
+        ),
+        title: Text(
+          recipe.dishName,
+          style: TextStyle(
+            color: isCooked ? AppTheme.textMuted : AppTheme.textLight,
+            fontWeight: FontWeight.w600,
+            decoration: isCooked ? TextDecoration.lineThrough : null,
+            decorationColor: AppTheme.textMuted,
+          ),
+        ),
+        subtitle: Text(
+          '${StringExtensions.formatDuration(recipe.totalTime)} • ${recipe.kcal} kcal',
+          style: TextStyle(color: AppTheme.textMuted, fontSize: 12),
+        ),
+        trailing: IconButton(
+          icon: Icon(
+            isCooked ? Icons.check_circle : Icons.check_circle_outline,
+            color: isCooked ? AppTheme.pastelMint : AppTheme.textMuted,
+          ),
+          tooltip: isCooked ? 'Mark as not cooked' : 'Mark as cooked',
+          onPressed: () => _toggleCooked(appState, session, recipe.id, !isCooked),
+        ),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => RecipeDetailScreen(recipe: recipe),
+          ),
+        ),
+      ),
     );
   }
 
