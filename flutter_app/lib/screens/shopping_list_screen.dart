@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/recipe.dart';
 import '../services/app_state.dart';
+import '../services/companion_service.dart';
 import '../theme/theme.dart';
 import '../utils/constants.dart';
 import '../utils/extensions.dart';
@@ -185,6 +186,76 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       subject: 'Pickish Session: ${_sessionNameController.text.trim().isEmpty ? "My Session" : _sessionNameController.text.trim()}',
       text: 'Import this file into Pickish to get the same recipes and shopping list.',
     );
+  }
+
+  Future<void> _sendToCompanion() async {
+    try {
+      final summary =
+          await CompanionService.sendShoppingList(_ingredients, _checked);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(summary), backgroundColor: AppTheme.success),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      final retry = await _editCompanionUrl(error: e.toString());
+      if (retry == true) _sendToCompanion();
+    }
+  }
+
+  /// Lets the user fix the Companion server address when a send fails.
+  Future<bool?> _editCompanionUrl({String? error}) async {
+    final controller =
+        TextEditingController(text: await CompanionService.getServerUrl());
+    if (!mounted) {
+      controller.dispose();
+      return false;
+    }
+    return showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text('Companion server'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (error != null) ...[
+              Text(
+                'Couldn\'t send the list:\n$error',
+                style: Theme.of(dialogContext)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: AppTheme.error),
+              ),
+              SizedBox(height: 12),
+            ],
+            TextField(
+              controller: controller,
+              keyboardType: TextInputType.url,
+              decoration: InputDecoration(
+                labelText: 'Server address',
+                hintText: 'http://192.168.1.106:8000',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              await CompanionService.setServerUrl(controller.text);
+              if (dialogContext.mounted) {
+                Navigator.of(dialogContext).pop(true);
+              }
+            },
+            child: Text('Save & retry'),
+          ),
+        ],
+      ),
+    ).whenComplete(() => controller.dispose());
   }
 
   void _copyToClipboard() {
@@ -414,6 +485,11 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       appBar: AppBar(
         title: Text('Shopping List'),
         actions: [
+          IconButton(
+            icon: Icon(Icons.storefront),
+            onPressed: _sendToCompanion,
+            tooltip: 'Send to Companion',
+          ),
           IconButton(
             icon: Icon(Icons.share),
             onPressed: () => _shareCurrentSession(appState),
