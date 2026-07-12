@@ -3,7 +3,7 @@
 class AppConstants {
   // App info
   static const String appName = 'Pickish';
-  static const String appVersion = '1.2.1';
+  static const String appVersion = '1.3.0';
 
   // Database
   static const String dbName = 'cooking_app.db';

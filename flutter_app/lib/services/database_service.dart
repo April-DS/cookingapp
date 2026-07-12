@@ -131,6 +131,10 @@ class DatabaseService {
         'image_filename': recipe.imageFilename,
         'servings': recipe.servings,
         'category': recipe.category,
+        // Carried through so a backup restore keeps swipe statistics
+        // (plain imports without stats default to 0, as before).
+        'pick_count': recipe.pickCount,
+        'skip_count': recipe.skipCount,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );

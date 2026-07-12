@@ -552,4 +552,46 @@ Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {
 
     return session.sessionName;
   }
+
+  // ===== Full data backup / restore =====
+
+  /// Everything worth saving: all recipes (with swipe stats, servings,
+  /// categories — including custom/imported ones) and all sessions.
+  Future<Map<String, dynamic>> buildBackupJson() async {
+    final recipes = await _dbService.getAllRecipes();
+    final sessions = await _dbService.getAllSessions();
+    return {
+      'app': 'pickish',
+      'type': 'backup',
+      'version': 1,
+      'created': DateTime.now().toIso8601String(),
+      'recipes': recipes.map((r) => r.toJson()).toList(),
+      'sessions': sessions.map((s) => s.toJson()).toList(),
+    };
+  }
+
+  /// Restore a backup file. Recipes are upserted (backup wins, stats
+  /// included); sessions are appended as new entries. Returns a summary.
+  Future<String> importBackup(Map<String, dynamic> json) async {
+    if (json['app'] != 'pickish' || json['type'] != 'backup') {
+      throw Exception('Not a valid Pickish backup file');
+    }
+
+    final recipesData = json['recipes'] as List<dynamic>? ?? [];
+    for (final r in recipesData) {
+      await _dbService.insertRecipe(Recipe.fromJson(r as Map<String, dynamic>));
+    }
+
+    final sessionsData = json['sessions'] as List<dynamic>? ?? [];
+    for (final s in sessionsData) {
+      // insertSession ignores the old id, so restored sessions get fresh ids.
+      await _dbService.insertSession(Session.fromJson(s as Map<String, dynamic>));
+    }
+
+    await loadAllRecipes();
+    await loadPastSessions();
+    notifyListeners();
+
+    return '${recipesData.length} recipes, ${sessionsData.length} sessions';
+  }
 }
