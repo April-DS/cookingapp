@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import '../models/session.dart';
 import '../models/recipe.dart';
 import '../services/app_state.dart';
@@ -12,6 +13,7 @@ import '../theme/theme.dart';
 import '../utils/constants.dart';
 import '../utils/extensions.dart';
 import 'recipe_detail_screen.dart';
+import 'scan_session_screen.dart';
 import '../widgets/ingredient_list_item.dart';
 
 class SessionsHistoryScreen extends StatefulWidget {
@@ -23,6 +25,9 @@ class SessionsHistoryScreen extends StatefulWidget {
 }
 
 class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
+  // Cache the per-session recipe lookups so toggling "cooked" doesn't re-run
+  // the FutureBuilder and flash a spinner on every rebuild.
+  final Map<int, Future<List<Recipe>>> _recipesCache = {};
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +38,13 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.qr_code_scanner, color: AppTheme.pastelYellow),
+            tooltip: 'Scan a shared session',
+            onPressed: () => _scanSession(context),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Consumer<AppState>(
@@ -88,19 +100,27 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
         dateFormatter.format(session.dateCreated);
 
     return ExpansionTile(
+      key: PageStorageKey('session_${session.id}'),
       title: Text(session.sessionName),
       subtitle: Text(formattedDate),
       trailing: SizedBox(
-        width: 136,
+        width: 168,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            IconButton(
+              icon: Icon(Icons.qr_code, color: AppTheme.pastelYellow),
+              onPressed: () => _showQrCode(context, session, appState),
+              constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+              padding: EdgeInsets.zero,
+              tooltip: 'Share via QR',
+            ),
             IconButton(
               icon: Icon(Icons.share, color: AppTheme.pastelLavender),
               onPressed: () => _shareSession(session, appState),
               constraints: BoxConstraints(minWidth: 32, minHeight: 32),
               padding: EdgeInsets.zero,
-              tooltip: 'Share JSON',
+              tooltip: 'Share file',
             ),
             IconButton(
               icon: Icon(Icons.shopping_cart, color: AppTheme.pastelMint),
@@ -143,69 +163,202 @@ class _SessionsHistoryScreenState extends State<SessionsHistoryScreen> {
       ),
       children: [
         FutureBuilder<List<Recipe>>(
-          future: appState.getSessionRecipes(session),
+          future: _recipesCache.putIfAbsent(
+            session.id ?? -1,
+            () => appState.getSessionRecipes(session),
+          ),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(child: CircularProgressIndicator());
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Padding(
+                padding: EdgeInsets.all(AppConstants.defaultPadding),
+                child: Center(child: CircularProgressIndicator()),
+              );
             }
-
-            final recipes = snapshot.data!;
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.symmetric(
+            if (snapshot.hasError) {
+              return Padding(
+                padding: const EdgeInsets.all(AppConstants.defaultPadding),
+                child: Text('Could not load recipes',
+                    style: TextStyle(color: AppTheme.textMuted)),
+              );
+            }
+            final recipes = snapshot.data ?? const <Recipe>[];
+            if (recipes.isEmpty) {
+              return Padding(
+                padding: const EdgeInsets.all(AppConstants.defaultPadding),
+                child: Text('No recipes in this session',
+                    style: TextStyle(color: AppTheme.textMuted)),
+              );
+            }
+            // Plain Column (not a nested ListView) to avoid unbounded-height
+            // render failures inside the ExpansionTile.
+            return Padding(
+              padding: const EdgeInsets.symmetric(
                 horizontal: AppConstants.defaultPadding,
                 vertical: AppConstants.smallPadding,
               ),
-              itemCount: recipes.length,
-              itemBuilder: (context, index) {
-                final recipe = recipes[index];
-                return Card(
-                  color: AppTheme.darkBg,
-                  margin: EdgeInsets.only(bottom: AppConstants.smallPadding),
-                  child: ListTile(
-                    leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: SizedBox(
-                        width: 56,
-                        height: 56,
-                        child: recipe.imageFilename.isNotEmpty
-                            ? Image.asset(
-                                'assets/recipe_images/${recipe.imageFilename}',
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => Container(
-                                  color: AppTheme.pastelMint.withValues(alpha: 0.3),
-                                  child: Icon(Icons.restaurant, color: AppTheme.pastelMint),
-                                ),
-                              )
-                            : Container(
-                                color: AppTheme.pastelMint.withValues(alpha: 0.3),
-                                child: Icon(Icons.restaurant, color: AppTheme.pastelMint),
-                              ),
-                      ),
-                    ),
-                    title: Text(
-                      recipe.dishName,
-                      style: TextStyle(color: AppTheme.textLight, fontWeight: FontWeight.w600),
-                    ),
-                    subtitle: Text(
-                      '${StringExtensions.formatDuration(recipe.totalTime)} • ${recipe.kcal} kcal',
-                      style: TextStyle(color: AppTheme.textMuted, fontSize: 12),
-                    ),
-                    trailing: Icon(Icons.chevron_right, color: AppTheme.textMuted),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => RecipeDetailScreen(recipe: recipe),
-                      ),
-                    ),
-                  ),
-                );
-              },
+              child: Column(
+                children: [
+                  for (final recipe in recipes)
+                    _buildSessionRecipeTile(context, appState, session, recipe),
+                ],
+              ),
             );
           },
         ),
       ],
+    );
+  }
+
+  Widget _buildSessionRecipeTile(
+    BuildContext context,
+    AppState appState,
+    Session session,
+    Recipe recipe,
+  ) {
+    final isCooked = session.recipesCooked[recipe.id] ?? false;
+    return Card(
+      color: AppTheme.darkBg,
+      margin: const EdgeInsets.only(bottom: AppConstants.smallPadding),
+      child: ListTile(
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: SizedBox(
+            width: 56,
+            height: 56,
+            child: recipe.imageFilename.isNotEmpty
+                ? Image.asset(
+                    'assets/recipe_images/${recipe.imageFilename}',
+                    fit: BoxFit.cover,
+                    color: isCooked ? AppTheme.darkBg.withValues(alpha: 0.5) : null,
+                    colorBlendMode: isCooked ? BlendMode.darken : null,
+                    errorBuilder: (_, __, ___) => Container(
+                      color: AppTheme.pastelMint.withValues(alpha: 0.3),
+                      child: Icon(Icons.restaurant, color: AppTheme.pastelMint),
+                    ),
+                  )
+                : Container(
+                    color: AppTheme.pastelMint.withValues(alpha: 0.3),
+                    child: Icon(Icons.restaurant, color: AppTheme.pastelMint),
+                  ),
+          ),
+        ),
+        title: Text(
+          recipe.dishName,
+          style: TextStyle(
+            color: isCooked ? AppTheme.textMuted : AppTheme.textLight,
+            fontWeight: FontWeight.w600,
+            decoration: isCooked ? TextDecoration.lineThrough : null,
+            decorationColor: AppTheme.textMuted,
+          ),
+        ),
+        subtitle: Text(
+          '${StringExtensions.formatDuration(recipe.totalTime)} • ${recipe.kcal} kcal',
+          style: TextStyle(color: AppTheme.textMuted, fontSize: 12),
+        ),
+        trailing: IconButton(
+          icon: Icon(
+            isCooked ? Icons.check_circle : Icons.check_circle_outline,
+            color: isCooked ? AppTheme.pastelMint : AppTheme.textMuted,
+          ),
+          tooltip: isCooked ? 'Mark as not cooked' : 'Mark as cooked',
+          onPressed: () => _toggleCooked(appState, session, recipe.id, !isCooked),
+        ),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => RecipeDetailScreen(recipe: recipe),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _toggleCooked(
+    AppState appState,
+    Session session,
+    String recipeId,
+    bool cooked,
+  ) async {
+    final updatedCooked = Map<String, bool>.from(session.recipesCooked);
+    updatedCooked[recipeId] = cooked;
+    await appState.updateSession(session.copyWith(recipesCooked: updatedCooked));
+  }
+
+  Future<void> _scanSession(BuildContext context) async {
+    final name = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(builder: (_) => const ScanSessionScreen()),
+    );
+    if (name != null && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Imported session: $name'),
+          backgroundColor: AppTheme.success,
+        ),
+      );
+    }
+  }
+
+  void _showQrCode(BuildContext context, Session session, AppState appState) {
+    final payload = appState.buildCompactSessionPayload(session);
+    showDialog(
+      context: context,
+      builder: (dialogContext) => Dialog(
+        backgroundColor: AppTheme.darkBgSecondary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppConstants.cardCornerRadius),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(AppConstants.defaultPadding),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Share via QR',
+                  style: Theme.of(dialogContext).textTheme.titleMedium),
+              SizedBox(height: AppConstants.smallPadding),
+              Text(session.sessionName,
+                  style: Theme.of(dialogContext).textTheme.bodySmall,
+                  textAlign: TextAlign.center),
+              SizedBox(height: AppConstants.defaultPadding),
+              Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: QrImageView(
+                  data: payload,
+                  version: QrVersions.auto,
+                  size: 240,
+                  backgroundColor: Colors.white,
+                  errorStateBuilder: (context, error) => SizedBox(
+                    width: 240,
+                    height: 240,
+                    child: Center(
+                      child: Text(
+                        'Session too large for a QR.\nUse file share instead.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: AppConstants.defaultPadding),
+              Text(
+                'Have the other person open Past Sessions → Scan',
+                style: Theme.of(dialogContext).textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: AppConstants.smallPadding),
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: Text('Close'),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

@@ -30,6 +30,9 @@ class ImportService {
 
       for (var recipe in recipes) {
         await _dbService.insertRecipeIfNew(recipe);
+        // Keep curated servings/category in sync for already-installed
+        // recipes without touching their pick/skip stats.
+        await _dbService.updateRecipeMeta(recipe.id, recipe.servings, recipe.category);
       }
 
       return recipes;

@@ -3,7 +3,7 @@
 class AppConstants {
   // App info
   static const String appName = 'Pickish';
-  static const String appVersion = '1.0.0';
+  static const String appVersion = '1.3.0';
 
   // Database
   static const String dbName = 'cooking_app.db';
@@ -11,7 +11,6 @@ class AppConstants {
   static const String sessionsTable = 'sessions';
 
   // Image assets
-  static const String placeholderImage = 'assets/images/placeholder.png';
   static const String recipeImagesPath = 'assets/recipe_images/';
 
   // Default settings

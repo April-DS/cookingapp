@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../models/recipe.dart';
 import '../models/session.dart';
+import '../utils/extensions.dart';
 import 'database_service.dart';
 import 'import_service.dart';
 
@@ -15,11 +17,23 @@ class AppState extends ChangeNotifier {
   Session? currentSession;
   List<Session> pastSessions = [];
 
+  // Chosen number of portions per recipe in the current session (recipeId -> portions).
+  Map<String, int> sessionPortions = {};
+
+  /// Portions chosen for a recipe in this session, defaulting to its base servings.
+  int portionsFor(Recipe recipe) => sessionPortions[recipe.id] ?? recipe.servings;
+
   // Settings
   int targetDishCount = 5;
   bool filterByLight = false;
   bool filterByFast = false;
   bool filterByLong = false;
+
+  // Dessert phase state
+  String sessionPhase = 'main'; // 'main' or 'dessert' — which pool is being swiped
+  bool dessertPhaseStarted = false; // true once desserts were added to this session
+  bool dessertOnly = false; // session started as desserts-only (no mains)
+  int targetDessertCount = 2;
 
   // Undo history
   List<Recipe> swipeHistory = [];
@@ -27,7 +41,24 @@ class AppState extends ChangeNotifier {
 
   // Getters
   int get likedCount => currentSessionRecipes.length;
-  bool get sessionComplete => likedCount >= targetDishCount;
+  int get mainsPickedCount =>
+      currentSessionRecipes.where((r) => !r.isDessert).length;
+  int get dessertsPickedCount =>
+      currentSessionRecipes.where((r) => r.isDessert).length;
+  bool get inDessertPhase => sessionPhase == 'dessert';
+
+  /// Whether the CURRENT phase has reached its target.
+  bool get phaseComplete => inDessertPhase
+      ? dessertsPickedCount >= targetDessertCount
+      : mainsPickedCount >= targetDishCount;
+
+  // Kept for existing callers (browse add-cap, swipe flow):
+  bool get sessionComplete => phaseComplete;
+
+  /// Total recipes this session aims for (mains + desserts if enabled).
+  int get totalTargetCount => dessertOnly
+      ? targetDessertCount
+      : targetDishCount + (dessertPhaseStarted ? targetDessertCount : 0);
 
   AppState() {
     _initialize();
@@ -74,17 +105,56 @@ class AppState extends ChangeNotifier {
     currentSessionRecipes = [];
     swipeHistory = [];
     swipeWasLike = [];
+    sessionPortions = {};
     currentSession = null;
-    
+    sessionPhase = 'main';
+    dessertPhaseStarted = false;
+    dessertOnly = false;
+    targetDessertCount = 2;
+
     _applyFilters(excludeIds: excludeIds);
     notifyListeners();
   }
 
+  /// Switch the swipe pool to desserts. Keeps any mains already picked.
+  /// If nothing was picked yet, this becomes a desserts-only session.
+  void startDessertPhase(int count) {
+    targetDessertCount = count < 1 ? 1 : count;
+    dessertOnly = currentSessionRecipes.isEmpty;
+    sessionPhase = 'dessert';
+    dessertPhaseStarted = true;
+    // Undo must not cross the phase boundary (the pool changes).
+    swipeHistory = [];
+    swipeWasLike = [];
+    _applyFilters();
+    notifyListeners();
+  }
+
+  /// Switch (back) to the main-dish pool, keeping everything picked so far.
+  /// Optionally updates the mains target (used by the desserts-first flow).
+  void startMainPhase({int? count}) {
+    if (count != null) targetDishCount = count < 1 ? 1 : count;
+    sessionPhase = 'main';
+    dessertOnly = false; // mains are (about to be) part of this session
+    // Undo must not cross the phase boundary.
+    swipeHistory = [];
+    swipeWasLike = [];
+    _applyFilters();
+    notifyListeners();
+  }
+
+  /// Adjust the dessert target mid-session.
+  void setDessertTarget(int count) {
+    targetDessertCount = count < 1 ? 1 : count;
+    notifyListeners();
+  }
+
   // Add recipe to current session (swipe right)
-  void likeRecipe(Recipe recipe) {
+  void likeRecipe(Recipe recipe, {int? portions}) {
     swipeHistory.add(recipe);
     swipeWasLike.add(true);
     currentSessionRecipes.add(recipe);
+    sessionPortions[recipe.id] = portions ?? recipe.servings;
     filteredRecipes.removeWhere((r) => r.id == recipe.id);
     _dbService.incrementPickCount(recipe.id);
     notifyListeners();
@@ -109,6 +179,7 @@ class AppState extends ChangeNotifier {
     if (wasLike) {
       // Remove from liked recipes and reverse the pick count
       currentSessionRecipes.removeWhere((r) => r.id == lastRecipe.id);
+      sessionPortions.remove(lastRecipe.id);
       _dbService.decrementPickCount(lastRecipe.id);
     } else {
       // Reverse the skip count
@@ -124,21 +195,36 @@ class AppState extends ChangeNotifier {
     return wasLike;
   }
 
-  // Add a recipe to the current session directly (from browse screen)
-  bool addToSession(Recipe recipe) {
-    if (sessionComplete) return false;
+  // Add a recipe to the current session directly (from browse screen).
+  // Caps are per-category so desserts don't eat main-dish slots.
+  bool addToSession(Recipe recipe, {int? portions}) {
+    if (recipe.isDessert) {
+      if (dessertsPickedCount >= targetDessertCount) return false;
+      dessertPhaseStarted = true; // count desserts toward the session total
+    } else {
+      if (mainsPickedCount >= targetDishCount) return false;
+    }
     if (currentSessionRecipes.any((r) => r.id == recipe.id)) return false;
     currentSessionRecipes.add(recipe);
+    sessionPortions[recipe.id] = portions ?? recipe.servings;
     filteredRecipes.removeWhere((r) => r.id == recipe.id);
     _dbService.incrementPickCount(recipe.id);
     notifyListeners();
     return true;
   }
 
+  /// Update the chosen portions for a recipe already in the session.
+  void setPortions(String recipeId, int portions) {
+    if (portions < 1) portions = 1;
+    sessionPortions[recipeId] = portions;
+    notifyListeners();
+  }
+
   // Remove a recipe from the current session (for editing selections)
   void removeFromSession(Recipe recipe) {
     final wasInSession = currentSessionRecipes.any((r) => r.id == recipe.id);
     currentSessionRecipes.removeWhere((r) => r.id == recipe.id);
+    sessionPortions.remove(recipe.id);
 
     if (wasInSession) {
       // Reverse the pick count that was added when the recipe was liked/added.
@@ -153,8 +239,11 @@ class AppState extends ChangeNotifier {
       }
     }
 
-    // Add back to filtered list so it can be swiped again
-    if (!filteredRecipes.any((r) => r.id == recipe.id)) {
+    // Add back to filtered list so it can be swiped again — but only if it
+    // belongs to the pool currently being swiped (a removed main must not
+    // appear in the dessert deck and vice versa).
+    if (recipe.isDessert == inDessertPhase &&
+        !filteredRecipes.any((r) => r.id == recipe.id)) {
       filteredRecipes.insert(0, recipe);
     }
     notifyListeners();
@@ -166,6 +255,11 @@ class AppState extends ChangeNotifier {
     final swipedIds = swipeHistory.map((r) => r.id).toSet();
 
     filteredRecipes = allRecipes.where((recipe) {
+      // Only show the current phase's category (mains or desserts)
+      if (recipe.isDessert != inDessertPhase) {
+        return false;
+      }
+
       // Exclude recipes from previous session
       if (excludeIds != null && excludeIds.contains(recipe.id)) {
         return false;
@@ -227,7 +321,7 @@ class AppState extends ChangeNotifier {
 
   // Set target dish count (don't clear history)
   void setTargetCount(int count) {
-    targetDishCount = count;
+    targetDishCount = count < 1 ? 1 : count;
     notifyListeners();
   }
 
@@ -246,6 +340,7 @@ Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {
     shoppingList: shoppingList,
     ingredientChecked: ingredientChecked ?? {},
     ingredientQuantities: ingredientQuantities ?? {},
+    recipePortions: Map<String, int>.from(sessionPortions),
   );
 
   try {
@@ -268,6 +363,42 @@ Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {
 
   String _formatDateTime(DateTime dt) {
     return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+  }
+
+  // Merge the current session's recipes into an existing saved session.
+  // Adds any new recipe ids and folds their ingredients into the shopping list
+  // (preserving the existing list's items and manual edits), then persists.
+  Future<void> mergeCurrentIntoSession(Session target) async {
+    final mergedIds = List<String>.from(target.recipeIds);
+    final mergedShopping = Map<String, String>.from(target.shoppingList);
+    final mergedPortions = Map<String, int>.from(target.recipePortions);
+
+    for (final recipe in currentSessionRecipes) {
+      if (!mergedIds.contains(recipe.id)) {
+        mergedIds.add(recipe.id);
+      }
+      mergedPortions[recipe.id] = portionsFor(recipe);
+      final factor = portionsFor(recipe) / recipe.servings;
+      for (final ingredient in recipe.ingredients.parseIngredients()) {
+        // Match the existing shopping-list key format (full ingredient line).
+        mergedShopping.putIfAbsent(ingredient.scaleFirstQuantity(factor), () => '');
+      }
+    }
+
+    final updated = target.copyWith(
+      recipeIds: mergedIds,
+      shoppingList: mergedShopping,
+      recipePortions: mergedPortions,
+    );
+    await _dbService.updateSession(updated);
+    await loadPastSessions();
+
+    // Clear the in-progress selection now that it's been folded in.
+    currentSessionRecipes = [];
+    swipeHistory = [];
+    swipeWasLike = [];
+    _applyFilters();
+    notifyListeners();
   }
 
   // Delete session
@@ -346,5 +477,121 @@ Future<void> saveSession(String sessionName, Map<String, String> shoppingList, {
     notifyListeners();
 
     return session.sessionName;
+  }
+
+  // ===== Compact QR sharing =====
+  // A QR code holds only ~2-3KB and gets unscannable when dense, so we keep
+  // the payload TINY: just the session name, recipe IDs, and chosen portions.
+  // Both phones share the same built-in recipe database, so the receiver
+  // looks up the recipes by ID and regenerates the (scaled) shopping list.
+
+  /// Build a compact string payload for a QR code from a session.
+  String buildCompactSessionPayload(Session session) {
+    return jsonEncode({
+      'app': 'pickish',
+      't': 's', // type: session
+      'n': session.sessionName,
+      'r': session.recipeIds,
+      'p': session.recipePortions,
+    });
+  }
+
+  /// Import a session from a scanned compact QR payload.
+  /// Returns the imported session name, or throws if the payload is invalid.
+  Future<String> importCompactSession(String raw) async {
+    final dynamic decoded;
+    try {
+      decoded = jsonDecode(raw);
+    } catch (_) {
+      throw Exception('Not a valid Pickish QR code');
+    }
+    if (decoded is! Map || decoded['app'] != 'pickish' || decoded['t'] != 's') {
+      throw Exception('Not a valid Pickish session QR');
+    }
+
+    final recipeIds = List<String>.from(decoded['r'] as List? ?? []);
+    if (recipeIds.isEmpty) {
+      throw Exception('QR has no recipes');
+    }
+    final portions = (decoded['p'] as Map?)?.map((k, v) =>
+            MapEntry(k.toString(), (v is int) ? v : int.tryParse('$v') ?? 0)) ??
+        <String, int>{};
+
+    // Look up the recipes locally and regenerate a scaled shopping list.
+    final recipes = <Recipe>[];
+    for (final id in recipeIds) {
+      final r = await _dbService.getRecipeById(id);
+      if (r != null) recipes.add(r);
+    }
+    final lists = <List<String>>[];
+    for (final r in recipes) {
+      final chosen = portions[r.id] ?? r.servings;
+      final factor = r.servings > 0 ? chosen / r.servings : 1.0;
+      lists.add(r.ingredients
+          .parseIngredients()
+          .map((line) => line.scaleFirstQuantity(factor))
+          .toList());
+    }
+    final shoppingList = ListExtensions.aggregateIngredients(lists);
+
+    final session = Session(
+      sessionName: (decoded['n'] as String?)?.isNotEmpty == true
+          ? decoded['n'] as String
+          : 'Shared Session',
+      dateCreated: DateTime.now(),
+      targetCount: recipeIds.length,
+      recipeIds: recipeIds,
+      shoppingList: shoppingList,
+      recipePortions: portions,
+    );
+
+    await _dbService.insertSession(session);
+    await _dbService.deleteOldSessions(maxSessions: 4);
+    await loadPastSessions();
+    notifyListeners();
+
+    return session.sessionName;
+  }
+
+  // ===== Full data backup / restore =====
+
+  /// Everything worth saving: all recipes (with swipe stats, servings,
+  /// categories — including custom/imported ones) and all sessions.
+  Future<Map<String, dynamic>> buildBackupJson() async {
+    final recipes = await _dbService.getAllRecipes();
+    final sessions = await _dbService.getAllSessions();
+    return {
+      'app': 'pickish',
+      'type': 'backup',
+      'version': 1,
+      'created': DateTime.now().toIso8601String(),
+      'recipes': recipes.map((r) => r.toJson()).toList(),
+      'sessions': sessions.map((s) => s.toJson()).toList(),
+    };
+  }
+
+  /// Restore a backup file. Recipes are upserted (backup wins, stats
+  /// included); sessions are appended as new entries. Returns a summary.
+  Future<String> importBackup(Map<String, dynamic> json) async {
+    if (json['app'] != 'pickish' || json['type'] != 'backup') {
+      throw Exception('Not a valid Pickish backup file');
+    }
+
+    final recipesData = json['recipes'] as List<dynamic>? ?? [];
+    for (final r in recipesData) {
+      await _dbService.insertRecipe(Recipe.fromJson(r as Map<String, dynamic>));
+    }
+
+    final sessionsData = json['sessions'] as List<dynamic>? ?? [];
+    for (final s in sessionsData) {
+      // insertSession ignores the old id, so restored sessions get fresh ids.
+      await _dbService.insertSession(Session.fromJson(s as Map<String, dynamic>));
+    }
+
+    await loadAllRecipes();
+    await loadPastSessions();
+    notifyListeners();
+
+    return '${recipesData.length} recipes, ${sessionsData.length} sessions';
   }
 }

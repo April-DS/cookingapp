@@ -26,7 +26,7 @@ class DatabaseService {
 
     return await openDatabase(
       path,
-      version: 3,
+      version: 5,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -55,6 +55,19 @@ class DatabaseService {
         await db.execute('ALTER TABLE recipes ADD COLUMN skip_count INTEGER DEFAULT 0');
       } catch (_) {}
     }
+    if (oldVersion < 4) {
+      try {
+        await db.execute('ALTER TABLE recipes ADD COLUMN servings INTEGER DEFAULT 2');
+      } catch (_) {}
+      try {
+        await db.execute('ALTER TABLE sessions ADD COLUMN recipe_portions TEXT');
+      } catch (_) {}
+    }
+    if (oldVersion < 5) {
+      try {
+        await db.execute("ALTER TABLE recipes ADD COLUMN category TEXT DEFAULT 'main'");
+      } catch (_) {}
+    }
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -73,6 +86,8 @@ class DatabaseService {
         instructions TEXT,
         image_description TEXT,
         image_filename TEXT,
+        servings INTEGER DEFAULT 2,
+        category TEXT DEFAULT 'main',
         pick_count INTEGER DEFAULT 0,
         skip_count INTEGER DEFAULT 0
       )
@@ -89,7 +104,8 @@ class DatabaseService {
         ingredient_quantities TEXT,
         ingredient_checked TEXT,
         recipes_cooked TEXT,
-        shopping_list TEXT
+        shopping_list TEXT,
+        recipe_portions TEXT
       )
     ''');
   }
@@ -113,6 +129,12 @@ class DatabaseService {
         'instructions': recipe.instructions,
         'image_description': recipe.imageDescription,
         'image_filename': recipe.imageFilename,
+        'servings': recipe.servings,
+        'category': recipe.category,
+        // Carried through so a backup restore keeps swipe statistics
+        // (plain imports without stats default to 0, as before).
+        'pick_count': recipe.pickCount,
+        'skip_count': recipe.skipCount,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -136,6 +158,8 @@ class DatabaseService {
         'instructions': recipe.instructions,
         'image_description': recipe.imageDescription,
         'image_filename': recipe.imageFilename,
+        'servings': recipe.servings,
+        'category': recipe.category,
         'pick_count': 0,
         'skip_count': 0,
       },
@@ -165,6 +189,8 @@ class DatabaseService {
           'instructions': m['instructions'] ?? '',
           'image_description': m['image_description'] ?? '',
           'image_filename': m['image_filename'] ?? '',
+          'servings': m['servings'] ?? 2,
+          'category': m['category'] ?? 'main',
           'pick_count': m['pick_count'] ?? 0,
           'skip_count': m['skip_count'] ?? 0,
         })
@@ -197,6 +223,8 @@ class DatabaseService {
       'instructions': m['instructions'] ?? '',
       'image_description': m['image_description'] ?? '',
       'image_filename': m['image_filename'] ?? '',
+      'servings': m['servings'] ?? 2,
+      'category': m['category'] ?? 'main',
       'pick_count': m['pick_count'] ?? 0,
       'skip_count': m['skip_count'] ?? 0,
     });
@@ -218,6 +246,8 @@ class DatabaseService {
         'instructions': recipe.instructions,
         'image_description': recipe.imageDescription,
         'image_filename': recipe.imageFilename,
+        'servings': recipe.servings,
+        'category': recipe.category,
         'pick_count': recipe.pickCount,
         'skip_count': recipe.skipCount,
       },
@@ -232,6 +262,18 @@ class DatabaseService {
       'recipes',
       where: 'id = ?',
       whereArgs: [id],
+    );
+  }
+
+  /// Sync curated metadata (servings + category) for a recipe
+  /// without touching its pick/skip stats.
+  Future<void> updateRecipeMeta(String recipeId, int servings, String category) async {
+    final db = await database;
+    await db.update(
+      'recipes',
+      {'servings': servings, 'category': category},
+      where: 'id = ?',
+      whereArgs: [recipeId],
     );
   }
 
@@ -283,9 +325,10 @@ class DatabaseService {
         'ingredient_checked': jsonEncode(session.ingredientChecked),
         'recipes_cooked': jsonEncode(session.recipesCooked),
         'shopping_list': jsonEncode(session.shoppingList),
+        'recipe_portions': jsonEncode(session.recipePortions),
       },
     );
-    
+
     return result;
   }
 
@@ -303,11 +346,12 @@ class DatabaseService {
         'ingredient_checked': jsonEncode(session.ingredientChecked),
         'recipes_cooked': jsonEncode(session.recipesCooked),
         'shopping_list': jsonEncode(session.shoppingList),
+        'recipe_portions': jsonEncode(session.recipePortions),
       },
       where: 'id = ?',
       whereArgs: [session.id],
     );
-    
+
   }
 
   Future<List<Session>> getAllSessions() async {
@@ -341,6 +385,7 @@ class DatabaseService {
       ingredientChecked: _parseJsonMap<String, bool>(m['ingredient_checked']),
       recipesCooked: _parseJsonMap<String, bool>(m['recipes_cooked']),
       shoppingList: _parseJsonMap<String, String>(m['shopping_list']),
+      recipePortions: _parseJsonMap<String, int>(m['recipe_portions']),
     );
   }
 

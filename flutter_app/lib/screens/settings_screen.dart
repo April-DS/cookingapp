@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../services/app_state.dart';
 import '../services/import_service.dart';
@@ -499,13 +500,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       if (!mounted) return;
       final appState = Provider.of<AppState>(context, listen: false);
-      final sessionName = await appState.importSharedSession(json);
 
-      if (!mounted) return;
-      _showSnackBar('Imported session: $sessionName');
+      // One picker handles both shared sessions and full backups.
+      if (json['type'] == 'backup') {
+        final summary = await appState.importBackup(json);
+        if (!mounted) return;
+        _showSnackBar('Backup restored: $summary');
+      } else {
+        final sessionName = await appState.importSharedSession(json);
+        if (!mounted) return;
+        _showSnackBar('Imported session: $sessionName');
+      }
     } catch (e) {
       if (!mounted) return;
       _showSnackBar('Import failed: ${e.toString()}', isError: true);
+    }
+  }
+
+  Future<void> _exportBackup(BuildContext context) async {
+    try {
+      final appState = Provider.of<AppState>(context, listen: false);
+      final backup = await appState.buildBackupJson();
+      final jsonString = const JsonEncoder.withIndent('  ').convert(backup);
+
+      final now = DateTime.now();
+      final stamp =
+          '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+      final dir = await Directory.systemTemp.createTemp('pickish_');
+      final file = File('${dir.path}/pickish_backup_$stamp.json');
+      await file.writeAsString(jsonString);
+
+      await Share.shareXFiles(
+        [XFile(file.path, mimeType: 'application/json')],
+        subject: 'Pickish backup $stamp',
+        text:
+            'Full Pickish backup (recipes, statistics, sessions). Restore via Settings → Import / Restore.',
+      );
+    } catch (e) {
+      if (!mounted) return;
+      _showSnackBar('Backup failed: ${e.toString()}', isError: true);
     }
   }
 
@@ -626,8 +659,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 OutlinedButton.icon(
                   icon: const Icon(Icons.file_download),
-                  label: const Text('Import Session'),
+                  label: const Text('Import / Restore'),
                   onPressed: () => _importSessionFromFile(context),
+                ),
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.backup),
+                  label: const Text('Backup All'),
+                  onPressed: () => _exportBackup(context),
                 ),
               ],
             ),
@@ -679,6 +717,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
             ),
+
+            const SizedBox(height: AppConstants.defaultPadding * 2),
+            Center(
+              child: Text(
+                'Pickish v${AppConstants.appVersion}',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: AppTheme.textMuted),
+              ),
+            ),
+            const SizedBox(height: AppConstants.defaultPadding),
           ],
         ),
       ),

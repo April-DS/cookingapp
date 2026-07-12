@@ -19,6 +19,19 @@ enum SortMode { mostPicked, mostSkipped, pickRate, totalSwipes }
 class _StatisticsScreenState extends State<StatisticsScreen> {
   SortMode _sortMode = SortMode.mostPicked;
 
+  @override
+  void initState() {
+    super.initState();
+    // Pick/skip counts are written straight to the DB on each swipe, but the
+    // in-memory allRecipes list isn't refreshed until something reloads it.
+    // Reload here so the stats reflect the latest persisted counts on open.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        Provider.of<AppState>(context, listen: false).loadAllRecipes();
+      }
+    });
+  }
+
   List<Recipe> _sortRecipes(List<Recipe> recipes) {
     final sorted = List<Recipe>.from(recipes);
     switch (_sortMode) {

@@ -42,11 +42,17 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   void _loadIngredients() {
     final appState = Provider.of<AppState>(context, listen: false);
     
-    // Aggregate ingredients from all selected recipes
+    // Aggregate ingredients from all selected recipes, scaled to chosen portions.
     final allIngredientLists = <List<String>>[];
     for (var recipe in appState.currentSessionRecipes) {
       if (recipe.ingredients.isNotEmpty) {
-        final parsed = recipe.ingredients.parseIngredients();
+        final factor = recipe.servings > 0
+            ? appState.portionsFor(recipe) / recipe.servings
+            : 1.0;
+        final parsed = recipe.ingredients
+            .parseIngredients()
+            .map((line) => line.scaleFirstQuantity(factor))
+            .toList();
         allIngredientLists.add(parsed);
       }
     }
@@ -152,7 +158,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       'session': {
         'session_name': sessionName,
         'date_created': DateTime.now().toIso8601String(),
-        'target_count': appState.targetDishCount,
+        'target_count': appState.totalTargetCount,
         'recipe_ids': appState.currentSessionRecipes.map((r) => r.id).toList(),
         'shopping_list': _ingredients,
         'ingredient_checked': _checked,
@@ -277,7 +283,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Recipes (${recipes.length}/${appState.targetDishCount})',
+                          'Recipes (${recipes.length}/${appState.totalTargetCount})',
                           style: Theme.of(sheetContext).textTheme.bodyLarge?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -285,7 +291,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                         TextButton(
                           onPressed: () {
                             Navigator.pop(sheetContext);
-                            if (recipes.length < appState.targetDishCount) {
+                            if (recipes.length < appState.totalTargetCount) {
                               // Go back to swiping to fill remaining slots
                               Navigator.pop(context);
                             } else {
@@ -298,7 +304,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                       ],
                     ),
                     SizedBox(height: AppConstants.smallPadding),
-                    if (recipes.length < appState.targetDishCount)
+                    if (recipes.length < appState.totalTargetCount)
                       Padding(
                         padding: EdgeInsets.only(bottom: AppConstants.smallPadding),
                         child: Text(

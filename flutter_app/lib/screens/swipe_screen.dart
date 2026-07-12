@@ -20,6 +20,24 @@ class SwipeScreen extends StatefulWidget {
 class _SwipeScreenState extends State<SwipeScreen> {
   int _currentIndex = 0;
 
+  // Pending portion choice for the card currently shown (before it's swiped).
+  // Tied to a recipe id so a new card falls back to that recipe's default servings.
+  String? _portionRecipeId;
+  int? _portionValue;
+
+  int _currentPortions(Recipe recipe) =>
+      (_portionRecipeId == recipe.id && _portionValue != null)
+          ? _portionValue!
+          : recipe.servings;
+
+  void _changePortions(Recipe recipe, int delta) {
+    final next = (_currentPortions(recipe) + delta).clamp(1, 99);
+    setState(() {
+      _portionRecipeId = recipe.id;
+      _portionValue = next;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -47,10 +65,11 @@ class _SwipeScreenState extends State<SwipeScreen> {
     final index = _visibleIndex(appState);
     if (index >= 0) {
       _currentIndex = index;
-      appState.likeRecipe(appState.filteredRecipes[index]);
+      final recipe = appState.filteredRecipes[index];
+      appState.likeRecipe(recipe, portions: _currentPortions(recipe));
 
-      if (appState.sessionComplete) {
-        _showSessionCompleteDialog(appState);
+      if (appState.phaseComplete) {
+        _handlePhaseComplete(appState);
       } else {
         setState(() {
           // likeRecipe removes the recipe from filteredRecipes, so the list
@@ -93,6 +112,234 @@ class _SwipeScreenState extends State<SwipeScreen> {
     setState(() => _currentIndex = 0);
   }
 
+  /// Adjust the current phase's target directly from the counter pill.
+  /// Can't go below what's already picked; hitting the picked count
+  /// completes the phase immediately.
+  void _adjustTarget(AppState appState, int delta) {
+    if (appState.inDessertPhase) {
+      final min = appState.dessertsPickedCount > 0
+          ? appState.dessertsPickedCount
+          : 1;
+      final next = (appState.targetDessertCount + delta).clamp(min, 20);
+      if (next == appState.targetDessertCount) return;
+      appState.setDessertTarget(next);
+    } else {
+      final min =
+          appState.mainsPickedCount > 0 ? appState.mainsPickedCount : 1;
+      final next = (appState.targetDishCount + delta).clamp(min, 20);
+      if (next == appState.targetDishCount) return;
+      appState.setTargetCount(next);
+    }
+    // Lowering the target down to what's already picked finishes the phase.
+    if (delta < 0 && appState.phaseComplete) {
+      _handlePhaseComplete(appState);
+    }
+  }
+
+  /// Decide what happens when the current phase reaches its target.
+  void _handlePhaseComplete(AppState appState) {
+    if (!appState.inDessertPhase) {
+      // Mains done. If desserts are already at target (user came back to
+      // finish mains later), the whole session is complete.
+      if (appState.dessertPhaseStarted &&
+          appState.dessertsPickedCount >= appState.targetDessertCount) {
+        _showSessionCompleteDialog(appState);
+      } else {
+        _showMainsCompleteDialog(appState);
+      }
+    } else {
+      // Desserts done. If no mains were picked, suggest them before the list.
+      if (appState.mainsPickedCount == 0) {
+        _showDessertsCompleteDialog(appState);
+      } else {
+        _showSessionCompleteDialog(appState);
+      }
+    }
+  }
+
+  /// Shown when the main-dish target is reached: offer a dessert round.
+  void _showMainsCompleteDialog(AppState appState) {
+    _showCountDialog(
+      appState,
+      icon: Icons.cake,
+      iconColor: AppTheme.pastelPeach,
+      title: 'Main dishes done!',
+      message:
+          'You\'ve picked ${appState.mainsPickedCount} main dishes. Add some desserts?',
+      initialCount: appState.targetDessertCount,
+      confirmLabel: (n) => 'Pick $n dessert${n == 1 ? '' : 's'}',
+      onConfirm: (n) {
+        appState.startDessertPhase(n);
+        setState(() => _currentIndex = 0);
+      },
+      skipLabel: 'No desserts',
+      onSkip: () => _showSessionCompleteDialog(appState),
+    );
+  }
+
+  /// Shown when a desserts-first session hits its dessert target:
+  /// suggest picking main dishes before the shopping list.
+  void _showDessertsCompleteDialog(AppState appState) {
+    _showCountDialog(
+      appState,
+      icon: Icons.dinner_dining,
+      iconColor: AppTheme.pastelMint,
+      title: 'Desserts done!',
+      message:
+          'You\'ve picked ${appState.dessertsPickedCount} dessert${appState.dessertsPickedCount == 1 ? '' : 's'}. Add main dishes too?',
+      initialCount: appState.targetDishCount,
+      confirmLabel: (n) => 'Pick $n main dish${n == 1 ? '' : 'es'}',
+      onConfirm: (n) {
+        appState.startMainPhase(count: n);
+        setState(() => _currentIndex = 0);
+      },
+      skipLabel: 'No, just desserts',
+      onSkip: () => _showSessionCompleteDialog(appState),
+    );
+  }
+
+  /// 🍰 app bar icon. In the main phase it starts/updates a dessert round;
+  /// in the dessert phase it offers the way back to main dishes.
+  void _showDessertDialog(AppState appState) {
+    if (appState.inDessertPhase) {
+      showDialog(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          backgroundColor: AppTheme.darkBgSecondary,
+          title: Text('Back to main dishes?'),
+          content: Text(
+            'Your ${appState.dessertsPickedCount} picked dessert${appState.dessertsPickedCount == 1 ? '' : 's'} stay in the session. You can return to desserts anytime with the cake icon.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text('Stay in desserts'),
+            ),
+            ElevatedButton.icon(
+              icon: Icon(Icons.dinner_dining, size: 18),
+              label: Text('Back to mains'),
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                appState.startMainPhase();
+                setState(() => _currentIndex = 0);
+              },
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+    _showCountDialog(
+      appState,
+      icon: Icons.cake,
+      iconColor: AppTheme.pastelPeach,
+      title: 'Desserts',
+      message: appState.likedCount > 0
+          ? 'Add desserts to your current selection. How many?'
+          : 'Start a desserts-only session. How many?',
+      initialCount: appState.targetDessertCount,
+      confirmLabel: (n) => 'Pick $n dessert${n == 1 ? '' : 's'}',
+      onConfirm: (n) {
+        appState.startDessertPhase(n);
+        setState(() => _currentIndex = 0);
+      },
+      skipLabel: 'Cancel',
+      onSkip: null,
+    );
+  }
+
+  void _showCountDialog(
+    AppState appState, {
+    required IconData icon,
+    required Color iconColor,
+    required String title,
+    required String message,
+    required int initialCount,
+    required String Function(int) confirmLabel,
+    required void Function(int) onConfirm,
+    required String skipLabel,
+    VoidCallback? onSkip,
+  }) {
+    int count = initialCount;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => Dialog(
+          backgroundColor: AppTheme.darkBgSecondary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppConstants.cardCornerRadius),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(AppConstants.defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 44, color: iconColor),
+                SizedBox(height: AppConstants.defaultPadding),
+                Text(title, style: Theme.of(dialogContext).textTheme.displayMedium),
+                SizedBox(height: AppConstants.smallPadding),
+                Text(
+                  message,
+                  style: Theme.of(dialogContext).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: AppConstants.defaultPadding),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.remove_circle_outline,
+                          color: AppTheme.pastelBlush, size: 32),
+                      onPressed: count > 1
+                          ? () => setDialogState(() => count--)
+                          : null,
+                    ),
+                    SizedBox(
+                      width: 48,
+                      child: Text(
+                        '$count',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(dialogContext)
+                            .textTheme
+                            .displayMedium
+                            ?.copyWith(color: AppTheme.pastelMint),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.add_circle_outline,
+                          color: AppTheme.pastelMint, size: 32),
+                      onPressed: count < 10
+                          ? () => setDialogState(() => count++)
+                          : null,
+                    ),
+                  ],
+                ),
+                SizedBox(height: AppConstants.defaultPadding),
+                ElevatedButton.icon(
+                  icon: Icon(icon, size: 18),
+                  label: Text(confirmLabel(count)),
+                  onPressed: () {
+                    Navigator.pop(dialogContext);
+                    onConfirm(count);
+                  },
+                ),
+                SizedBox(height: AppConstants.smallPadding),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(dialogContext);
+                    onSkip?.call();
+                  },
+                  child: Text(skipLabel),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   void _showSessionCompleteDialog(AppState appState) {
     showDialog(
       context: context,
@@ -115,7 +362,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
               ),
               SizedBox(height: AppConstants.smallPadding),
               Text(
-                'You\'ve selected ${appState.targetDishCount} delicious recipes',
+                'You\'ve selected ${appState.likedCount} delicious recipe${appState.likedCount == 1 ? '' : 's'}',
                 style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
@@ -169,7 +416,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Your Recipes (${recipes.length}/${appState.targetDishCount})',
+                          'Your Recipes (${recipes.length}/${appState.totalTargetCount})',
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -248,7 +495,9 @@ class _SwipeScreenState extends State<SwipeScreen> {
         initialLight: appState.filterByLight,
         initialFast: appState.filterByFast,
         initialLong: appState.filterByLong,
-        allRecipes: appState.allRecipes,
+        allRecipes: appState.allRecipes
+            .where((r) => r.isDessert == appState.inDessertPhase)
+            .toList(),
         onApply: (light, fast, long) {
           appState.setLightFilter(light);
           appState.setFastFilter(fast);
@@ -265,6 +514,16 @@ class _SwipeScreenState extends State<SwipeScreen> {
       appBar: AppBar(
         title: Text('Pickish'),
         actions: [
+          Consumer<AppState>(
+            builder: (context, appState, _) => IconButton(
+              icon: Icon(
+                Icons.cake,
+                color: appState.inDessertPhase ? AppTheme.pastelPeach : null,
+              ),
+              onPressed: () => _showDessertDialog(appState),
+              tooltip: 'Desserts',
+            ),
+          ),
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () => Navigator.pushNamed(context, '/browse'),
@@ -320,7 +579,9 @@ class _SwipeScreenState extends State<SwipeScreen> {
                     child: Column(
                       children: [
                         Text(
-                          'Your Selection',
+                          appState.inDessertPhase
+                              ? 'Desserts'
+                              : 'Your Selection',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         SizedBox(height: AppConstants.smallPadding),
@@ -336,8 +597,27 @@ class _SwipeScreenState extends State<SwipeScreen> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              if (appState.inDessertPhase) ...[
+                                Icon(Icons.cake,
+                                    size: 18, color: AppTheme.pastelPeach),
+                                SizedBox(width: 4),
+                              ],
+                              // Tap - / + to change the target mid-session
+                              IconButton(
+                                icon: Icon(Icons.remove_circle_outline,
+                                    color: AppTheme.pastelBlush),
+                                iconSize: 22,
+                                visualDensity: VisualDensity.compact,
+                                constraints: BoxConstraints(
+                                    minWidth: 30, minHeight: 30),
+                                padding: EdgeInsets.zero,
+                                tooltip: 'Fewer dishes',
+                                onPressed: () => _adjustTarget(appState, -1),
+                              ),
                               Text(
-                                '${appState.likedCount} / ${appState.targetDishCount}',
+                                appState.inDessertPhase
+                                    ? '${appState.dessertsPickedCount} / ${appState.targetDessertCount}'
+                                    : '${appState.mainsPickedCount} / ${appState.targetDishCount}',
                                 style: Theme.of(context)
                                     .textTheme
                                     .displayMedium
@@ -345,8 +625,19 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                       color: AppTheme.pastelMint,
                                     ),
                               ),
+                              IconButton(
+                                icon: Icon(Icons.add_circle_outline,
+                                    color: AppTheme.pastelMint),
+                                iconSize: 22,
+                                visualDensity: VisualDensity.compact,
+                                constraints: BoxConstraints(
+                                    minWidth: 30, minHeight: 30),
+                                padding: EdgeInsets.zero,
+                                tooltip: 'More dishes',
+                                onPressed: () => _adjustTarget(appState, 1),
+                              ),
                               if (appState.likedCount > 0) ...[
-                                SizedBox(width: 8),
+                                SizedBox(width: 4),
                                 Icon(
                                   Icons.visibility,
                                   size: 18,
@@ -356,6 +647,27 @@ class _SwipeScreenState extends State<SwipeScreen> {
                             ],
                           ),
                         ),
+                        if (appState.inDessertPhase) ...[
+                          SizedBox(height: 4),
+                          TextButton.icon(
+                            icon: Icon(Icons.arrow_back,
+                                size: 14, color: AppTheme.textMuted),
+                            label: Text(
+                              'Back to mains',
+                              style: TextStyle(
+                                  color: AppTheme.textMuted, fontSize: 12),
+                            ),
+                            style: TextButton.styleFrom(
+                              visualDensity: VisualDensity.compact,
+                              padding:
+                                  EdgeInsets.symmetric(horizontal: 8),
+                            ),
+                            onPressed: () {
+                              appState.startMainPhase();
+                              setState(() => _currentIndex = 0);
+                            },
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -365,6 +677,10 @@ class _SwipeScreenState extends State<SwipeScreen> {
                   'Card ${safeIndex + 1} of ${appState.filteredRecipes.length}',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
+                SizedBox(height: AppConstants.smallPadding),
+
+                // Portion selector (adjust before swiping right to add)
+                _buildPortionSelector(currentRecipe),
                 SizedBox(height: AppConstants.smallPadding),
 
                 // Recipe card
@@ -469,6 +785,58 @@ class _SwipeScreenState extends State<SwipeScreen> {
     );
   }
 
+  Widget _buildPortionSelector(Recipe recipe) {
+    final portions = _currentPortions(recipe);
+    final isCustom = portions != recipe.servings;
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: AppConstants.smallPadding, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppTheme.darkBgSecondary,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.people_outline, size: 18, color: AppTheme.pastelMint),
+          SizedBox(width: 6),
+          Text('Portions', style: TextStyle(color: AppTheme.textLight, fontSize: 13)),
+          SizedBox(width: AppConstants.smallPadding),
+          IconButton(
+            icon: Icon(Icons.remove_circle_outline, color: AppTheme.pastelBlush),
+            iconSize: 26,
+            visualDensity: VisualDensity.compact,
+            constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+            padding: EdgeInsets.zero,
+            onPressed: portions > 1 ? () => _changePortions(recipe, -1) : null,
+          ),
+          SizedBox(
+            width: 28,
+            child: Text(
+              '$portions',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppTheme.pastelMint,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.add_circle_outline, color: AppTheme.pastelMint),
+            iconSize: 26,
+            visualDensity: VisualDensity.compact,
+            constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+            padding: EdgeInsets.zero,
+            onPressed: () => _changePortions(recipe, 1),
+          ),
+          if (isCustom)
+            Text('(default ${recipe.servings})',
+                style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
+        ],
+      ),
+    );
+  }
+
   Widget _buildEmptyState(BuildContext context, AppState appState) {
     // Determine why there are no recipes to show
     final hasNoRecipesAtAll = appState.allRecipes.isEmpty;
@@ -531,14 +899,25 @@ class _SwipeScreenState extends State<SwipeScreen> {
                 label: Text('Clear Filters'),
               ),
             if (hasSwipedAll && !hasActiveFilters)
-              ElevatedButton.icon(
-                icon: Icon(Icons.refresh, size: 18),
-                onPressed: () {
-                  appState.startNewSession();
-                  setState(() => _currentIndex = 0);
-                },
-                label: Text('Start Fresh'),
-              ),
+              // In the dessert phase "start fresh" would wipe the mains too —
+              // offer the way back to the main pool instead.
+              appState.inDessertPhase
+                  ? ElevatedButton.icon(
+                      icon: Icon(Icons.dinner_dining, size: 18),
+                      onPressed: () {
+                        appState.startMainPhase();
+                        setState(() => _currentIndex = 0);
+                      },
+                      label: Text('Back to main dishes'),
+                    )
+                  : ElevatedButton.icon(
+                      icon: Icon(Icons.refresh, size: 18),
+                      onPressed: () {
+                        appState.startNewSession();
+                        setState(() => _currentIndex = 0);
+                      },
+                      label: Text('Start Fresh'),
+                    ),
             SizedBox(height: AppConstants.defaultPadding),
             OutlinedButton.icon(
               icon: Icon(Icons.settings, size: 18),
