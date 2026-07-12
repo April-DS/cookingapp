@@ -158,7 +158,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       'session': {
         'session_name': sessionName,
         'date_created': DateTime.now().toIso8601String(),
-        'target_count': appState.targetDishCount,
+        'target_count': appState.totalTargetCount,
         'recipe_ids': appState.currentSessionRecipes.map((r) => r.id).toList(),
         'shopping_list': _ingredients,
         'ingredient_checked': _checked,
@@ -283,7 +283,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Recipes (${recipes.length}/${appState.targetDishCount})',
+                          'Recipes (${recipes.length}/${appState.totalTargetCount})',
                           style: Theme.of(sheetContext).textTheme.bodyLarge?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -291,7 +291,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                         TextButton(
                           onPressed: () {
                             Navigator.pop(sheetContext);
-                            if (recipes.length < appState.targetDishCount) {
+                            if (recipes.length < appState.totalTargetCount) {
                               // Go back to swiping to fill remaining slots
                               Navigator.pop(context);
                             } else {
@@ -304,7 +304,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                       ],
                     ),
                     SizedBox(height: AppConstants.smallPadding),
-                    if (recipes.length < appState.targetDishCount)
+                    if (recipes.length < appState.totalTargetCount)
                       Padding(
                         padding: EdgeInsets.only(bottom: AppConstants.smallPadding),
                         child: Text(

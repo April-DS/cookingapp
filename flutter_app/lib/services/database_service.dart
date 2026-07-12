@@ -26,7 +26,7 @@ class DatabaseService {
 
     return await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -63,6 +63,11 @@ class DatabaseService {
         await db.execute('ALTER TABLE sessions ADD COLUMN recipe_portions TEXT');
       } catch (_) {}
     }
+    if (oldVersion < 5) {
+      try {
+        await db.execute("ALTER TABLE recipes ADD COLUMN category TEXT DEFAULT 'main'");
+      } catch (_) {}
+    }
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -82,6 +87,7 @@ class DatabaseService {
         image_description TEXT,
         image_filename TEXT,
         servings INTEGER DEFAULT 2,
+        category TEXT DEFAULT 'main',
         pick_count INTEGER DEFAULT 0,
         skip_count INTEGER DEFAULT 0
       )
@@ -124,6 +130,7 @@ class DatabaseService {
         'image_description': recipe.imageDescription,
         'image_filename': recipe.imageFilename,
         'servings': recipe.servings,
+        'category': recipe.category,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -148,6 +155,7 @@ class DatabaseService {
         'image_description': recipe.imageDescription,
         'image_filename': recipe.imageFilename,
         'servings': recipe.servings,
+        'category': recipe.category,
         'pick_count': 0,
         'skip_count': 0,
       },
@@ -178,6 +186,7 @@ class DatabaseService {
           'image_description': m['image_description'] ?? '',
           'image_filename': m['image_filename'] ?? '',
           'servings': m['servings'] ?? 2,
+          'category': m['category'] ?? 'main',
           'pick_count': m['pick_count'] ?? 0,
           'skip_count': m['skip_count'] ?? 0,
         })
@@ -211,6 +220,7 @@ class DatabaseService {
       'image_description': m['image_description'] ?? '',
       'image_filename': m['image_filename'] ?? '',
       'servings': m['servings'] ?? 2,
+      'category': m['category'] ?? 'main',
       'pick_count': m['pick_count'] ?? 0,
       'skip_count': m['skip_count'] ?? 0,
     });
@@ -233,6 +243,7 @@ class DatabaseService {
         'image_description': recipe.imageDescription,
         'image_filename': recipe.imageFilename,
         'servings': recipe.servings,
+        'category': recipe.category,
         'pick_count': recipe.pickCount,
         'skip_count': recipe.skipCount,
       },
@@ -250,12 +261,13 @@ class DatabaseService {
     );
   }
 
-  /// Update only the curated servings for a recipe (preserves pick/skip stats).
-  Future<void> updateRecipeServings(String recipeId, int servings) async {
+  /// Sync curated metadata (servings + category) for a recipe
+  /// without touching its pick/skip stats.
+  Future<void> updateRecipeMeta(String recipeId, int servings, String category) async {
     final db = await database;
     await db.update(
       'recipes',
-      {'servings': servings},
+      {'servings': servings, 'category': category},
       where: 'id = ?',
       whereArgs: [recipeId],
     );

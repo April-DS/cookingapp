@@ -19,6 +19,7 @@ class BrowseRecipesScreen extends StatefulWidget {
 class _BrowseRecipesScreenState extends State<BrowseRecipesScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _query = '';
+  String _categoryFilter = 'all'; // 'all' | 'main' | 'dessert'
 
   @override
   void dispose() {
@@ -27,13 +28,34 @@ class _BrowseRecipesScreenState extends State<BrowseRecipesScreen> {
   }
 
   List<Recipe> _filterRecipes(List<Recipe> recipes) {
-    if (_query.isEmpty) return recipes;
+    var result = recipes;
+    if (_categoryFilter != 'all') {
+      result = result.where((r) => r.category == _categoryFilter).toList();
+    }
+    if (_query.isEmpty) return result;
     final q = _query.toLowerCase();
-    return recipes.where((r) {
+    return result.where((r) {
       return r.dishName.toLowerCase().contains(q) ||
           r.highlights.toLowerCase().contains(q) ||
           r.ingredients.toLowerCase().contains(q);
     }).toList();
+  }
+
+  Widget _buildCategoryChip(String label, String value, IconData icon) {
+    final selected = _categoryFilter == value;
+    return ChoiceChip(
+      avatar: Icon(icon,
+          size: 16, color: selected ? AppTheme.darkBg : AppTheme.textMuted),
+      label: Text(label, style: TextStyle(fontSize: 12)),
+      selected: selected,
+      onSelected: (_) => setState(() => _categoryFilter = value),
+      selectedColor: AppTheme.pastelMint,
+      backgroundColor: AppTheme.darkBgSecondary,
+      labelStyle: TextStyle(
+        color: selected ? AppTheme.darkBg : AppTheme.textLight,
+      ),
+      visualDensity: VisualDensity.compact,
+    );
   }
 
   @override
@@ -110,6 +132,22 @@ class _BrowseRecipesScreenState extends State<BrowseRecipesScreen> {
                   onChanged: (value) => setState(() => _query = value),
                 ),
               ),
+
+              // Category filter chips
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: AppConstants.defaultPadding),
+                child: Row(
+                  children: [
+                    _buildCategoryChip('All', 'all', Icons.restaurant_menu),
+                    SizedBox(width: 6),
+                    _buildCategoryChip('Mains', 'main', Icons.dinner_dining),
+                    SizedBox(width: 6),
+                    _buildCategoryChip('Desserts', 'dessert', Icons.cake),
+                  ],
+                ),
+              ),
+              SizedBox(height: AppConstants.smallPadding),
 
               // Results count
               Padding(
@@ -260,7 +298,10 @@ class _BrowseRecipesScreenState extends State<BrowseRecipesScreen> {
   Widget _buildRecipeGridItem(BuildContext context, Recipe recipe) {
     final appState = Provider.of<AppState>(context);
     final alreadyInSession = appState.currentSessionRecipes.any((r) => r.id == recipe.id);
-    final sessionFull = appState.sessionComplete;
+    // Caps are per-category: desserts fill dessert slots, mains fill main slots.
+    final sessionFull = recipe.isDessert
+        ? appState.dessertsPickedCount >= appState.targetDessertCount
+        : appState.mainsPickedCount >= appState.targetDishCount;
 
     return GestureDetector(
       onTap: () => Navigator.push(
@@ -313,7 +354,9 @@ class _BrowseRecipesScreenState extends State<BrowseRecipesScreen> {
                           appState.addToSession(recipe);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Added "${recipe.dishName}" (${appState.likedCount}/${appState.targetDishCount})'),
+                              content: Text(recipe.isDessert
+                                  ? 'Added "${recipe.dishName}" (dessert ${appState.dessertsPickedCount}/${appState.targetDessertCount})'
+                                  : 'Added "${recipe.dishName}" (${appState.mainsPickedCount}/${appState.targetDishCount})'),
                               backgroundColor: AppTheme.success,
                               duration: Duration(seconds: 1),
                             ),

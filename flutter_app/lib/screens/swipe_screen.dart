@@ -68,8 +68,13 @@ class _SwipeScreenState extends State<SwipeScreen> {
       final recipe = appState.filteredRecipes[index];
       appState.likeRecipe(recipe, portions: _currentPortions(recipe));
 
-      if (appState.sessionComplete) {
-        _showSessionCompleteDialog(appState);
+      if (appState.phaseComplete) {
+        if (!appState.inDessertPhase) {
+          // Mains done — offer a dessert round before the shopping list.
+          _showMainsCompleteDialog(appState);
+        } else {
+          _showSessionCompleteDialog(appState);
+        }
       } else {
         setState(() {
           // likeRecipe removes the recipe from filteredRecipes, so the list
@@ -112,6 +117,121 @@ class _SwipeScreenState extends State<SwipeScreen> {
     setState(() => _currentIndex = 0);
   }
 
+  /// Shown when the main-dish target is reached: offer a dessert round.
+  void _showMainsCompleteDialog(AppState appState) {
+    _showDessertCountDialog(
+      appState,
+      title: 'Main dishes done!',
+      message:
+          'You\'ve picked ${appState.mainsPickedCount} main dishes. Add some desserts?',
+      skipLabel: 'No desserts',
+      onSkip: () => _showSessionCompleteDialog(appState),
+    );
+  }
+
+  /// Shown from the 🍰 app bar icon: dessert round on top of current picks,
+  /// or a desserts-only session when nothing is picked yet.
+  void _showDessertDialog(AppState appState) {
+    if (appState.inDessertPhase) return; // already picking desserts
+    _showDessertCountDialog(
+      appState,
+      title: 'Desserts',
+      message: appState.likedCount > 0
+          ? 'Add desserts to your current selection. How many?'
+          : 'Start a desserts-only session. How many?',
+      skipLabel: 'Cancel',
+      onSkip: null,
+    );
+  }
+
+  void _showDessertCountDialog(
+    AppState appState, {
+    required String title,
+    required String message,
+    required String skipLabel,
+    VoidCallback? onSkip,
+  }) {
+    int count = appState.targetDessertCount;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => Dialog(
+          backgroundColor: AppTheme.darkBgSecondary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppConstants.cardCornerRadius),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(AppConstants.defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.cake, size: 44, color: AppTheme.pastelPeach),
+                SizedBox(height: AppConstants.defaultPadding),
+                Text(title, style: Theme.of(dialogContext).textTheme.displayMedium),
+                SizedBox(height: AppConstants.smallPadding),
+                Text(
+                  message,
+                  style: Theme.of(dialogContext).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: AppConstants.defaultPadding),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.remove_circle_outline,
+                          color: AppTheme.pastelBlush, size: 32),
+                      onPressed: count > 1
+                          ? () => setDialogState(() => count--)
+                          : null,
+                    ),
+                    SizedBox(
+                      width: 48,
+                      child: Text(
+                        '$count',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(dialogContext)
+                            .textTheme
+                            .displayMedium
+                            ?.copyWith(color: AppTheme.pastelMint),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.add_circle_outline,
+                          color: AppTheme.pastelMint, size: 32),
+                      onPressed: count < 10
+                          ? () => setDialogState(() => count++)
+                          : null,
+                    ),
+                  ],
+                ),
+                SizedBox(height: AppConstants.defaultPadding),
+                ElevatedButton.icon(
+                  icon: Icon(Icons.cake, size: 18),
+                  label: Text('Pick $count dessert${count == 1 ? '' : 's'}'),
+                  onPressed: () {
+                    Navigator.pop(dialogContext);
+                    appState.startDessertPhase(count);
+                    setState(() => _currentIndex = 0);
+                  },
+                ),
+                SizedBox(height: AppConstants.smallPadding),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(dialogContext);
+                    onSkip?.call();
+                  },
+                  child: Text(skipLabel),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   void _showSessionCompleteDialog(AppState appState) {
     showDialog(
       context: context,
@@ -134,7 +254,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
               ),
               SizedBox(height: AppConstants.smallPadding),
               Text(
-                'You\'ve selected ${appState.targetDishCount} delicious recipes',
+                'You\'ve selected ${appState.likedCount} delicious recipe${appState.likedCount == 1 ? '' : 's'}',
                 style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
@@ -188,7 +308,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Your Recipes (${recipes.length}/${appState.targetDishCount})',
+                          'Your Recipes (${recipes.length}/${appState.totalTargetCount})',
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -267,7 +387,9 @@ class _SwipeScreenState extends State<SwipeScreen> {
         initialLight: appState.filterByLight,
         initialFast: appState.filterByFast,
         initialLong: appState.filterByLong,
-        allRecipes: appState.allRecipes,
+        allRecipes: appState.allRecipes
+            .where((r) => r.isDessert == appState.inDessertPhase)
+            .toList(),
         onApply: (light, fast, long) {
           appState.setLightFilter(light);
           appState.setFastFilter(fast);
@@ -284,6 +406,16 @@ class _SwipeScreenState extends State<SwipeScreen> {
       appBar: AppBar(
         title: Text('Pickish'),
         actions: [
+          Consumer<AppState>(
+            builder: (context, appState, _) => IconButton(
+              icon: Icon(
+                Icons.cake,
+                color: appState.inDessertPhase ? AppTheme.pastelPeach : null,
+              ),
+              onPressed: () => _showDessertDialog(appState),
+              tooltip: 'Desserts',
+            ),
+          ),
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () => Navigator.pushNamed(context, '/browse'),
@@ -339,7 +471,9 @@ class _SwipeScreenState extends State<SwipeScreen> {
                     child: Column(
                       children: [
                         Text(
-                          'Your Selection',
+                          appState.inDessertPhase
+                              ? 'Desserts'
+                              : 'Your Selection',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         SizedBox(height: AppConstants.smallPadding),
@@ -355,8 +489,15 @@ class _SwipeScreenState extends State<SwipeScreen> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              if (appState.inDessertPhase) ...[
+                                Icon(Icons.cake,
+                                    size: 18, color: AppTheme.pastelPeach),
+                                SizedBox(width: 6),
+                              ],
                               Text(
-                                '${appState.likedCount} / ${appState.targetDishCount}',
+                                appState.inDessertPhase
+                                    ? '${appState.dessertsPickedCount} / ${appState.targetDessertCount}'
+                                    : '${appState.mainsPickedCount} / ${appState.targetDishCount}',
                                 style: Theme.of(context)
                                     .textTheme
                                     .displayMedium

@@ -12,6 +12,7 @@ class Recipe {
   final String imageDescription;
   final String imageFilename;
   final int servings; // default number of portions this recipe makes
+  final String category; // 'main' or 'dessert'
   final int pickCount;
   final int skipCount;
 
@@ -29,9 +30,12 @@ class Recipe {
     required this.imageDescription,
     required this.imageFilename,
     this.servings = 2,
+    this.category = 'main',
     this.pickCount = 0,
     this.skipCount = 0,
   });
+
+  bool get isDessert => category == 'dessert';
 
   // Convert from JSON
   factory Recipe.fromJson(Map<String, dynamic> json) {
@@ -52,6 +56,7 @@ class Recipe {
       imageDescription: json['image_description'] as String? ?? '',
       imageFilename: json['image_filename'] as String? ?? '',
       servings: (json['servings'] as int?) ?? 2,
+      category: (json['category'] as String?) ?? 'main',
       pickCount: (json['pick_count'] as int?) ?? 0,
       skipCount: (json['skip_count'] as int?) ?? 0,
     );
@@ -76,6 +81,7 @@ class Recipe {
     'image_description': imageDescription,
     'image_filename': imageFilename,
     'servings': servings,
+    'category': category,
     'pick_count': pickCount,
     'skip_count': skipCount,
   };

@@ -29,13 +29,36 @@ class AppState extends ChangeNotifier {
   bool filterByFast = false;
   bool filterByLong = false;
 
+  // Dessert phase state
+  String sessionPhase = 'main'; // 'main' or 'dessert' — which pool is being swiped
+  bool dessertPhaseStarted = false; // true once desserts were added to this session
+  bool dessertOnly = false; // session started as desserts-only (no mains)
+  int targetDessertCount = 2;
+
   // Undo history
   List<Recipe> swipeHistory = [];
   List<bool> swipeWasLike = []; // Track if swipe was like (true) or skip (false)
 
   // Getters
   int get likedCount => currentSessionRecipes.length;
-  bool get sessionComplete => likedCount >= targetDishCount;
+  int get mainsPickedCount =>
+      currentSessionRecipes.where((r) => !r.isDessert).length;
+  int get dessertsPickedCount =>
+      currentSessionRecipes.where((r) => r.isDessert).length;
+  bool get inDessertPhase => sessionPhase == 'dessert';
+
+  /// Whether the CURRENT phase has reached its target.
+  bool get phaseComplete => inDessertPhase
+      ? dessertsPickedCount >= targetDessertCount
+      : mainsPickedCount >= targetDishCount;
+
+  // Kept for existing callers (browse add-cap, swipe flow):
+  bool get sessionComplete => phaseComplete;
+
+  /// Total recipes this session aims for (mains + desserts if enabled).
+  int get totalTargetCount => dessertOnly
+      ? targetDessertCount
+      : targetDishCount + (dessertPhaseStarted ? targetDessertCount : 0);
 
   AppState() {
     _initialize();
@@ -84,8 +107,26 @@ class AppState extends ChangeNotifier {
     swipeWasLike = [];
     sessionPortions = {};
     currentSession = null;
+    sessionPhase = 'main';
+    dessertPhaseStarted = false;
+    dessertOnly = false;
+    targetDessertCount = 2;
 
     _applyFilters(excludeIds: excludeIds);
+    notifyListeners();
+  }
+
+  /// Switch the swipe pool to desserts. Keeps any mains already picked.
+  /// If nothing was picked yet, this becomes a desserts-only session.
+  void startDessertPhase(int count) {
+    targetDessertCount = count < 1 ? 1 : count;
+    dessertOnly = currentSessionRecipes.isEmpty;
+    sessionPhase = 'dessert';
+    dessertPhaseStarted = true;
+    // Undo must not cross the phase boundary (the pool changes).
+    swipeHistory = [];
+    swipeWasLike = [];
+    _applyFilters();
     notifyListeners();
   }
 
@@ -135,9 +176,15 @@ class AppState extends ChangeNotifier {
     return wasLike;
   }
 
-  // Add a recipe to the current session directly (from browse screen)
+  // Add a recipe to the current session directly (from browse screen).
+  // Caps are per-category so desserts don't eat main-dish slots.
   bool addToSession(Recipe recipe, {int? portions}) {
-    if (sessionComplete) return false;
+    if (recipe.isDessert) {
+      if (dessertsPickedCount >= targetDessertCount) return false;
+      dessertPhaseStarted = true; // count desserts toward the session total
+    } else {
+      if (mainsPickedCount >= targetDishCount) return false;
+    }
     if (currentSessionRecipes.any((r) => r.id == recipe.id)) return false;
     currentSessionRecipes.add(recipe);
     sessionPortions[recipe.id] = portions ?? recipe.servings;
@@ -186,6 +233,11 @@ class AppState extends ChangeNotifier {
     final swipedIds = swipeHistory.map((r) => r.id).toSet();
 
     filteredRecipes = allRecipes.where((recipe) {
+      // Only show the current phase's category (mains or desserts)
+      if (recipe.isDessert != inDessertPhase) {
+        return false;
+      }
+
       // Exclude recipes from previous session
       if (excludeIds != null && excludeIds.contains(recipe.id)) {
         return false;
