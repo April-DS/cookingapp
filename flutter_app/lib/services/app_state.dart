@@ -130,6 +130,25 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Switch (back) to the main-dish pool, keeping everything picked so far.
+  /// Optionally updates the mains target (used by the desserts-first flow).
+  void startMainPhase({int? count}) {
+    if (count != null) targetDishCount = count < 1 ? 1 : count;
+    sessionPhase = 'main';
+    dessertOnly = false; // mains are (about to be) part of this session
+    // Undo must not cross the phase boundary.
+    swipeHistory = [];
+    swipeWasLike = [];
+    _applyFilters();
+    notifyListeners();
+  }
+
+  /// Adjust the dessert target mid-session.
+  void setDessertTarget(int count) {
+    targetDessertCount = count < 1 ? 1 : count;
+    notifyListeners();
+  }
+
   // Add recipe to current session (swipe right)
   void likeRecipe(Recipe recipe, {int? portions}) {
     swipeHistory.add(recipe);
@@ -220,8 +239,11 @@ class AppState extends ChangeNotifier {
       }
     }
 
-    // Add back to filtered list so it can be swiped again
-    if (!filteredRecipes.any((r) => r.id == recipe.id)) {
+    // Add back to filtered list so it can be swiped again — but only if it
+    // belongs to the pool currently being swiped (a removed main must not
+    // appear in the dessert deck and vice versa).
+    if (recipe.isDessert == inDessertPhase &&
+        !filteredRecipes.any((r) => r.id == recipe.id)) {
       filteredRecipes.insert(0, recipe);
     }
     notifyListeners();
@@ -299,7 +321,7 @@ class AppState extends ChangeNotifier {
 
   // Set target dish count (don't clear history)
   void setTargetCount(int count) {
-    targetDishCount = count;
+    targetDishCount = count < 1 ? 1 : count;
     notifyListeners();
   }
 
